@@ -18,6 +18,30 @@ module.exports = class extends Base {
     
   }
 
+  async myDetailAction() {
+    let data=await this.service("sys_user").myDetail(this.userInfo().id);
+    return this.success(data);
+  }
+
+  async updateInfoAction() {
+    let param=this.post();
+    param.id=this.userInfo().id;
+    await this.service("sys_user").updateInfo(param);
+    return this.success();
+  }
+
+  async updatePwdAction() {
+    let param=this.post();
+    param.id=this.userInfo().id;
+    let data=await this.service("sys_user").getData(param.id);
+    if(data.password!=think.md5(param.oldPass)){
+      return this.fail(9993,'原密码不正确！');
+    }
+    await this.service("sys_user").updatePwd(param);
+    return this.success();
+  }
+
+
   async allDataAction() {
     let data=await this.service("sys_user").allData()
     return this.success(data);

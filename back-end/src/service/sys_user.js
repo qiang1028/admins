@@ -29,16 +29,30 @@ module.exports = class extends think.Service {
 		await this._model.where({id:id}).update(param);
 	}
 
+	async updateInfo(param){
+		let id=param.id;
+		param.update_date=think.datetime();
+		await this._model.where({id:id}).update({update_date:param.update_date,
+			name:param.name,email:param.email,phone:param.phone});
+	}
+
+
 	async changeStatus(param){
 		let id=param.id;
 		param.update_date=think.datetime();
-		await this._model.where({id:id}).update({status:param.status});
+		await this._model.where({id:id}).update({status:param.status,update_date:param.update_date});
 	}
 
 	async resetPwd(param){
 		let id=param.id;
 		param.update_date=think.datetime();
-		await this._model.where({id:id}).update({password:think.md5('111111')});
+		await this._model.where({id:id}).update({password:think.md5('111111'),update_date:param.update_date});
+	}
+
+	async updatePwd(param){
+		let id=param.id;
+		param.update_date=think.datetime();
+		await this._model.where({id:id}).update({password:think.md5(param.newPass),update_date:param.update_date});
 	}
 
 
@@ -53,6 +67,19 @@ module.exports = class extends think.Service {
 		}
 		let data = await sql.countSelect();
 		return data;
+	}
+
+	async myDetail(id){
+		let data= await this._model.alias('a').join({
+	      table: 'sys_role',
+	      as: 'b',
+	      on: ['role_id', 'id']
+	    }).field("a.*,b.name as rolename").where({'a.id': id}).find();
+	    delete data.password;
+	    if(id=='1'){
+			data.rolename='超级管理员';
+	    }
+	    return data;
 	}
 
 	async allData(param){
