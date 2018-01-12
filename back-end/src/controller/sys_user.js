@@ -9,7 +9,7 @@ module.exports = class extends Base {
     let param=this.post();
     let data=await this.service("sys_user").login(param);
     if(think.isEmpty(data)){
-      return this.fail(9996,'帐号或者密码不正确！');
+      return this.fail(9996);
     }else{
       data.token= think.service("token").createToken(data);
       data.menu= await think.service("sys_menu").getMyMenuData(data.id,data.role_id);
@@ -35,7 +35,7 @@ module.exports = class extends Base {
     param.id=this.userInfo().id;
     let data=await this.service("sys_user").getData(param.id);
     if(data.password!=think.md5(param.oldPass)){
-      return this.fail(9993,'原密码不正确！');
+      return this.fail(9994);
     }
     await this.service("sys_user").updatePwd(param);
     return this.success();
@@ -57,7 +57,7 @@ module.exports = class extends Base {
     let param=this.post();
     let data=await this.service("sys_user").findByLoginName(param.login_name);
     if(!think.isEmpty(data)){
-      return this.fail(9995,'该用户名已被使用！');
+      return this.fail(9995);
     }
     await this.service("sys_user").addData(param);
     return this.success();

@@ -62,7 +62,7 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: ExtractTextPlugin.extract({
-                    use: ['css-loader?minimize', 'autoprefixer-loader'],
+                    use: ['css-loader?minimize', 'autoprefixer-loader','less-loader'],
                     fallback: 'style-loader'
                 })
             },

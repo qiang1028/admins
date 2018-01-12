@@ -14,7 +14,7 @@ module.exports = class extends think.Controller {
     this.header('Access-Control-Allow-Credentials',true);
 
     if(this.ctx.method!='POST'){
-      return this.fail(9990, '请求方式不正确！');
+      return this.fail(9993);
     }
     if (this.ctx.action === 'login' || this.ctx.action === 'register') {
       return;
@@ -27,7 +27,7 @@ module.exports = class extends think.Controller {
     //获取http-header token
     let userToken = this.header("x-token");
     if(think.isEmpty(userToken)){
-      return this.fail(9998, '未登录，不允许操作！');
+      return this.fail(9998);
     }  	
     //调用tokenservice中间件
     let tokenServiceInstance = think.service("token");
@@ -35,7 +35,7 @@ module.exports = class extends think.Controller {
     let verifyTokenResult = await tokenServiceInstance.verifyToken(userToken);
     //服务器错误时
     if (!verifyTokenResult) {
-      return this.fail(9997, '登陆验证失败，请重新登陆！');
+      return this.fail(9997);
     }
     //获取用户信息
     user = verifyTokenResult.userinfo;
@@ -47,7 +47,6 @@ module.exports = class extends think.Controller {
     this.header("x-token", newToken);
     */
   }
-
 
     //用户信息
   userInfo() {

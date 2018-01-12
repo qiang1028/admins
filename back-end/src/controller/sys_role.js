@@ -26,8 +26,8 @@ module.exports = class extends Base {
     let param=this.post();
     await this.service("sys_role").updateData(param);
     return this.success();
-  }
-
+  }   
+    
   async delDataAction() {
     let param=this.post();
     await this.service("sys_role").delData(param);
