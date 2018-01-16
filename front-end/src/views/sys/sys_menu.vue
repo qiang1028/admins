@@ -161,9 +161,11 @@
                     title: [
                         { required: true, message: '必填项', trigger: 'blur' }
                     ],
+                    /*
                     icon: [
                         { required: true, message: '必填项', trigger: 'blur' }
                     ],
+                    */
                     sort: [
                         { required: true, message: '必填项'}
                     ]
@@ -180,7 +182,8 @@
                     _self.loading=false;                  
                 });
             },
-            add (param){            
+            add (param){
+                this.formValidate={sort: 1};                       
                 if(param){
                     this.currentParam=param;
                 }else{
