@@ -13,6 +13,7 @@ module.exports = class extends Base {
     }else{
       data.token= think.service("token").createToken(data);
       data.menu= await think.service("sys_menu").getMyMenuData(data.id,data.role_id);
+      data.dicts=await think.service("sys_dict").getGroupData();
       return this.success(data);
     }
     

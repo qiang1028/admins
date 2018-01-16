@@ -16,8 +16,10 @@ util.title = function (title) {
 const ajaxUrl = env === 'development'
     ? 'http://localhost:8360/'
     : env === 'production'
-        ? 'https://www.url.com'
-        : 'https://debug.url.com';
+        ? 'http://localhost:8360/'
+        : 'http://localhost:8360/';
+        
+window.UPLOAD_IMG_URL=ajaxUrl;
 
 util.ajax = axios.create({
     baseURL: ajaxUrl,
@@ -73,6 +75,31 @@ util.copy=function (datas) {
     return obj    
 };
 
+util.showDictLabel=function (type,value) {
+    let dicts=localStorage.getItem('dicts');  
+    if(dicts){
+        dicts=JSON.parse(dicts);
+        if(dicts&&dicts[type]&&dicts[type][value]){
+            return dicts[type][value]; 
+        }
+    }
+    return '-';     
+};
+
+util.showDictList=function (type) {
+    let list=[];  
+    let dicts=localStorage.getItem('dicts');
+    if(dicts){
+        dicts=JSON.parse(dicts);
+        if(dicts&&dicts[type]){
+            let obj=dicts[type];
+            for(var key in obj){
+                list.push({value:key,label:obj[key]});
+            }
+        }   
+    } 
+    return list    
+};
 
 util.inOf = function (arr, targetArr) {
     let res = true;

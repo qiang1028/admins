@@ -70,12 +70,7 @@ export default {
                         Cookies.set('user', datas.login_name);
                         Cookies.set('token', datas.token);    
                         Cookies.set('menuList', datas.menu);               
-                        _self.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
-                        if (_self.form.userName === 'iview_admin') {
-                            Cookies.set('access', 0);
-                        } else {
-                            Cookies.set('access', 1);
-                        }
+                        _self.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');                     
                         let menuList=util.reloadMenu(datas.menu);
                         _self.$store.commit('updateMyMenulist',menuList);  
                         _self.$store.commit('mountMyMenulist',_self); 
@@ -83,6 +78,7 @@ export default {
                         _self.$router.push({
                             name: 'home_index'
                         });
+                        localStorage.setItem('dicts',JSON.stringify(datas.dicts));
                     });
                 }
             });

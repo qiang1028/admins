@@ -28,7 +28,7 @@ new Vue({
         this.$store.commit('setOpenedList');
         this.$store.commit('initCachepage');
         // 权限菜单过滤相关
-        if(Cookies.get("user")){ 
+        if(Cookies.get("user")){
             this.$store.commit('updateMyMenulist');
             this.$store.commit('mountMyMenulist',this);
         }       
@@ -36,15 +36,6 @@ new Vue({
         // util.checkUpdate(this);
     },
     created () {
-        // let tagsList = [];
-        // appRouter.map((item) => {
-        //     console.log(">>>>",item);
-        //     if (item.children.length <= 1&&!item.children[0].icon) {
-        //         tagsList.push(item.children[0]);
-        //     } else {
-        //         tagsList.push(...item.children);
-        //     }
-        // });
-        // this.$store.commit('setTagsList', tagsList);
+       
     }
 });

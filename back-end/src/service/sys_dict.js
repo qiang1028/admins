@@ -42,4 +42,21 @@ module.exports = class extends think.Service {
 	async getData(id){
 		return await this._model.where({id: id}).find();
 	}
+
+	async getGroupData(){
+		let parent=await this._model.group('type').field('type').select();
+		let datas={};
+		for (var i = 0; i < parent.length; i++) {		
+			let item=parent[i];			
+	        let child=await this._model.where({type:item.type,del_flag:0}).order("sort").select();
+			parent[i].children = {};			
+			let _child={};
+			for (var j = 0; j < child.length; j++) {		
+				let ch=child[j];
+				_child[ch.value]=ch.label;												
+		    }
+		    datas[item.type]=_child;
+	    }
+		return datas;
+	}
 };

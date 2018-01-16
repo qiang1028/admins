@@ -8,7 +8,6 @@ const user = {
         logout (state, vm) {
             Cookies.remove('user');
             Cookies.remove('password');
-            Cookies.remove('access');
             Cookies.remove('token');
             Cookies.remove('menuList');
             // 恢复默认样式

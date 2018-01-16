@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -39,7 +40,11 @@ module.exports = merge(webpackBaseConfig, {
             },
             {
                 from: 'src/views/my-components/text-editor/tinymce'
-            }
+            },
+            /*
+            {
+                from: path.resolve('./static')
+            }*/
         ], {
             ignore: [
                 'text-editor.vue'
