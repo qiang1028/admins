@@ -1,23 +1,25 @@
 <style lang="less">
 </style>
 <template>
-     <div>    
+     <div>
         <Row>
             <Col span="24">
                 <Card>
                     <p slot="title">
                         <Icon type="ios-list"></Icon>
-                        字典列表
+                        测试数据列表
                     </p>
                     <Row>
-                        <Input v-model="searchForm.type" placeholder="请输入类型" style="width: 200px" />
-                        <span @click="handleSearch" style="margin: 0 10px;"><Button type="primary" icon="search">搜索</Button></span>
+                        名称：<Input v-model="searchForm.name" placeholder="请输入名称" style="width: 200px;margin-right: 20px;" />
+                        别名：<Input v-model="searchForm.name2" placeholder="请输入别名" style="width: 200px;margin-right: 20px;" />
+                        大名：<Input v-model="searchForm.name3" placeholder="请输入大名" style="width: 200px;margin-right: 20px;" />
+                        <span @click="handleSearch"><Button type="primary" icon="search">搜索</Button></span>
                     </Row>
                     <Row style="margin-top:10px;">
                         <Button type="info" @click="add">添加</Button>
                     </Row>
                     <Row type="flex" justify="center" align="middle" class="advanced-router">
-                        <Table border stripe :columns="columns" :data="data" :loading="loading"style="width: 100%;margin-top:10px"></Table>
+                        <Table border stripe :columns="columns" :data="data" :loading="loading" style="width: 100%;margin-top:10px"></Table>
                         <Page :total="count" :current="searchForm.current" show-total  style="margin-top:10px;" @on-change="pageChange"></Page>
                     </Row>
                 </Card>
@@ -25,20 +27,14 @@
         </Row>
         <Modal  title="操作框"  :mask-closable="false" :closable="false" v-model="modalAdd">
             <Form ref="formRef" :model="formValidate" :rules="ruleValidate" :label-width="80">
-                <FormItem label="描述" prop="description">
-                    <Input v-model="formValidate.description"></Input>
+                <FormItem label="名称" prop="name">
+                    <Input v-model="formValidate.name"></Input>
                 </FormItem>
-                <FormItem label="类别" prop="type">
-                    <Input v-model="formValidate.type"></Input>
+                <FormItem label="别名" prop="name2">
+                    <Input v-model="formValidate.name2"></Input>
                 </FormItem>
-                <FormItem label="标签" prop="label">
-                    <Input v-model="formValidate.label"></Input>
-                </FormItem>
-                 <FormItem label="键值" prop="value">
-                    <Input v-model="formValidate.value"></Input>
-                </FormItem>
-                <FormItem label="排序" prop="sort">
-                   <InputNumber :min="1" v-model="formValidate.sort"></InputNumber>
+                <FormItem label="大名" prop="name3">
+                    <Input v-model="formValidate.name3"></Input>
                 </FormItem>
             </Form>
             <div slot="footer">
@@ -48,7 +44,6 @@
         </Modal>    
     </div>
 </template>
-
 <script>
     import util from '@/libs/util.js';
     export default {
@@ -64,22 +59,30 @@
                     current:1
                 },
                 count:0,
-                columns: [                  
+                columns: [     
                     {
-                        title: '描述',
-                        key: 'description'
+                        title: '名称',
+                        key: 'name'
                     },
                     {
-                        title: '类别',
-                        key: 'type'
+                        title: '别名',
+                        key: 'name2'
                     },
                     {
-                        title: '标签',
-                        key: 'label'
+                        title: '大名',
+                        key: 'name3'
                     },
                     {
-                        title: '键值',
-                        key: 'value'
+                        title: '创建时间',
+                        key: 'create_date'
+                    },
+                    {
+                        title: '更新时间',
+                        key: 'update_date'
+                    },
+                    {
+                        title: '标记',
+                        key: 'del_flag'
                     },
                     {
                         title: '操作',
@@ -87,7 +90,7 @@
                         width: 210,
                         align: 'center',
                         render: (h, params) => {
-                            return h('div', [                             
+                            return h('div', [
                                 h('Button', {
                                     props: {
                                         type: 'success',
@@ -121,18 +124,15 @@
                     sort: 1
                 },
                 ruleValidate: {
-                    description: [
-                        { required: true, message: '必填项', trigger: 'blur' }
+                    name: [
+                        { required: true, message: '名称为必填项', trigger: 'blur' }
                     ],
-                    type: [
-                        { required: true, message: '必填项', trigger: 'blur' }
+                    name2: [
+                        { required: true, message: '别名为必填项', trigger: 'blur' }
                     ],
-                    label: [
-                        { required: true, message: '必填项', trigger: 'blur' }
+                    name3: [
+                        { required: true, message: '大名为必填项', trigger: 'blur' }
                     ],
-                    value: [
-                        { required: true, message: '必填项', trigger: 'blur' }
-                    ]
                 }
             }
         },
@@ -140,10 +140,10 @@
             init () {
                 let _self=this;
                 _self.loading=true;
-                util.post(this,'sys_dict/pageData',this.searchForm,function(datas){                  
+                util.post(this,'sys_test/pageData',this.searchForm,function(datas){   
                     _self.data=datas.data;
                     _self.count=datas.count;
-                    _self.loading=false;                  
+                    _self.loading=false;
                 });
             },
             handleSearch(){
@@ -155,21 +155,21 @@
                 console.log(this.searchForm);
                 this.init();
             },
-            add (){       
-                this.formValidate={sort: 1};            
-                this.modalAdd=true;            
+            add (){     
+                this.formValidate={}; 
+                this.modalAdd=true;       
             },
             edit (param) {
                 this.formValidate=util.copy(param.row);
-                this.modalAdd=true;                          
-            },
+                this.modalAdd=true;        
+             },
             remove (param) {
                 let _self=this;
                 this.loading=true;
-                util.post(this,'sys_dict/delData',{id:param.row.id},function(datas){ 
+                util.post(this,'sys_test/delData',{id:param.row.id},function(datas){ 
                     _self.data.splice(param.index, 1);
-                    _self.loading =false;               
-                    _self.$Message.success('删除成功！');              
+                    _self.loading =false;      
+                    _self.$Message.success('删除成功！');
                 });
             },
             addOkFun(){
@@ -177,29 +177,28 @@
                 this.$refs['formRef'].validate((valid) => {
                     if (valid) {
                         util.changeModalLoading(this,true);
-                        let _data=util.copy(this.formValidate);     
+                        let _data=util.copy(this.formValidate); 
                         if(this.formValidate&&this.formValidate.id){
-                            util.post(this,'sys_dict/updateData',_data,function(datas){                  
+                            util.post(this,'sys_test/updateData',_data,function(datas){  
                                 _self.$Message.success('编辑成功！');
-                                _self.addCanFun();  
-                                _self.init();        
-                            });                          
+                                _self.addCanFun();
+                                _self.init();      
+                            });                        
                         }else{
-                            util.post(this,'sys_dict/addData',_data,function(datas){                  
+                            util.post(this,'sys_test/addData',_data,function(datas){ 
                                 _self.$Message.success('新增成功！');
                                 _self.addCanFun(); 
-                                _self.init();                
-                            });                          
+                                _self.init();     
+                            });     
                         }
-                        
                     }else{
                         util.changeModalLoading(this);
                     } 
-                })            
-            },         
-            addCanFun(){      
+                })  
+            },   
+            addCanFun(){ 
                 this.modalAdd=false; 
-                util.changeModalLoading(this);         
+                util.changeModalLoading(this);
                 this.$refs['formRef'].resetFields(); 
             }
         },

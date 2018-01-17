@@ -39,6 +39,7 @@ util.post = function (vm,url, param,cb) {
         if(res&&res.status==200&&res.data&&res.data.errno==0){
             cb(res.data.data);
         }else{
+            vm.$Message.destroy();
             util.changeModalLoading(vm);
             if(res.data&&res.data.errmsg&&res.data.errmsg.length>0){
                 vm.$Message.error(res.data.errmsg);
@@ -50,6 +51,7 @@ util.post = function (vm,url, param,cb) {
         
     }).catch(err => {
         console.log(err);
+        vm.$Message.destroy();
         util.changeModalLoading(vm);
         vm.$Message.error('请求数据异常，请稍后重试！');
     })

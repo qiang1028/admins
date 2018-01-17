@@ -1,83 +1,155 @@
 <style lang="less">
-    @import './own-space.less';
 </style>
 
 <template>
-    <div>
-        <Card>
-            <p slot="title">
-                <Icon type="person"></Icon>
-                代码生成器
-            </p>
-            <div>
-                <Form 
-                    ref="userForm"
-                    :model="userForm" 
-                    :label-width="100" 
-                    label-position="right"
-                >
-                    <FormItem label="用户姓名：" prop="name">
-                        <div style="display:inline-block;width:300px;">
-                            <Input v-model="userForm.name" ></Input>
-                        </div>
-                    </FormItem>
-                    <FormItem label="手机：" prop="phone" >
-                        <div style="display:inline-block;width:300px;">
-                            <Input v-model="userForm.phone"></Input>
-                        </div>                      
-                    </FormItem>
-                    <FormItem label="邮箱：" prop="email" >
-                        <div style="display:inline-block;width:300px;">
-                            <Input v-model="userForm.email"></Input>
-                        </div>                      
-                    </FormItem>
-                    <FormItem label="角色：">
-                        <span>{{ userForm.rolename }}</span>
-                    </FormItem>                   
-                    <div>
-                        <Button type="primary" style="width: 100px;" :loading="save_loading" @click="saveEdit">保存</Button>
-                    </div>
-                </Form>
-            </div>
-        </Card>       
+     <div>    
+        <Row>
+            <Col span="24">
+                <Card>
+                    <p slot="title">
+                        <Icon type="ios-list"></Icon>
+                        代码生成器
+                    </p>
+                    <Row>
+                        <Select v-model="tablename" placeholder="请选择要生成代码的表名" style="width: 200px">
+                            <Option v-for="item in tableList" :value="item.name" :key="item.name">{{ item.name }}</Option>
+                        </Select>
+                        <span @click="handleSearch" style="margin: 0 10px;"><Button type="primary">开始配置</Button></span>
+                    </Row>
+                    <Row style="margin-top:10px;">
+                        <Button type="info" @click="add">生成代码</Button>
+                    </Row>
+                    <Row type="flex" justify="center" align="middle" class="advanced-router">
+                        <Table border :columns="columns" :data="data" :loading="loading"style="width: 100%;margin-top:10px"></Table>
+                    </Row>
+                </Card>
+            </Col>
+        </Row> 
     </div>
 </template>
 
 <script>
-import util from '@/libs/util.js';
-export default {
-    data () {       
-        return {
-            save_loading:false,
-            userForm: {
-
+    import util from '@/libs/util.js';
+    export default {
+        data () {
+            return {
+                loading:false,
+                tablename:'',
+                tableList:[],
+                columns: [                  
+                    {
+                        title: '字段名',
+                        key: 'name'
+                    },
+                    {
+                        title: '字段注释',
+                        key: 'comment',
+                        render: (h, params) => {
+                            let _self=this;
+                            return h('Input', {
+                                props: {
+                                    type: 'text',
+                                    value: params.row.comment
+                                },
+                                on: {
+                                    'on-blur' (event) {
+                                        _self.formData[params.index].comment=event.target.value;
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    {
+                        title: '是否在列表中显示',
+                        key: 'is_show',
+                        render: (h, params) => {
+                            let _self=this;
+                            return h('Checkbox', {
+                                props: {
+                                    size: 'large',
+                                    value: params.row.is_show,
+                                    'true-value':1,
+                                    'false-value':0
+                                },
+                                on: {
+                                    'on-change' (value) {
+                                        _self.formData[params.index].is_show=value;
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    {
+                        title: '是否是搜索项',
+                        key: 'is_search',
+                        render: (h, params) => {
+                            let _self=this;
+                            return h('Checkbox', {
+                                props: {
+                                    size: 'large',
+                                    value: params.row.is_search,
+                                    'true-value':1,
+                                    'false-value':0
+                                },
+                                on: {
+                                    'on-change' (value) {
+                                        _self.formData[params.index].is_search=value;
+                                    }
+                                }
+                            });
+                        }
+                    },                  
+                ],
+                data: [],  
+                formData:[] 
+            }
+        },
+        methods: {
+            init () {
+                let _self=this;
+                _self.loading=true;
+                util.post(this,'generator/getTables',this.searchForm,function(datas){                  
+                    _self.tableList=datas;
+                    _self.loading=false;                  
+                });
             },
-        };
-    },
-    methods: {
-        saveEdit () {
-            let _self=this;
-            this.$refs['userForm'].validate((valid) => {
-                if (valid) {
-                    _self.save_loading = true;
-                    let _data=util.copy(_self.userForm); 
-                    util.post(this,'sys_user/updateInfo',_data,function(datas){                  
-                        //_self.userForm=datas;    
-                        _self.$Message.success('保存成功！');
-                        _self.save_loading = false;           
-                    });                                          
+            handleSearch(){
+                if(!this.tablename){
+                    this.$Message.error('请先选择要生成代码的表名！');
+                    return false;
                 }
-            });
-        },     
-        init () {
-            let _self=this;
-            util.post(this,'sys_user/myDetail',{},function(datas){                  
-                _self.userForm=datas;               
-            });
+                let _self=this;
+                _self.loading=true;
+                util.post(this,'generator/getColumns',{tablename:_self.tablename},function(datas){                  
+                    _self.data=datas;
+                    _self.formData=util.copy(datas);                   
+                    _self.loading=false;                  
+                });
+            },           
+            add (){     
+                if(!this.tablename){
+                    this.$Message.error('请先选择要生成代码的表名！');
+                    return false;
+                }
+                let _self=this;
+                _self.loading=true;
+                this.$Message.loading({
+                    content: '正在生成代码中，请耐心等耐。。。',
+                    duration: 0
+                });
+                util.post(this,'generator/todoCode',{parameter:_self.formData,tablename:_self.tablename},function(datas){                  
+                    _self.$Message.destroy();
+                    _self.$Message.info({
+                        content: datas.msg,
+                        duration: 5,
+                        closable: true
+                    });                  
+                    _self.loading=false;                  
+                });           
+            },                  
+        },
+        mounted () {
+            this.init();
         }
-    },
-    mounted () {
-
     }
-};
 </script>
