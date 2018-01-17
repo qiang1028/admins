@@ -33,6 +33,11 @@ module.exports =  {
       "    await this._model.where({id:param.id}).delete();\r\n"+
       "  }\r\n"+
       "\r\n"+
+      "  async delFlagData(param){\r\n"+
+      "    let id=param.id;\r\n"+
+      "    await this._model.where({id:id}).update({update_date:think.datetime(),del_flag:1});\r\n"+
+      "  }\r\n"+
+      "\r\n"+
       "  async updateData(param){\r\n"+
       "    let id=param.id;\r\n"+
       "    param.update_date=think.datetime();\r\n"+
@@ -62,7 +67,7 @@ module.exports =  {
       "  }\r\n"+
       "\r\n"+
       "  async getData(id){\r\n"+
-      "    return await this._model.where({id: id}).find();\r\n"+
+      "    return await this._model.where({id: id,del_flag:0}).find();\r\n"+
       "  }\r\n"+
       "};";
   	fs.writeFileSync(file,template);

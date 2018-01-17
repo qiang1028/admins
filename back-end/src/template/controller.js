@@ -49,6 +49,11 @@ module.exports =  {
 		"    await this.service('"+param.tablename+"').delData(param);\r\n"+
 		"    return this.success();\r\n"+
 		"  }\r\n"+
+		"  async delFlagDataAction() {\r\n"+
+		"    let param=this.post();\r\n"+
+		"    await this.service('"+param.tablename+"').delFlagData(param);\r\n"+
+		"    return this.success();\r\n"+
+		"  }\r\n"+
 		"};";
 	fs.writeFileSync(file,template);
   }
