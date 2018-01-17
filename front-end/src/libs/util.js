@@ -2,7 +2,6 @@ import axios from 'axios';
 import env from '../../build/env';
 import semver from 'semver';
 import packjson from '../../package.json';
-import Cookies from 'js-cookie';
 import Main from '@/views/Main.vue';
 
 let util = {
@@ -31,7 +30,7 @@ util.post = function (vm,url, param,cb) {
         baseURL: ajaxUrl,
         timeout: 30000,
         headers: {"Content-Type": "application/json",
-                  "x-token":Cookies.get('token')
+                  "x-token":localStorage.getItem('token')
         }
     });
     axiosIns.post(url, param ).then( res => {  
@@ -383,7 +382,6 @@ util.reloadMenu=function(list){
             _menuList.push(_item);
         }
     });
-    // store.commit('updateMyMenulist',_menuList); 
     return _menuList;
 };
 

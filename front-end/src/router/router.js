@@ -1,5 +1,4 @@
 import Main from '@/views/Main.vue';
-import Cookies from 'js-cookie';
 import util from '@/libs/util';
 
 
@@ -64,9 +63,13 @@ export let appRouter = [
 
 ]
 
-if(Cookies.get("user")){
-    let list = JSON.parse(Cookies.get('menuList'));
-    appRouter =util.reloadMenu(list);
+
+if(localStorage.getItem("user")){   
+    if(localStorage.getItem('menuList')){
+        let list = JSON.parse(localStorage.getItem('menuList'));
+        appRouter =util.reloadMenu(list);
+    }
+    
 }
 
 

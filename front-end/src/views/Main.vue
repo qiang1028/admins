@@ -47,7 +47,7 @@
                                     <DropdownItem name="loginout" divided>退出登录</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
-                            <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar>
+                            <Avatar src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516125804818&di=650f4cf5597f63f07d5a084f4ae50173&imgtype=0&src=http%3A%2F%2Fpic.962.net%2Fup%2F2016-8%2F14708834816737303.gif" style="background: #619fe7;margin-left: 10px;" size="default"></Avatar>
                         </Row>
                     </div>
                 </div>
@@ -73,7 +73,6 @@
     import lockScreen from './main-components/lockscreen/lockscreen.vue';
     import messageTip from './main-components/message-tip.vue';
     import themeSwitch from './main-components/theme-switch/theme-switch.vue';
-    import Cookies from 'js-cookie';
     import util from '@/libs/util.js';
     
     export default {
@@ -95,7 +94,7 @@
             };
         },
         computed: {
-            menuList () {
+            menuList () {                
                 return this.$store.state.app.menuList;
             },
             pageTagsList () {
@@ -122,19 +121,13 @@
         },
         methods: {
             init () {
-                // let _self=this;
-                // util.post(this,'sys_user/getInfo',{},function(datas){
-                //     //_self.$store.commit('updateMenulist'); 
-                //     _self.$store.commit('updateMyMenulist',datas.menu);  
-                //     _self.$store.commit('mountMyMenulist',_self);                     
-                // });
                 this.$store.commit('mountMyMenulist',this);   
                 let pathArr = util.setCurrentPath(this, this.$route.name);
                 
                 if (pathArr.length >= 2) {
                     this.$store.commit('addOpenSubmenu', pathArr[1].name);
                 }
-                this.userName = Cookies.get('user');
+                this.userName = localStorage.getItem('user');
                 let messageCount = 3;
                 this.messageCount = messageCount.toString();
                 this.checkTag(this.$route.name);

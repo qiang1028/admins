@@ -28,7 +28,7 @@ new Vue({
         this.$store.commit('setOpenedList');
         this.$store.commit('initCachepage');
         // 权限菜单过滤相关
-        if(Cookies.get("user")){
+        if(localStorage.getItem("user")){
             this.$store.commit('updateMyMenulist');
             this.$store.commit('mountMyMenulist',this);
         }       
