@@ -75,7 +75,7 @@ npm run build
 - [Webpack](https://github.com/webpack/webpack)
 
 
-## 效果展示
+## 效果展示（以下截图出自于[iView-admin](https://github.com/iview/iview-admin)）
 
 - 响应式布局首页
 
