@@ -72,112 +72,111 @@ npm run build
 ## 效果展示
 
 - 响应式布局首页
-<<<<<<< HEAD
-![image](fromt-end/github-gif/home.gif)
+
+![image](front-end/github-gif/home.gif)
 
 - 标签导航
-![image](fromt-end/github-gif/page-tags.gif)
+![image](front-end/github-gif/page-tags.gif)
 
 - 权限管理
-![image](fromt-end/github-gif/access.gif)
+![image](front-end/github-gif/access.gif)
 
 - 可拖拽列表
-![image](fromt-end/github-gif/dragable-list.gif)
+![image](front-end/github-gif/dragable-list.gif)
 
 - 图片预览编辑
-![image](fromt-end/github-gif/image-editor.gif)
+![image](front-end/github-gif/image-editor.gif)
 
 - 文件上传
-![image](fromt-end/github-gif/upload.gif)
+![image](front-end/github-gif/upload.gif)
 
 - 数字渐变
-![image](fromt-end/github-gif/count-to.gif)
+![image](front-end/github-gif/count-to.gif)
 
 - 文章发布
-![image](fromt-end/github-gif/article-publish.gif)
+![image](front-end/github-gif/article-publish.gif)
 
 - 工作流
-![image](fromt-end/github-gif/workflow.gif)
+![image](front-end/github-gif/workflow.gif)
 
 - 可拖拽表格
-![image](fromt-end/github-gif/dragable-table.gif)
+![image](front-end/github-gif/dragable-table.gif)
 
 - 可编辑表格
-![image](fromt-end/github-gif/editable-table.gif)
+![image](front-end/github-gif/editable-table.gif)
 
 - 表格导出数据
-![image](fromt-end/github-gif/exportable-table.gif)
+![image](front-end/github-gif/exportable-table.gif)
 
 - 表格转图片
-![image](fromt-end/github-gif/table2image.gif)
+![image](front-end/github-gif/table2image.gif)
 
 - 错误页面
-![image](fromt-end/github-gif/error-page.gif)
+![image](front-end/github-gif/error-page.gif)
 
 - 锁屏
-![image](fromt-end/github-gif/locking.gif)
+![image](front-end/github-gif/locking.gif)
 
 - 可收缩侧边栏
-![image](fromt-end/github-gif/sidebarmenu.gif)s
+![image](front-end/github-gif/sidebarmenu.gif)s
 
 - 主题切换
-![image](fromt-end/github-gif/theme.gif)
+![image](front-end/github-gif/theme.gif)
 
 - 消息中心
-![image](fromt-end/github-gif/message.gif)
-=======
-![image](github-gif/home.gif)
+![image](front-end/github-gif/message.gif)
+
+![image](front-end/github-gif/home.gif)
 
 - 标签导航
-![image](github-gif/page-tags.gif)
+![image](front-end/github-gif/page-tags.gif)
 
 - 权限管理
-![image](github-gif/access.gif)
+![image](front-end/github-gif/access.gif)
 
 - 可拖拽列表
-![image](github-gif/dragable-list.gif)
+![image](front-end/github-gif/dragable-list.gif)
 
 - 图片预览编辑
-![image](github-gif/image-editor.gif)
+![image](front-end/github-gif/image-editor.gif)
 
 - 文件上传
-![image](github-gif/upload.gif)
+![image](front-end/github-gif/upload.gif)
 
 - 数字渐变
-![image](github-gif/count-to.gif)
+![image](front-end/github-gif/count-to.gif)
 
 - 文章发布
-![image](github-gif/article-publish.gif)
+![image](front-end/github-gif/article-publish.gif)
 
 - 工作流
-![image](github-gif/workflow.gif)
+![image](front-end/github-gif/workflow.gif)
 
 - 可拖拽表格
-![image](github-gif/dragable-table.gif)
+![image](front-end/github-gif/dragable-table.gif)
 
 - 可编辑表格
-![image](github-gif/editable-table.gif)
+![image](front-end/github-gif/editable-table.gif)
 
 - 表格导出数据
-![image](github-gif/exportable-table.gif)
+![image](front-end/github-gif/exportable-table.gif)
 
 - 表格转图片
-![image](github-gif/table2image.gif)
+![image](front-end/github-gif/table2image.gif)
 
 - 错误页面
-![image](github-gif/error-page.gif)
+![image](front-end/github-gif/error-page.gif)
 
 - 锁屏
-![image](github-gif/locking.gif)
+![image](front-end/github-gif/locking.gif)
 
 - 可收缩侧边栏
-![image](github-gif/sidebarmenu.gif)s
+![image](front-end/github-gif/sidebarmenu.gif)s
 
 - 主题切换
-![image](github-gif/theme.gif)
+![image](front-end/github-gif/theme.gif)
 
 - 消息中心
-![image](github-gif/message.gif)
->>>>>>> 9cb93ca6af91355d4089544527643adb294c94bc
+![image](front-end/github-gif/message.gif)
 
 
