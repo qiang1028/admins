@@ -1,10 +1,6 @@
 'use strict';
 
-module.exports = class extends think.Service {
-	constructor(){
-		super();
-		this._model=this.model('sys_role');
-	}
+module.exports = class extends think.Model {
 
 	async addData(param){
 		let menuids=param.menuids;
@@ -12,18 +8,22 @@ module.exports = class extends think.Service {
 		param.del_flag=0;
 		param.id=think.uuid('v1');
 		delete param.menuids;
-		await this._model.add(param);
+		await this.add(param);
 		let list=[];
-		for(var i=0;i<menuids.length;i++){
-			let menu=menuids[i];
-			list.push({role_id:param.id,menu_id:menu});			
+		if(menuids){
+			for(var i=0;i<menuids.length;i++){
+				let menu=menuids[i];
+				list.push({role_id:param.id,menu_id:menu});			
+			}
+		}		
+		if(list.length>0){
+			await this.model('sys_role_menu').addMany(list);
 		}
-		await this.model('sys_role_menu').addMany(list);
 	}
 
 
 	async delData(param){
-		await this._model.where({id:param.id}).delete();
+		await this.where({id:param.id}).delete();
 	}
 
 	async updateData(param){
@@ -33,19 +33,23 @@ module.exports = class extends think.Service {
 		delete param.id;
 		delete param.create_date;
 		delete param.menuids;
-		await this._model.where({id:id}).update(param);
+		await this.where({id:id}).update(param);
 		await this.model('sys_role_menu').where({role_id: id}).delete();
 		let list=[];
-		for(var i=0;i<menuids.length;i++){
-			let menu=menuids[i];
-			list.push({role_id:id,menu_id:menu});			
+		if(menuids){
+			for(var i=0;i<menuids.length;i++){
+				let menu=menuids[i];
+				list.push({role_id:id,menu_id:menu});			
+			}
 		}
-		await this.model('sys_role_menu').addMany(list);
+		if(list.length>0){
+			await this.model('sys_role_menu').addMany(list);
+		}
 	}
 
 	async pageData(param){
 		let _sql = 'select role_id,GROUP_CONCAT(menu_id) as role_menus from sys_role_menu  GROUP BY role_id';//await this.model('sys_role_menu').field("role_id,GROUP_CONCAT(menu_id)").group('role_id').buildSql();
-		let sql=this._model.alias('a').join({
+		let sql=this.alias('a').join({
 	      table: _sql,
 	      as: 'b',
 	      on: ['id', 'role_id']
@@ -58,11 +62,11 @@ module.exports = class extends think.Service {
 	}
 
 	async allData(param){
-		let data=await this._model.where({del_flag:0}).select();
+		let data=await this.where({del_flag:0}).select();
 		return data;
 	}
 
 	async getData(id){
-		return await this._model.where({id: id}).find();
+		return await this.where({id: id}).find();
 	}
 };

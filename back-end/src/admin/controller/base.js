@@ -30,7 +30,7 @@ module.exports = class extends think.Controller {
       return this.fail(9998);
     }  	
     //调用tokenservice中间件
-    let tokenServiceInstance = think.service("token");
+    let tokenServiceInstance = this.service("token");
     //验证token
     let verifyTokenResult = await tokenServiceInstance.verifyToken(userToken);
     //服务器错误时

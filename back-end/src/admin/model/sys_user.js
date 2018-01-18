@@ -1,23 +1,18 @@
 'use strict';
 
-module.exports = class extends think.Service {
-	constructor(){
-		super();
-		this._model=this.model('sys_user');
-	}
-
+module.exports = class extends think.Model {
 	async addData(param){
 		param.create_date=think.datetime();
 		param.del_flag=0;
 		param.id=think.uuid('v1');
 		param.password=think.md5('111111');
 		param.status=1;
-		await this._model.add(param);
+		await this.add(param);
 	}
 
 
 	async delData(param){
-		await this._model.where({id:param.id}).delete();
+		await this.where({id:param.id}).delete();
 	}
 
 	async updateData(param){
@@ -26,13 +21,13 @@ module.exports = class extends think.Service {
 		delete param.id;
 		delete param.create_date;
 		delete param.password;
-		await this._model.where({id:id}).update(param);
+		await this.where({id:id}).update(param);
 	}
 
 	async updateInfo(param){
 		let id=param.id;
 		param.update_date=think.datetime();
-		await this._model.where({id:id}).update({update_date:param.update_date,
+		await this.where({id:id}).update({update_date:param.update_date,
 			name:param.name,email:param.email,phone:param.phone});
 	}
 
@@ -40,24 +35,24 @@ module.exports = class extends think.Service {
 	async changeStatus(param){
 		let id=param.id;
 		param.update_date=think.datetime();
-		await this._model.where({id:id}).update({status:param.status,update_date:param.update_date});
+		await this.where({id:id}).update({status:param.status,update_date:param.update_date});
 	}
 
 	async resetPwd(param){
 		let id=param.id;
 		param.update_date=think.datetime();
-		await this._model.where({id:id}).update({password:think.md5('111111'),update_date:param.update_date});
+		await this.where({id:id}).update({password:think.md5('111111'),update_date:param.update_date});
 	}
 
 	async updatePwd(param){
 		let id=param.id;
 		param.update_date=think.datetime();
-		await this._model.where({id:id}).update({password:think.md5(param.newPass),update_date:param.update_date});
+		await this.where({id:id}).update({password:think.md5(param.newPass),update_date:param.update_date});
 	}
 
 
 	async pageData(param){
-		let sql=this._model.alias('a').join({
+		let sql=this.alias('a').join({
 	      table: 'sys_role',
 	      as: 'b',
 	      on: ['role_id', 'id']
@@ -70,7 +65,7 @@ module.exports = class extends think.Service {
 	}
 
 	async myDetail(id){
-		let data= await this._model.alias('a').join({
+		let data= await this.alias('a').join({
 	      table: 'sys_role',
 	      as: 'b',
 	      on: ['role_id', 'id']
@@ -83,19 +78,19 @@ module.exports = class extends think.Service {
 	}
 
 	async allData(param){
-		let data=await this._model.where({del_flag:0}).select();
+		let data=await this.where({del_flag:0}).select();
 		return data;
 	}
 
 	async getData(id){
-		return await this._model.where({id: id}).find();
+		return await this.where({id: id}).find();
 	}
 
 	async findByLoginName(login_name){
-		return await this._model.where({login_name: login_name}).find();
+		return await this.where({login_name: login_name}).find();
 	}
 
 	async login(param){
-		return await this._model.where({login_name: param.login_name,password:think.md5(param.password)}).find();
+		return await this.where({login_name: param.login_name,password:think.md5(param.password)}).find();
 	}
 };

@@ -13,10 +13,10 @@ util.title = function (title) {
 };
 
 const ajaxUrl = env === 'development'
-    ? 'http://localhost:8360/'
+    ? 'http://localhost:8360/admin'
     : env === 'production'
-        ? 'http://localhost:8360/'
-        : 'http://localhost:8360/';
+        ? 'http://localhost:8360/admin'
+        : 'http://localhost:8360/admin';
         
 window.UPLOAD_IMG_URL=ajaxUrl;
 

@@ -10,9 +10,8 @@
                         测试数据列表
                     </p>
                     <Row>
-                        名称：<Input v-model="searchForm.name" placeholder="请输入名称" style="width: 200px;margin-right: 20px;" />
-                        别名：<Input v-model="searchForm.name2" placeholder="请输入别名" style="width: 200px;margin-right: 20px;" />
-                        大名：<Input v-model="searchForm.name3" placeholder="请输入大名" style="width: 200px;margin-right: 20px;" />
+                        名称1：<Input v-model="searchForm.name" placeholder="请输入名称1" style="width: 200px;margin-right: 20px;" />
+                        别名1：<Input v-model="searchForm.name2" placeholder="请输入别名1" style="width: 200px;margin-right: 20px;" />
                         <span @click="handleSearch"><Button type="primary" icon="search">搜索</Button></span>
                     </Row>
                     <Row style="margin-top:10px;">
@@ -27,13 +26,13 @@
         </Row>
         <Modal  title="操作框"  :mask-closable="false" :closable="false" v-model="modalAdd">
             <Form ref="formRef" :model="formValidate" :rules="ruleValidate" :label-width="80">
-                <FormItem label="名称" prop="name">
+                <FormItem label="名称1" prop="name">
                     <Input v-model="formValidate.name"></Input>
                 </FormItem>
-                <FormItem label="别名" prop="name2">
+                <FormItem label="别名1" prop="name2">
                     <Input v-model="formValidate.name2"></Input>
                 </FormItem>
-                <FormItem label="大名" prop="name3">
+                <FormItem label="大名1" prop="name3">
                     <Input v-model="formValidate.name3"></Input>
                 </FormItem>
             </Form>
@@ -61,28 +60,28 @@
                 count:0,
                 columns: [     
                     {
-                        title: '名称',
+                        title: 'ID1',
+                        key: 'id'
+                    },
+                    {
+                        title: '名称1',
                         key: 'name'
                     },
                     {
-                        title: '别名',
+                        title: '别名1',
                         key: 'name2'
                     },
                     {
-                        title: '大名',
+                        title: '大名1',
                         key: 'name3'
                     },
                     {
-                        title: '创建时间',
+                        title: '创建',
                         key: 'create_date'
                     },
                     {
-                        title: '更新时间',
+                        title: '更新',
                         key: 'update_date'
-                    },
-                    {
-                        title: '标记',
-                        key: 'del_flag'
                     },
                     {
                         title: '操作',
@@ -125,13 +124,13 @@
                 },
                 ruleValidate: {
                     name: [
-                        { required: true, message: '名称为必填项', trigger: 'blur' }
+                        { required: true, message: '名称1为必填项', trigger: 'blur' }
                     ],
                     name2: [
-                        { required: true, message: '别名为必填项', trigger: 'blur' }
+                        { required: true, message: '别名1为必填项', trigger: 'blur' }
                     ],
                     name3: [
-                        { required: true, message: '大名为必填项', trigger: 'blur' }
+                        { required: true, message: '大名1为必填项', trigger: 'blur' }
                     ],
                 }
             }

@@ -1,21 +1,18 @@
 'use strict';
 
-module.exports = class extends think.Service {
-	constructor(){
-		super();
-		this._model=this.model('sys_menu');
-	}
+module.exports = class extends think.Model {
+	
 	async addData(param){
 		param.create_date=think.datetime();
 		param.is_show=1;
 		if(think.isEmpty(param.pid)){
 			param.pid=0;
 		}
-		await this._model.add(param);
+		await this.add(param);
 	}
 
 	async delData(param){
-		await this._model.where({id:param.id}).delete();
+		await this.where({id:param.id}).delete();
 	}
 
 	async updateData(param){
@@ -23,7 +20,7 @@ module.exports = class extends think.Service {
 		param.update_date=think.datetime();
 		delete param.id;
 		delete param.create_date;
-		await this._model.where({id:id}).update(param);
+		await this.where({id:id}).update(param);
 	}
 
 	async pageData(param){
@@ -32,28 +29,28 @@ module.exports = class extends think.Service {
 
 	async allData(param){
 		let menu=[];
-		let pMenu=await this._model.where({pid:0,del_flag:0,is_show:1}).order("sort").select();
+		let pMenu=await this.where({pid:0,del_flag:0,is_show:1}).order("sort").select();
 		for (var i = 0; i < pMenu.length; i++) {		
 			let item=pMenu[i];
 			let len =menu.push(item);
-	        let childMenu=await this._model.where({pid:item.id,del_flag:0,is_show:1}).order("sort").select();
+	        let childMenu=await this.where({pid:item.id,del_flag:0,is_show:1}).order("sort").select();
 			menu[len - 1].children = childMenu;
 	    }
 		return menu;
 	}
 
 	async getData(id){
-		return await this._model.where({id: id}).find();
+		return await this.where({id: id}).find();
 	}
 
 	async getMyMenuData(user_id,role_id){
 		let menu=[];
 		if(user_id=='1'&&think.isEmpty(role_id)){
-			let pMenu=await this._model.where({pid:0,del_flag:0,is_show:1}).order("sort").select();
+			let pMenu=await this.where({pid:0,del_flag:0,is_show:1}).order("sort").select();
 			for (var i = 0; i < pMenu.length; i++) {		
 				let item=pMenu[i];
 				let len =menu.push(item);
-		        let childMenu=await this._model.where({pid:item.id,del_flag:0,is_show:1}).order("sort").select();
+		        let childMenu=await this.where({pid:item.id,del_flag:0,is_show:1}).order("sort").select();
 				menu[len - 1].children = childMenu;
 		    }
 		}else{
@@ -64,11 +61,11 @@ module.exports = class extends think.Service {
 				menuids.push(item.menu_id);
 		    }
 			
-			let pMenu=await this._model.where({pid:0,del_flag:0,is_show:1,id: ['IN', menuids]}).order("sort").select();
+			let pMenu=await this.where({pid:0,del_flag:0,is_show:1,id: ['IN', menuids]}).order("sort").select();
 			for (var i = 0; i < pMenu.length; i++) {		
 				let item=pMenu[i];
 				let len =menu.push(item);
-		        let childMenu=await this._model.where({pid:item.id,del_flag:0,is_show:1,id: ['IN',menuids]}).order("sort").select();
+		        let childMenu=await this.where({pid:item.id,del_flag:0,is_show:1,id: ['IN',menuids]}).order("sort").select();
 				menu[len - 1].children = childMenu;
 		    }
 		}
@@ -78,11 +75,11 @@ module.exports = class extends think.Service {
 
 	async getMenuTree(){
 		let menu=[];
-		let pMenu=await this._model.where({pid:0,del_flag:0,is_show:1}).order("sort").select();
+		let pMenu=await this.where({pid:0,del_flag:0,is_show:1}).order("sort").select();
 		for (var i = 0; i < pMenu.length; i++) {		
 			let item=pMenu[i];
 			let len =menu.push(item);
-	        let childMenu=await this._model.where({pid:item.id,del_flag:0,is_show:1}).order("sort").select();
+	        let childMenu=await this.where({pid:item.id,del_flag:0,is_show:1}).order("sort").select();
 			menu[len - 1].children = childMenu;
 	    }
 		return menu;		

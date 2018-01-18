@@ -1,8 +1,8 @@
 const Base = require('./base.js');
-const controllerTem = require('../template/controller.js');
-const logicTem = require('../template/logic.js');
-const serviceTem = require('../template/service.js');
-const viewTem = require('../template/view.js');
+const controllerTem = require('../../common/template/controller.js');
+const logicTem = require('../../common/template/logic.js');
+const modelTem = require('../../common/template/model.js');
+const viewTem = require('../../common/template/view.js');
 
 module.exports = class extends Base {
   async indexAction() {
@@ -39,7 +39,7 @@ module.exports = class extends Base {
     param.tablecomment= table[0]['comment'];
     controllerTem.do(time,param,data);
     logicTem.do(time,param,data);
-    serviceTem.do(time,param,data);
+    modelTem.do(time,param,data);
     viewTem.do(time,param,data);
     return this.success({msg:'代码生成成功！目录为：'+think.config('generator_path')+'/'+time});
   }

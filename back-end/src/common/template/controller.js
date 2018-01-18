@@ -22,36 +22,36 @@ module.exports =  {
 		"  }\r\n"+
 		"\r\n"+
 		"  async allDataAction() {\r\n"+
-		"    let data=await this.service('"+param.tablename+"').allData()\r\n"+
+		"    let data=await this.model('"+param.tablename+"').allData()\r\n"+
 		"    return this.success(data);\r\n"+
 		"  }\r\n"+
 		"\r\n"+
 		"  async pageDataAction() {\r\n"+
 		"    let param=this.post();\r\n"+
-		"    let data=await this.service('"+param.tablename+"').pageData(param);\r\n"+
+		"    let data=await this.model('"+param.tablename+"').pageData(param);\r\n"+
 		"    return this.success(data);\r\n"+
 		"  }\r\n"+
 		"\r\n"+
 		"  async addDataAction() {\r\n"+
 		"    let param=this.post();\r\n"+
-		"    await this.service('"+param.tablename+"').addData(param);\r\n"+
+		"    await this.model('"+param.tablename+"').addData(param);\r\n"+
 		"    return this.success();\r\n"+
 		"  }\r\n"+
 		"\r\n"+
 		"  async updateDataAction() {\r\n"+
 		"    let param=this.post();\r\n"+
-		"    await this.service('"+param.tablename+"').updateData(param);\r\n"+
+		"    await this.model('"+param.tablename+"').updateData(param);\r\n"+
 		"    return this.success();\r\n"+
 		"  }\r\n"+
 		"\r\n"+
 		"  async delDataAction() {\r\n"+
 		"    let param=this.post();\r\n"+
-		"    await this.service('"+param.tablename+"').delData(param);\r\n"+
+		"    await this.model('"+param.tablename+"').delData(param);\r\n"+
 		"    return this.success();\r\n"+
 		"  }\r\n"+
 		"  async delFlagDataAction() {\r\n"+
 		"    let param=this.post();\r\n"+
-		"    await this.service('"+param.tablename+"').delFlagData(param);\r\n"+
+		"    await this.model('"+param.tablename+"').delFlagData(param);\r\n"+
 		"    return this.success();\r\n"+
 		"  }\r\n"+
 		"};";

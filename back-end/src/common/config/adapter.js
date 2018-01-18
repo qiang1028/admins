@@ -39,7 +39,7 @@ exports.model = {
     database: 'thinkjs-iview-admin',
     prefix: '',
     encoding: 'utf8',
-    host: '115.29.204.244',
+    host: 'localhost',
     port: '3306',
     user: 'root',
     password: '1234',
