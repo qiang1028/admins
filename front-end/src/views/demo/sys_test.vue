@@ -52,10 +52,10 @@
                 <FormItem label="大名" prop="name3">
                     <Input v-model="formValidate.name3" readonly></Input>
                 </FormItem>
-                <FormItem label="aa" prop="create_date">
+                <FormItem label="a" prop="create_date">
                     <Input v-model="formValidate.create_date" readonly></Input>
                 </FormItem>
-                <FormItem label="bb" prop="update_date">
+                <FormItem label="b" prop="update_date">
                     <Input v-model="formValidate.update_date" readonly></Input>
                 </FormItem>
             </Form>
@@ -91,16 +91,12 @@
                         key: 'name3'
                     },
                     {
-                        title: 'aa',
+                        title: 'a',
                         key: 'create_date'
                     },
                     {
-                        title: 'bb',
+                        title: 'b',
                         key: 'update_date'
-                    },
-                    {
-                        title: 'cc',
-                        key: 'del_flag'
                     },
                     {
                         title: '操作',
@@ -137,16 +133,29 @@
                                         }
                                     }
                                 }, '编辑'),
-                                h('Button', {
+                                h('Poptip', {
                                     props: {
-                                        size: 'small'
+                                        confirm: true,
+                                        title: '您确定要删除这条数据吗?',
+                                        transfer: true
                                     },
                                     on: {
-                                        click: () => {
-                                            this.remove(params)
+                                        'on-ok': () => {
+                                           this.remove(params);
                                         }
                                     }
-                                }, '删除')
+                                }, [
+                                    h('Button', {
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        props: {
+                                            type: 'error',
+                                            placement: 'top',
+                                            size: 'small'
+                                        }
+                                    }, '删除')
+                                ])
                             ]);
                         }
                     }

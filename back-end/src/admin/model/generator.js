@@ -1,7 +1,7 @@
 module.exports = class extends think.Model {
 
 	getTables() {
-	   return this.query('select table_name as name from INFORMATION_SCHEMA.tables where   table_schema = (select database())');
+	   return this.query('select table_name as name,table_comment as comment from INFORMATION_SCHEMA.tables where   table_schema = (select database())');
 	}
 
 	getTableComment(tablename) {

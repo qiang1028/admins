@@ -4,17 +4,20 @@
  */
 const fs = require('fs');
 const common = require('../util/common.js');
-const _path='/back-end/src/model';
+const _path='/back-end/src/';
 
 module.exports =  {
   do(time,param,data) {
   	/*
   	创建目录
   	 */
-  	let targetDir=think.config('generator_path')+'/'+time+_path;
+  	let targetDir=think.config('generator_path')+'/'+time+_path+param.mokuainame+'/model';
   	common.mkdirs(targetDir);
   	let file=targetDir+'/'+param.tablename+'.js';
   	let template=
+      "/**\r\n"+
+      "*"+param.tablecomment+"\r\n"+
+      "*/\r\n"+
   		"'use strict';\r\n"+
       "module.exports = class extends think.Model {\r\n"+
       "\r\n"+

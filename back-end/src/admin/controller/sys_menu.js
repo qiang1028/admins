@@ -10,7 +10,7 @@ module.exports = class extends Base {
   }
 
   async allDataAction() {
-    let data=await this.model("sys_menu").allData()
+    let data=await this.model("sys_menu").allData();
     return this.success(data);
   }
 

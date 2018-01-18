@@ -11,11 +11,11 @@ module.exports =  {
   	/*
   	创建目录
   	 */
-  	let targetDir=think.config('generator_path')+'/'+time+_path;
+  	let targetDir=think.config('generator_path')+'/'+time+_path+'/'+param.mokuainame;
   	common.mkdirs(targetDir);
   	let file=targetDir+'/'+param.tablename+'.vue';
   	let template=
-  		"<style lang=\"less\">\r\n"+
+  	"<style lang=\"less\">\r\n"+
       "</style>\r\n"+
       "<template>\r\n"+
       "     <div>\r\n"+    
@@ -139,16 +139,29 @@ module.exports =  {
       "                                        }\r\n"+
       "                                    }\r\n"+
       "                                }, '编辑'),\r\n"+
-      "                                h('Button', {\r\n"+
+      "                                h('Poptip', {\r\n"+
       "                                    props: {\r\n"+
-      "                                        size: 'small'\r\n"+
+      "                                        confirm: true,\r\n"+
+      "                                        title: '您确定要删除这条数据吗?',\r\n"+
+      "                                        transfer: true\r\n"+
       "                                    },\r\n"+
       "                                    on: {\r\n"+
-      "                                        click: () => {\r\n"+
-      "                                            this.remove(params)\r\n"+
+      "                                        'on-ok': () => {\r\n"+
+      "                                           this.remove(params);\r\n"+
       "                                        }\r\n"+
       "                                    }\r\n"+
-      "                                }, '删除')\r\n"+
+      "                                }, [\r\n"+
+      "                                    h('Button', {\r\n"+
+      "                                        style: {\r\n"+
+      "                                            marginRight: '5px'\r\n"+
+      "                                        },\r\n"+
+      "                                        props: {\r\n"+
+      "                                            type: 'error',\r\n"+
+      "                                            placement: 'top',\r\n"+
+      "                                            size: 'small'\r\n"+
+      "                                        }\r\n"+
+      "                                    }, '删除')\r\n"+
+      "                                ])\r\n"+
       "                            ]);\r\n"+
       "                        }\r\n"+
       "                    }\r\n"+

@@ -1,3 +1,6 @@
+/**
+*测试数据
+*/
 'use strict';
 module.exports = class extends think.Model {
 

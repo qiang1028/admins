@@ -12,13 +12,19 @@
                     </p>
                     <Row>
                         <Select v-model="tablename" placeholder="请选择要生成代码的表名" style="width: 200px">
-                            <Option v-for="item in tableList" :value="item.name" :key="item.name">{{ item.name }}</Option>
+                            <Option v-for="item in tableList" :value="item.name+'|'+item.comment" :key="item.name">{{ item.name }}</Option>
                         </Select>
                         <span @click="handleSearch" style="margin: 0 10px;"><Button type="primary">开始配置</Button></span>
                     </Row>
-                    <Row style="margin-top:10px;">
-                        <Button type="info" @click="add">生成代码</Button>
-                    </Row>
+                    <Card style="margin-top:10px;">
+                        <Row>
+                            功能名称：<Input v-model="gongnengname" placeholder="请输入功能名称" style="width: 200px;margin-right: 20px;" />
+                            模块名称：<Input v-model="mokuainame" placeholder="请输入模块名称" style="width: 200px;margin-right: 20px;" />
+                            <br/><br/>
+                            <Button type="info" @click="add" :disabled="doshow">生成代码</Button>
+                        </Row>
+                    </Card>
+                   
                     <Row type="flex" justify="center" align="middle" class="advanced-router">
                         <Table border :columns="columns" :data="data" :loading="loading"style="width: 100%;margin-top:10px"></Table>
                     </Row>
@@ -34,6 +40,9 @@
         data () {
             return {
                 loading:false,
+                doshow:true,
+                gongnengname:'',
+                mokuainame:'',
                 tablename:'',
                 tableList:[],
                 columns: [                  
@@ -120,15 +129,27 @@
                 }
                 let _self=this;
                 _self.loading=true;
-                util.post(this,'generator/getColumns',{tablename:_self.tablename},function(datas){                  
+                let _table=_self.tablename.split('|');
+                util.post(this,'generator/getColumns',{tablename:_table[0]},function(datas){                  
                     _self.data=datas;
                     _self.formData=util.copy(datas);                   
-                    _self.loading=false;                  
+                    _self.loading=false;          
+                    _self.doshow=false;
+                    _self.gongnengname=_table[1];
+
                 });
             },           
             add (){     
                 if(!this.tablename){
                     this.$Message.error('请先选择要生成代码的表名！');
+                    return false;
+                }
+                if(!this.gongnengname){
+                    this.$Message.error('请输入功能名称！');
+                    return false;
+                }
+                if(!this.mokuainame){
+                    this.$Message.error('请输入模块名称！');
                     return false;
                 }
                 let _self=this;
@@ -137,7 +158,7 @@
                     content: '正在生成代码中，请耐心等耐。。。',
                     duration: 0
                 });
-                util.post(this,'generator/todoCode',{parameter:_self.formData,tablename:_self.tablename},function(datas){                  
+                util.post(this,'generator/todoCode',{parameter:_self.formData,tablename:_self.tablename.split('|')[0],tablecomment:_self.gongnengname,mokuainame:_self.mokuainame},function(datas){                  
                     _self.$Message.destroy();
                     _self.$Message.info({
                         content: datas.msg,

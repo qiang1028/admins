@@ -29,6 +29,7 @@ module.exports = (options = {}) => {
     let err = null;
     // 调用 next 统计后续执行逻辑的所有时间
     return next().catch(e => {
+      think.logger.error('系统异常:',e);
       err = e; // 这里先将错误保存在一个错误对象上，方便统计出错情况下的执行时间
     }).then(() => {
       if(ctx.response&&!ctx.body){
