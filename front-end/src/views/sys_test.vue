@@ -10,8 +10,8 @@
                         测试数据列表
                     </p>
                     <Row>
-                        名称1：<Input v-model="searchForm.name" placeholder="请输入名称1" style="width: 200px;margin-right: 20px;" />
-                        别名1：<Input v-model="searchForm.name2" placeholder="请输入别名1" style="width: 200px;margin-right: 20px;" />
+                        别名：<Input v-model="searchForm.name2" placeholder="请输入别名" style="width: 200px;margin-right: 20px;" />
+                        大名：<Input v-model="searchForm.name3" placeholder="请输入大名" style="width: 200px;margin-right: 20px;" />
                         <span @click="handleSearch"><Button type="primary" icon="search">搜索</Button></span>
                     </Row>
                     <Row style="margin-top:10px;">
@@ -24,15 +24,15 @@
                 </Card>
             </Col>
         </Row>
-        <Modal  title="操作框"  :mask-closable="false" :closable="false" v-model="modalAdd">
+        <Modal  title="编辑"  :mask-closable="false" :closable="false" v-model="modalAdd">
             <Form ref="formRef" :model="formValidate" :rules="ruleValidate" :label-width="80">
-                <FormItem label="名称1" prop="name">
+                <FormItem label="名称" prop="name">
                     <Input v-model="formValidate.name"></Input>
                 </FormItem>
-                <FormItem label="别名1" prop="name2">
+                <FormItem label="别名" prop="name2">
                     <Input v-model="formValidate.name2"></Input>
                 </FormItem>
-                <FormItem label="大名1" prop="name3">
+                <FormItem label="大名" prop="name3">
                     <Input v-model="formValidate.name3"></Input>
                 </FormItem>
             </Form>
@@ -40,6 +40,25 @@
                 <Button type="text" @click="addCanFun" v-show="modalCanBut">取消</Button>
                 <Button type="primary" @click="addOkFun" :loading="modalLoading">确定</Button>
             </div>
+        </Modal>    
+        <Modal  title="详情"  :mask-closable="false" :closable="false" v-model="modalDetail">
+            <Form ref="formRef" :model="formValidate" :label-width="80">
+                <FormItem label="名称" prop="name">
+                    <Input v-model="formValidate.name" readonly></Input>
+                </FormItem>
+                <FormItem label="别名" prop="name2">
+                    <Input v-model="formValidate.name2" readonly></Input>
+                </FormItem>
+                <FormItem label="大名" prop="name3">
+                    <Input v-model="formValidate.name3" readonly></Input>
+                </FormItem>
+                <FormItem label="aa" prop="create_date">
+                    <Input v-model="formValidate.create_date" readonly></Input>
+                </FormItem>
+                <FormItem label="bb" prop="update_date">
+                    <Input v-model="formValidate.update_date" readonly></Input>
+                </FormItem>
+            </Form>
         </Modal>    
     </div>
 </template>
@@ -49,7 +68,7 @@
         data () {
             return {
                 modalAdd:false,
-                modalEdit:false,
+                modalDetail:false,
                 loading:false,
                 modalLoading:false,
                 modalCanBut:true,
@@ -60,28 +79,28 @@
                 count:0,
                 columns: [     
                     {
-                        title: 'ID1',
-                        key: 'id'
-                    },
-                    {
-                        title: '名称1',
+                        title: '名称',
                         key: 'name'
                     },
                     {
-                        title: '别名1',
+                        title: '别名',
                         key: 'name2'
                     },
                     {
-                        title: '大名1',
+                        title: '大名',
                         key: 'name3'
                     },
                     {
-                        title: '创建',
+                        title: 'aa',
                         key: 'create_date'
                     },
                     {
-                        title: '更新',
+                        title: 'bb',
                         key: 'update_date'
+                    },
+                    {
+                        title: 'cc',
+                        key: 'del_flag'
                     },
                     {
                         title: '操作',
@@ -90,6 +109,20 @@
                         align: 'center',
                         render: (h, params) => {
                             return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'info',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.show(params)
+                                        }
+                                    }
+                                }, '查看'),
                                 h('Button', {
                                     props: {
                                         type: 'success',
@@ -124,13 +157,13 @@
                 },
                 ruleValidate: {
                     name: [
-                        { required: true, message: '名称1为必填项', trigger: 'blur' }
+                        { required: true, message: '名称为必填项', trigger: 'blur' }
                     ],
                     name2: [
-                        { required: true, message: '别名1为必填项', trigger: 'blur' }
+                        { required: true, message: '别名为必填项', trigger: 'blur' }
                     ],
                     name3: [
-                        { required: true, message: '大名1为必填项', trigger: 'blur' }
+                        { required: true, message: '大名为必填项', trigger: 'blur' }
                     ],
                 }
             }
@@ -158,6 +191,10 @@
                 this.formValidate={}; 
                 this.modalAdd=true;       
             },
+            show (param) {
+                this.formValidate=util.copy(param.row);
+                this.modalDetail=true;        
+             },
             edit (param) {
                 this.formValidate=util.copy(param.row);
                 this.modalAdd=true;        

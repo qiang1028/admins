@@ -46,7 +46,7 @@ module.exports =  {
       "                </Card>\r\n"+
       "            </Col>\r\n"+
       "        </Row>\r\n"+
-      "        <Modal  title=\"操作框\"  :mask-closable=\"false\" :closable=\"false\" v-model=\"modalAdd\">\r\n"+
+      "        <Modal  title=\"编辑\"  :mask-closable=\"false\" :closable=\"false\" v-model=\"modalAdd\">\r\n"+
       "            <Form ref=\"formRef\" :model=\"formValidate\" :rules=\"ruleValidate\" :label-width=\"80\">\r\n";
       for(let p of param.parameter){
         if(p.name!='id'&&p.name!='create_date'&&p.name!='update_date'&&p.name!='del_flag'){
@@ -63,6 +63,19 @@ module.exports =  {
       "                <Button type=\"primary\" @click=\"addOkFun\" :loading=\"modalLoading\">确定</Button>\r\n"+
       "            </div>\r\n"+
       "        </Modal>    \r\n"+
+       "        <Modal  title=\"详情\"  :mask-closable=\"false\" :closable=\"false\" v-model=\"modalDetail\">\r\n"+
+      "            <Form ref=\"formRef\" :model=\"formValidate\" :label-width=\"80\">\r\n";
+      for(let p of param.parameter){
+        if(p.name!='id'&&p.name!='del_flag'){
+      template+=
+      "                <FormItem label=\""+p.comment+"\" prop=\""+p.name+"\">\r\n"+
+      "                    <Input v-model=\"formValidate."+p.name+"\" readonly></Input>\r\n"+
+      "                </FormItem>\r\n";    
+        }   
+      }   
+      template+=                
+      "            </Form>\r\n"+
+      "        </Modal>    \r\n"+
       "    </div>\r\n"+
       "</template>\r\n"+
       "<script>\r\n"+
@@ -71,7 +84,7 @@ module.exports =  {
       "        data () {\r\n"+
       "            return {\r\n"+
       "                modalAdd:false,\r\n"+
-      "                modalEdit:false,\r\n"+
+      "                modalDetail:false,\r\n"+
       "                loading:false,\r\n"+
       "                modalLoading:false,\r\n"+
       "                modalCanBut:true,\r\n"+
@@ -97,7 +110,21 @@ module.exports =  {
       "                        width: 210,\r\n"+
       "                        align: 'center',\r\n"+
       "                        render: (h, params) => {\r\n"+
-      "                            return h('div', [\r\n"+                             
+      "                            return h('div', [\r\n"+   
+      "                                h('Button', {\r\n"+
+      "                                    props: {\r\n"+
+      "                                        type: 'info',\r\n"+
+      "                                        size: 'small'\r\n"+
+      "                                    },\r\n"+
+      "                                    style: {\r\n"+
+      "                                        marginRight: '5px'\r\n"+
+      "                                    },\r\n"+
+      "                                    on: {\r\n"+
+      "                                        click: () => {\r\n"+
+      "                                            this.show(params)\r\n"+
+      "                                        }\r\n"+
+      "                                    }\r\n"+
+      "                                }, '查看'),\r\n"+                          
       "                                h('Button', {\r\n"+
       "                                    props: {\r\n"+
       "                                        type: 'success',\r\n"+
@@ -165,6 +192,10 @@ module.exports =  {
       "            add (){     \r\n"  +
       "                this.formValidate={}; \r\n"+           
       "                this.modalAdd=true;       \r\n"  +   
+      "            },\r\n"+
+      "            show (param) {\r\n"+
+      "                this.formValidate=util.copy(param.row);\r\n"+
+      "                this.modalDetail=true;        \r\n "  +               
       "            },\r\n"+
       "            edit (param) {\r\n"+
       "                this.formValidate=util.copy(param.row);\r\n"+
