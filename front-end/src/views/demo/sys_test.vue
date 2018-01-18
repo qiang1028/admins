@@ -10,8 +10,7 @@
                         测试数据列表
                     </p>
                     <Row>
-                        别名：<Input v-model="searchForm.name2" placeholder="请输入别名" style="width: 200px;margin-right: 20px;" />
-                        大名：<Input v-model="searchForm.name3" placeholder="请输入大名" style="width: 200px;margin-right: 20px;" />
+                        名称：<Input v-model="searchForm.name" placeholder="请输入名称" style="width: 200px;margin-right: 20px;" />
                         <span @click="handleSearch"><Button type="primary" icon="search">搜索</Button></span>
                     </Row>
                     <Row style="margin-top:10px;">
@@ -52,10 +51,10 @@
                 <FormItem label="大名" prop="name3">
                     <Input v-model="formValidate.name3" readonly></Input>
                 </FormItem>
-                <FormItem label="a" prop="create_date">
+                <FormItem label="" prop="create_date">
                     <Input v-model="formValidate.create_date" readonly></Input>
                 </FormItem>
-                <FormItem label="b" prop="update_date">
+                <FormItem label="" prop="update_date">
                     <Input v-model="formValidate.update_date" readonly></Input>
                 </FormItem>
             </Form>
@@ -89,14 +88,6 @@
                     {
                         title: '大名',
                         key: 'name3'
-                    },
-                    {
-                        title: 'a',
-                        key: 'create_date'
-                    },
-                    {
-                        title: 'b',
-                        key: 'update_date'
                     },
                     {
                         title: '操作',

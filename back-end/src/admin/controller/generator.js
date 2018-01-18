@@ -33,10 +33,7 @@ module.exports = class extends Base {
   async todoCodeAction() {
   	let param=this.post();
     let data=await this.model('generator').getColumns(param.tablename);
-    let table=await this.model('generator').getTableComment(param.tablename);
     let time=think.datetime(new Date(), 'YYYYMMDDHHmmss');
-    console.log(table[0]);
-    param.tablecomment= table[0]['comment'];
     controllerTem.do(time,param,data);
     logicTem.do(time,param,data);
     modelTem.do(time,param,data);
