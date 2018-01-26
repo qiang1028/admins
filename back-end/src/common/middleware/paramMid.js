@@ -12,6 +12,7 @@ const errmsgOptions = {
   9995 : '该用户名已被使用！',
   9994 : '原密码不正确！',
   9993 : 'HTTP请求方式不正确！',
+  401  : '请先登录'
 }
 
 module.exports = (options = {}) => {

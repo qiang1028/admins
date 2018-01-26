@@ -14,7 +14,9 @@
     "id-16": "^1.0.4",
     "id-gen": "^0.3.2",
     "jsonwebtoken": "^8.1.0",
+    "kcors": "^2.2.1",
     "qiniu": "^7.1.1",
+    "request-promise": "^4.2.2",
     "think-cache": "^1.0.0",
     "think-cache-file": "^1.0.8",
     "think-logger3": "^1.0.0",
@@ -24,7 +26,9 @@
     "think-session-file": "^1.0.5",
     "think-view": "^1.0.0",
     "think-view-nunjucks": "^1.0.1",
-    "thinkjs": "^3.0.0"
+    "thinkjs": "^3.0.0",
+    "weixinpay": "^1.0.12",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

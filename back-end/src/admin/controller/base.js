@@ -8,11 +8,6 @@ module.exports = class extends think.Controller {
    *@description action请求验证用户token
    */
   async __before() {   
-    this.header("Access-Control-Allow-Origin", this.header("origin") || "*");
-    this.header("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With,x-requested-with,x-token");
-    this.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
-    this.header('Access-Control-Allow-Credentials',true);
-
     if(this.ctx.method!='POST'){
       return this.fail(9993);
     }
@@ -30,7 +25,7 @@ module.exports = class extends think.Controller {
       return this.fail(9998);
     }  	
     //调用tokenservice中间件
-    let tokenServiceInstance = this.service("token");
+    let tokenServiceInstance = this.service("token","admin");
     //验证token
     let verifyTokenResult = await tokenServiceInstance.verifyToken(userToken);
     //服务器错误时

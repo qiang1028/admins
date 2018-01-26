@@ -11,7 +11,7 @@ module.exports = class extends Base {
     if(think.isEmpty(data)){
       return this.fail(9996);
     }else{
-      data.token= this.service("token").createToken(data);
+      data.token= this.service("token","admin").createToken(data);
       data.menu= await this.model("sys_menu").getMyMenuData(data.id,data.role_id);
       data.dicts=await this.model("sys_dict").getGroupData();
       return this.success(data);

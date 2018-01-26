@@ -2,8 +2,13 @@ const path = require('path');
 const isDev = think.env === 'development';
 const id_16 = require('id-16');
 const id = id_16.generator(4);
+const kcors = require('kcors');
 
 module.exports = [
+  {  
+    handle: kcors, // 处理跨域
+    options: {}
+  },
   {
     handle: 'meta',
     options: {

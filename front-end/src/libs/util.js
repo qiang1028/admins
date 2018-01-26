@@ -15,8 +15,8 @@ util.title = function (title) {
 const ajaxUrl = env === 'development'
     ? 'http://localhost:8360/admin'
     : env === 'production'
-        ? 'http://localhost:8360/admin'
-        : 'http://localhost:8360/admin';
+        ? 'https://demo.housailei.info/admin'
+        : 'https://demo.housailei.info/admin';
         
 window.UPLOAD_IMG_URL=ajaxUrl;
 
