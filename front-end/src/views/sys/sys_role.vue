@@ -1,4 +1,7 @@
 <style lang="less">
+.fa {
+    font-size: larger!important;
+}
 </style>
 
 <template>
