@@ -78,7 +78,7 @@
             remove (param) {
                 this.$emit('childRemoveData');
                 let _self=this;
-                util.post(this,'sys_menu/delData',{id:param.row.id},function(datas){             
+                util.post(this,'admin/sys_menu/delData',{id:param.row.id},function(datas){             
                     _self.$emit('childRemoveSucData');  
                     _self.row.splice(param.index, 1);               
                     _self.$Message.success('删除成功！');            

@@ -140,7 +140,7 @@
             init () {
                 let _self=this;
                 _self.loading=true;
-                util.post(this,'sys_dict/pageData',this.searchForm,function(datas){                  
+                util.post(this,'admin/sys_dict/pageData',this.searchForm,function(datas){                  
                     _self.data=datas.data;
                     _self.count=datas.count;
                     _self.loading=false;                  
@@ -166,7 +166,7 @@
             remove (param) {
                 let _self=this;
                 this.loading=true;
-                util.post(this,'sys_dict/delData',{id:param.row.id},function(datas){ 
+                util.post(this,'admin/sys_dict/delData',{id:param.row.id},function(datas){ 
                     _self.data.splice(param.index, 1);
                     _self.loading =false;               
                     _self.$Message.success('删除成功！');              
@@ -179,13 +179,13 @@
                         util.changeModalLoading(this,true);
                         let _data=util.copy(this.formValidate);     
                         if(this.formValidate&&this.formValidate.id){
-                            util.post(this,'sys_dict/updateData',_data,function(datas){                  
+                            util.post(this,'admin/sys_dict/updateData',_data,function(datas){                  
                                 _self.$Message.success('编辑成功！');
                                 _self.addCanFun();  
                                 _self.init();        
                             });                          
                         }else{
-                            util.post(this,'sys_dict/addData',_data,function(datas){                  
+                            util.post(this,'admin/sys_dict/addData',_data,function(datas){                  
                                 _self.$Message.success('新增成功！');
                                 _self.addCanFun(); 
                                 _self.init();                

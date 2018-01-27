@@ -156,7 +156,7 @@ export default {
                 if (valid) {
                     _self.save_loading = true;
                     let _data=util.copy(_self.userForm); 
-                    util.post(this,'sys_user/updateInfo',_data,function(datas){                  
+                    util.post(this,'admin/sys_user/updateInfo',_data,function(datas){                  
                         //_self.userForm=datas;    
                         _self.$Message.success('保存成功！');
                         _self.save_loading = false;           
@@ -175,7 +175,7 @@ export default {
                 if (valid) {
                     this.modalLoading = true;
                     let _data=util.copy(_self.editPasswordForm);
-                    util.post(this,'sys_user/updatePwd',_data,function(datas){                     
+                    util.post(this,'admin/sys_user/updatePwd',_data,function(datas){                     
                         _self.$Message.success('修改密码成功！');
                         _self.modalLoading = false;  
                         _self.editPasswordModal = false; 
@@ -186,7 +186,7 @@ export default {
         },
         init () {
             let _self=this;
-            util.post(this,'sys_user/myDetail',{},function(datas){                  
+            util.post(this,'admin/sys_user/myDetail',{},function(datas){                  
                 _self.userForm=datas;               
             });
         }

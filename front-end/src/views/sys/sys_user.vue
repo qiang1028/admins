@@ -221,7 +221,7 @@
             init () {
                 let _self=this;
                 _self.loading=true;
-                util.post(this,'sys_user/pageData',this.searchForm,function(datas){                  
+                util.post(this,'admin/sys_user/pageData',this.searchForm,function(datas){                  
                     _self.data=datas.data;
                     _self.count=datas.count;
                     _self.loading=false;                  
@@ -252,7 +252,7 @@
                     content: '删除后数据无法恢复，是否继续奥佐？',
                     onOk: () => {
                         this.loading=true;
-                        util.post(this,'sys_user/delData',{id:param.row.id},function(datas){ 
+                        util.post(this,'admin/sys_user/delData',{id:param.row.id},function(datas){ 
                             _self.data.splice(param.index, 1);
                             _self.loading =false;               
                             _self.$Message.success('删除成功！');              
@@ -267,7 +267,7 @@
                     content: '重置后的密码为：111111，是否继续操作？',
                     onOk: () => {
                         this.loading=true;
-                        util.post(this,'sys_user/resetPwd',{id:param.row.id},function(datas){ 
+                        util.post(this,'admin/sys_user/resetPwd',{id:param.row.id},function(datas){ 
                             _self.loading =false;               
                             _self.$Message.success('重置密码成功！');              
                         });
@@ -281,7 +281,7 @@
                 if(value){
                     status=1;
                 }
-                util.post(this,'sys_user/changeStatus',{id:param.row.id,status:status},function(datas){ 
+                util.post(this,'admin/sys_user/changeStatus',{id:param.row.id,status:status},function(datas){ 
                     _self.data[param.index].status=value;
                     _self.loading =false;               
                     _self.$Message.success('修改成功！');              
@@ -294,13 +294,13 @@
                         util.changeModalLoading(this,true);
                         let _data=util.copy(this.formValidate);    
                         if(this.formValidate&&this.formValidate.id){
-                            util.post(this,'sys_user/updateData',_data,function(datas){                  
+                            util.post(this,'admin/sys_user/updateData',_data,function(datas){                  
                                 _self.$Message.success('编辑成功！');
                                 _self.addCanFun();  
                                 _self.init();        
                             });                          
                         }else{
-                            util.post(this,'sys_user/addData',_data,function(datas){                  
+                            util.post(this,'admin/sys_user/addData',_data,function(datas){                  
                                 _self.$Message.success('新增成功！');
                                 _self.addCanFun(); 
                                 _self.init();                
@@ -321,7 +321,7 @@
         },
         mounted () {
             let _self=this;
-            util.post(this,'sys_role/allData',{},function(datas){ 
+            util.post(this,'admin/sys_role/allData',{},function(datas){ 
                 _self.roleList =datas;                          
             });
             this.init();   

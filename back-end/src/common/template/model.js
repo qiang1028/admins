@@ -11,7 +11,9 @@ module.exports =  {
   	/*
   	创建目录
   	 */
-  	let targetDir=think.config('generator_path')+'/'+time+_path+param.mokuainame+'/model';
+    let mokuai=param.mokuainame;
+    let index=mokuai.indexOf('/');
+  	let targetDir=think.config('generator_path')+'/'+time+_path+(index<0?mokuai:mokuai.substring(0,index))+'/model';
   	common.mkdirs(targetDir);
   	let file=targetDir+'/'+param.tablename+'.js';
   	let template=

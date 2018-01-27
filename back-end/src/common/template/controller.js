@@ -11,14 +11,16 @@ module.exports =  {
   	/**
   	*创建目录
   	*/
-  	let targetDir=think.config('generator_path')+'/'+time+_path+param.mokuainame+'/controller';
+  	let mokuai=param.mokuainame;
+  	let index=mokuai.indexOf('/');
+  	let targetDir=think.config('generator_path')+'/'+time+_path+(index<0?mokuai:mokuai.substring(0,index))+'/controller'+(index<0?'':mokuai.substring(index,mokuai.length));
   	common.mkdirs(targetDir);
   	let file=targetDir+'/'+param.tablename+'.js';
 	let template=
 		"/**\r\n"+
 	  	"*"+param.tablecomment+"\r\n"+
 	  	"*/\r\n"+
-		"const Base = require('./base.js');\r\n"+
+		"const Base = require('../../../admin/controller/base.js');\r\n"+
 		"module.exports = class extends Base {\r\n"+
 		"  async indexAction() {\r\n"+
 		"    return this.display();\r\n"+

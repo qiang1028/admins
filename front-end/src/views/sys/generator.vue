@@ -117,7 +117,7 @@
             init () {
                 let _self=this;
                 _self.loading=true;
-                util.post(this,'generator/getTables',this.searchForm,function(datas){                  
+                util.post(this,'admin/generator/getTables',this.searchForm,function(datas){                  
                     _self.tableList=datas;
                     _self.loading=false;                  
                 });
@@ -130,7 +130,7 @@
                 let _self=this;
                 _self.loading=true;
                 let _table=_self.tablename.split('|');
-                util.post(this,'generator/getColumns',{tablename:_table[0]},function(datas){                  
+                util.post(this,'admin/generator/getColumns',{tablename:_table[0]},function(datas){                  
                     _self.data=datas;
                     _self.formData=util.copy(datas);                   
                     _self.loading=false;          
@@ -158,7 +158,7 @@
                     content: '正在生成代码中，请耐心等耐。。。',
                     duration: 0
                 });
-                util.post(this,'generator/todoCode',{parameter:_self.formData,tablename:_self.tablename.split('|')[0],tablecomment:_self.gongnengname,mokuainame:_self.mokuainame},function(datas){                  
+                util.post(this,'admin/generator/todoCode',{parameter:_self.formData,tablename:_self.tablename.split('|')[0],tablecomment:_self.gongnengname,mokuainame:_self.mokuainame},function(datas){                  
                     _self.$Message.destroy();
                     _self.$Message.info({
                         content: datas.msg,

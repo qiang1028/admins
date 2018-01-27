@@ -34,7 +34,7 @@ module.exports =  {
       for(let p of param.parameter){
         if(p.is_search==1){
       template+=
-      "                        "+p.comment+"：<Input v-model=\"searchForm."+p.name+"\" placeholder=\"请输入"+p.comment+"\" style=\"width: 200px;margin-right: 20px;\" />\r\n";
+      "                        "+p.comment+"：<Input v-model=\"searchForm."+p.name+"\" placeholder=\"请输入要搜索的"+p.comment+"\" style=\"width: 200px;margin-right: 20px;\" />\r\n";
         }
       }    
       template+=
@@ -93,7 +93,6 @@ module.exports =  {
       "                modalLoading:false,\r\n"+
       "                modalCanBut:true,\r\n"+
       "                searchForm:{\r\n"+
-      "                    type:'',\r\n"+
       "                    current:1\r\n"+
       "                },\r\n"+
       "                count:0,\r\n"+
@@ -104,8 +103,9 @@ module.exports =  {
       "                    {\r\n"+
       "                        title: '"+p.comment+"',\r\n"+
       "                        key: '"+p.name+"',\r\n"+
-      "                        className: 'table-min-width',\r\n";
-      "                        ellipsis:true\r\n";
+      "                        className: 'table-min-width',\r\n"+
+      "                        ellipsis:true,\r\n"+
+      "                        align: 'center',\r\n"+
       "                    },\r\n";
         }   
       }   
@@ -193,7 +193,7 @@ module.exports =  {
       "            init () {\r\n"+
       "                let _self=this;\r\n"+
       "                _self.loading=true;\r\n"+
-      "                util.post(this,'"+param.tablename+"/pageData',this.searchForm,function(datas){   \r\n"+               
+      "                util.post(this,'"+param.mokuainame+"/"+param.tablename+"/pageData',this.searchForm,function(datas){   \r\n"+               
       "                    _self.data=datas.data;\r\n"+
       "                    _self.count=datas.count;\r\n"+
       "                    _self.loading=false;\r\n"+                
@@ -223,7 +223,7 @@ module.exports =  {
       "            remove (param) {\r\n"+
       "                let _self=this;\r\n"+
       "                this.loading=true;\r\n"+
-      "                util.post(this,'"+param.tablename+"/delData',{id:param.row.id},function(datas){ \r\n"+
+      "                util.post(this,'"+param.mokuainame+"/"+param.tablename+"/delData',{id:param.row.id},function(datas){ \r\n"+
       "                    _self.data.splice(param.index, 1);\r\n"+
       "                    _self.loading =false;      \r\n"  +       
       "                    _self.$Message.success('删除成功！');\r\n"  +           
@@ -236,13 +236,13 @@ module.exports =  {
       "                        util.changeModalLoading(this,true);\r\n"+
       "                        let _data=util.copy(this.formValidate); \r\n"+    
       "                        if(this.formValidate&&this.formValidate.id){\r\n"+
-      "                            util.post(this,'"+param.tablename+"/updateData',_data,function(datas){  \r\n"  +              
+      "                            util.post(this,'"+param.mokuainame+"/"+param.tablename+"/updateData',_data,function(datas){  \r\n"  +              
       "                                _self.$Message.success('编辑成功！');\r\n"+
       "                                _self.addCanFun();\r\n"  +
       "                                _self.init();      \r\n"  +
       "                            });                        \r\n"  +
       "                        }else{\r\n"+
-      "                            util.post(this,'"+param.tablename+"/addData',_data,function(datas){ \r\n"  +               
+      "                            util.post(this,'"+param.mokuainame+"/"+param.tablename+"/addData',_data,function(datas){ \r\n"  +               
       "                                _self.$Message.success('新增成功！');\r\n"+
       "                                _self.addCanFun(); \r\n"+
       "                                _self.init();     \r\n"  +         

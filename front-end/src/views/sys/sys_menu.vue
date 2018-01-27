@@ -160,12 +160,10 @@
                     ],
                     title: [
                         { required: true, message: '必填项', trigger: 'blur' }
-                    ],
-                    /*
+                    ],                  
                     icon: [
                         { required: true, message: '必填项', trigger: 'blur' }
-                    ],
-                    */
+                    ],                  
                     sort: [
                         { required: true, message: '必填项'}
                     ]
@@ -177,7 +175,7 @@
                 let _self=this;
                 _self.loading=true;
                 this.currentParam='';
-                util.post(this,'sys_menu/allData',{},function(datas){                  
+                util.post(this,'admin/sys_menu/allData',{},function(datas){                  
                     _self.data=datas;
                     _self.loading=false;                  
                 });
@@ -202,7 +200,7 @@
                 }
                 let _self=this;
                 this.loading=true;
-                util.post(this,'sys_menu/delData',{id:param.row.id},function(datas){ 
+                util.post(this,'admin/sys_menu/delData',{id:param.row.id},function(datas){ 
                     _self.data.splice(param.index, 1);
                     _self.loading =false;               
                     _self.$Message.success('删除成功！');              
@@ -218,13 +216,13 @@
                             _data.pid=this.currentParam.row.id;
                         }    
                         if(this.formValidate&&this.formValidate.id){
-                            util.post(this,'sys_menu/updateData',_data,function(datas){                  
+                            util.post(this,'admin/sys_menu/updateData',_data,function(datas){                  
                                 _self.$Message.success('编辑成功！');
                                 _self.addCanFun();  
                                 _self.init();        
                             });                          
                         }else{
-                            util.post(this,'sys_menu/addData',_data,function(datas){                  
+                            util.post(this,'admin/sys_menu/addData',_data,function(datas){                  
                                 _self.$Message.success('新增成功！');
                                 _self.addCanFun(); 
                                 _self.init();                

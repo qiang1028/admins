@@ -13,12 +13,12 @@ util.title = function (title) {
 };
 
 const ajaxUrl = env === 'development'
-    ? 'http://localhost:8360/admin'
+    ? 'http://localhost:8360/'
     : env === 'production'
-        ? 'https://demo.housailei.info/admin'
-        : 'https://demo.housailei.info/admin';
+        ? 'https://demo.housailei.info/'
+        : 'https://demo.housailei.info/';
         
-window.UPLOAD_IMG_URL=ajaxUrl;
+window.UPLOAD_IMG_URL='http://p2fovavhn.bkt.clouddn.com/';
 
 util.ajax = axios.create({
     baseURL: ajaxUrl,
@@ -57,6 +57,29 @@ util.post = function (vm,url, param,cb) {
     })
 };
 
+util.imageUpload = function (vm,file,cb) {
+    vm.$Message.loading({content:'图片上传中，请耐心等待...',duration:0})
+    var formData = new FormData();
+    formData.append('file', file);
+    util.post(vm,'admin/common/uploadToken',{},function(datas){ 
+        formData.append('token', datas.token);
+        axios({
+           url: 'http://up.qiniu.com',
+           method: 'POST',
+           data: formData
+        })
+        .then((result) => {
+            vm.$Message.destroy();
+            cb(result.data.key);
+        })           
+        .catch((err) => {
+            vm.$Message.destroy();
+            vm.$Message.error('上传图片出错，请重试！');
+        })                         
+    });
+};
+
+      
 
 util.changeModalLoading=function (vm , flag) {
     if(flag){
