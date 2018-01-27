@@ -16,6 +16,10 @@ module.exports =  {
   	let file=targetDir+'/'+param.tablename+'.vue';
   	let template=
   	"<style lang=\"less\">\r\n"+
+      "     .table-min-width{\r\n"+
+      "        min-width:120px;\r\n"+
+      "        width:120px\r\n"+
+      "    }\r\n"+
       "</style>\r\n"+
       "<template>\r\n"+
       "     <div>\r\n"+    
@@ -99,7 +103,9 @@ module.exports =  {
       template+=
       "                    {\r\n"+
       "                        title: '"+p.comment+"',\r\n"+
-      "                        key: '"+p.name+"'\r\n"+
+      "                        key: '"+p.name+"',\r\n"+
+      "                        className: 'table-min-width',\r\n";
+      "                        ellipsis:true\r\n";
       "                    },\r\n";
         }   
       }   

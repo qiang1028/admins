@@ -3,6 +3,11 @@
         min-width:120px;
         width:120px
     }
+
+     .table-min-width2{
+        min-width:150px;
+        width:150px
+    }
 </style>
 
 <template>
@@ -81,44 +86,51 @@
                     {
                         title: '用户名',
                         key: 'login_name',
-                        fixed:'left',
-                        className: 'table-min-width'
+                        className: 'table-min-width',
+                        ellipsis:true
                     },
                     {
                         title: '角色',
                         key: 'rolename',
-                        className: 'table-min-width'
+                        className: 'table-min-width',
+                        ellipsis:true
                     },
                     {
                         title: '姓名',
                         key: 'name',
-                        className: 'table-min-width'
+                        className: 'table-min-width',
+                        ellipsis:true
                     },
                     {
                         title: '邮箱',
                         key: 'email',
-                        className: 'table-min-width'
+                        className: 'table-min-width',
+                        ellipsis:true
                     },
                     {
                         title: '手机号',
                         key: 'phone',
-                        className: 'table-min-width'
+                        className: 'table-min-width',
+                        ellipsis:true
                     },
                     {
                         title: '登陆IP',
                         key: 'login_ip',
-                        className: 'table-min-width'
+                        className: 'table-min-width',
+                        ellipsis:true
                     },
                     {
                         title: '登陆时间',
-                        className: 'table-min-width',
-                        key: 'login_date'
+                        className: 'table-min-width2',
+                        key: 'login_date',
+                        ellipsis:true
                     },
                     {
                         title: '状态',
                         key: 'create_date1',
                         align: 'center',                      
                         className: 'table-min-width',
+                        ellipsis:true,
                         render: (h, params) => {
                             return  h('div', [
                                 h('i-switch', {
@@ -147,7 +159,7 @@
                         key: 'action',
                         width: 200,
                         align: 'center',
-                        fixed:'right',
+                        ellipsis:true,
                         render: (h, params) => {
                             return h('div', [   
                              h('Button', {
