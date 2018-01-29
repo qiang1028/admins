@@ -58,7 +58,7 @@ util.post = function (vm,url, param,cb) {
 };
 
 util.imageUpload = function (vm,file,cb) {
-    vm.$Message.loading({content:'图片上传中，请耐心等待...',duration:0})
+    vm.$Notice.info({title:'图片上传中，请耐心等待...',duration:0})
     var formData = new FormData();
     formData.append('file', file);
     util.post(vm,'admin/common/uploadToken',{},function(datas){ 
@@ -69,12 +69,12 @@ util.imageUpload = function (vm,file,cb) {
            data: formData
         })
         .then((result) => {
-            vm.$Message.destroy();
+            vm.$Notice.destroy();
             cb(result.data.key);
         })           
         .catch((err) => {
-            vm.$Message.destroy();
-            vm.$Message.error('上传图片出错，请重试！');
+            vm.$Notice.destroy();
+            vm.$Notice.error({title:'上传图片出错，请重试！',duration:2});
         })                         
     });
 };
