@@ -77,6 +77,7 @@ npm run build
 #### [截图](./wechat-mall/README.md)
 
 #### 功能列表：
+
 - 首页
 - 分类首页、分类商品、新品首发、人气推荐商品页面
 - 商品详情页面，包含加入购物车、收藏商品、商品评论功能
@@ -88,6 +89,16 @@ npm run build
 
 
 ## 开发计划
+
 - 上传图片和富文本编辑器直传七牛云（已完成）
 - 完善小程序后台 （进行中...）
 - 集成ueditor的node.js版本
+
+
+## 参考Links
+
+- [thinkjs](https://github.com/thinkjs/thinkjs)
+- [iView](https://github.com/iview/iview)
+- [iView-admin](https://github.com/iview/iview-admin)
+- [Vue](https://github.com/vuejs/vue)
+- [Webpack](https://github.com/webpack/webpack)
