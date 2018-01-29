@@ -73,6 +73,7 @@ util.imageUpload = function (vm,file,cb) {
             cb(result.data.key);
         })           
         .catch((err) => {
+            console.log(err);
             vm.$Notice.destroy();
             vm.$Notice.error({title:'上传图片出错，请重试！',duration:2});
         })                         

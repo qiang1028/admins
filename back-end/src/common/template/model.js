@@ -48,7 +48,7 @@ module.exports =  {
       "  }\r\n"+
       "\r\n"+
       "  async pageData(param){\r\n"+
-      "    let sql=this.page(param.current).order('create_date desc');\r\n";
+      "    let sql=this.page(param.current).where({del_flag:0}).order('create_date desc');\r\n";
       for(let p of param.parameter){
         if(p.is_search==1){
           template+=

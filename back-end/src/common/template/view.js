@@ -68,9 +68,9 @@ module.exports =  {
       "            </div>\r\n"+
       "        </Modal>    \r\n"+
        "        <Modal  title=\"详情\"  :mask-closable=\"false\" :closable=\"false\" v-model=\"modalDetail\">\r\n"+
-      "            <Form ref=\"formRef\" :model=\"formValidate\" :label-width=\"80\">\r\n";
+      "            <Form :model=\"formValidate\" :label-width=\"80\">\r\n";
       for(let p of param.parameter){
-        if(p.name!='id'&&p.name!='del_flag'){
+        if(p.name!='id'&&p.name!='create_date'&&p.name!='update_date'&&p.name!='del_flag'){
       template+=
       "                <FormItem label=\""+p.comment+"\" prop=\""+p.name+"\">\r\n"+
       "                    <Input v-model=\"formValidate."+p.name+"\" readonly></Input>\r\n"+
@@ -205,7 +205,6 @@ module.exports =  {
       "            },\r\n"+
       "            pageChange(current){\r\n"+
       "                this.searchForm.current=current;\r\n"+
-      "                console.log(this.searchForm);\r\n"+
       "                this.init();\r\n"+
       "            },\r\n"+
       "            add (){     \r\n"  +

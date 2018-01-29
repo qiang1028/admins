@@ -1,17 +1,7 @@
 <style lang="less">
-    .table-min-width{
+     .table-min-width{
         min-width:120px;
         width:120px
-    }
-
-    .table-min-width2{
-        min-width:150px;
-        width:150px
-    }
-
-    .table-min-width3{
-        min-width:300px;
-        width:300px
     }
 </style>
 <template>
@@ -21,10 +11,10 @@
                 <Card>
                     <p slot="title">
                         <Icon type="ios-list"></Icon>
-                        商城首页轮播图列表
+                        分类列表
                     </p>
                     <Row>
-                        文字说明：<Input v-model="searchForm.name" placeholder="请输入文字说明" style="width: 200px;margin-right: 20px;" />
+                        名称：<Input v-model="searchForm.name" placeholder="请输入要搜索的名称" style="width: 200px;margin-right: 20px;" />
                         <span @click="handleSearch"><Button type="primary" icon="search">搜索</Button></span>
                     </Row>
                     <Row style="margin-top:10px;">
@@ -39,22 +29,52 @@
         </Row>
         <Modal  title="编辑"  :mask-closable="false" :closable="false" v-model="modalAdd">
             <Form ref="formRef" :model="formValidate" :rules="ruleValidate" :label-width="80">
-                <FormItem label="文字说明" prop="name">
+                <FormItem label="名称" prop="name">
                     <Input v-model="formValidate.name"></Input>
                 </FormItem>
-                <FormItem label="图片" prop="image_url">                    
-                    <img :src="imgDataUrl" style="width: 100%;">
-                    <Upload :before-upload="handleUpload" action="" accept="image/*">
-                        <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
-                    </Upload>
-                    <Tag type="border">图片大小为：1440*800</Tag>
+                <FormItem label="" prop="parent_id">
+                    <Input v-model="formValidate.parent_id"></Input>
+                </FormItem>
+                <FormItem label="排序" prop="sort_order">
+                    <Input v-model="formValidate.sort_order"></Input>
+                </FormItem>
+                <FormItem label="小图标" prop="icon_url">
+                    <Input v-model="formValidate.icon_url"></Input>
+                </FormItem>
+                <FormItem label="大图标" prop="wap_banner_url">
+                    <Input v-model="formValidate.wap_banner_url"></Input>
+                </FormItem>
+                <FormItem label="简介" prop="front_name">
+                    <Input v-model="formValidate.front_name"></Input>
                 </FormItem>
             </Form>
             <div slot="footer">
                 <Button type="text" @click="addCanFun" v-show="modalCanBut">取消</Button>
                 <Button type="primary" @click="addOkFun" :loading="modalLoading">确定</Button>
             </div>
-        </Modal>           
+        </Modal>    
+        <Modal  title="详情"  :mask-closable="false" :closable="false" v-model="modalDetail">
+            <Form ref="formRef" :model="formValidate" :label-width="80">
+                <FormItem label="名称" prop="name">
+                    <Input v-model="formValidate.name" readonly></Input>
+                </FormItem>
+                <FormItem label="" prop="parent_id">
+                    <Input v-model="formValidate.parent_id" readonly></Input>
+                </FormItem>
+                <FormItem label="排序" prop="sort_order">
+                    <Input v-model="formValidate.sort_order" readonly></Input>
+                </FormItem>
+                <FormItem label="小图标" prop="icon_url">
+                    <Input v-model="formValidate.icon_url" readonly></Input>
+                </FormItem>
+                <FormItem label="大图标" prop="wap_banner_url">
+                    <Input v-model="formValidate.wap_banner_url" readonly></Input>
+                </FormItem>
+                <FormItem label="简介" prop="front_name">
+                    <Input v-model="formValidate.front_name" readonly></Input>
+                </FormItem>
+            </Form>
+        </Modal>    
     </div>
 </template>
 <script>
@@ -70,41 +90,21 @@
                 searchForm:{
                     current:1
                 },
-                imgDataUrl:null,
                 count:0,
                 columns: [     
                     {
-                        title: '文字说明',
+                        title: '名称',
                         key: 'name',
                         className: 'table-min-width',
+                        ellipsis:true,
                         align: 'center',
-                        ellipsis:true
                     },
                     {
-                        title: '图片',
-                        key: 'image_url',
-                        className: 'table-min-width3',
+                        title: '排序',
+                        key: 'sort_order',
+                        className: 'table-min-width',
+                        ellipsis:true,
                         align: 'center',
-                        render: (h, params) => {console.log(UPLOAD_IMG_URL+params.row.image_url);
-                            return h('div', [                              
-                                h('img', {
-                                    attrs:{
-                                        src:UPLOAD_IMG_URL+params.row.image_url
-                                    },
-                                    style: {
-                                        width: '300px'
-                                    },
-                                }),
-                                
-                            ]);
-                        }
-                    },
-                    {
-                        title: '录入时间',
-                        key: 'create_date',
-                        className: 'table-min-width2',
-                        align: 'center',
-                        ellipsis:true
                     },
                     {
                         title: '操作',
@@ -112,7 +112,21 @@
                         width: 210,
                         align: 'center',
                         render: (h, params) => {
-                            return h('div', [                              
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'info',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.show(params)
+                                        }
+                                    }
+                                }, '查看'),
                                 h('Button', {
                                     props: {
                                         type: 'success',
@@ -160,10 +174,22 @@
                 },
                 ruleValidate: {
                     name: [
-                        { required: true, message: '文字说明为必填项', trigger: 'blur' }
+                        { required: true, message: '名称为必填项', trigger: 'blur' }
                     ],
-                    image_url: [
-                        { required: true, message: '图片为必填项', trigger: 'blur' }
+                    parent_id: [
+                        { required: true, message: '为必填项', trigger: 'blur' }
+                    ],
+                    sort_order: [
+                        { required: true, message: '排序为必填项', trigger: 'blur' }
+                    ],
+                    icon_url: [
+                        { required: true, message: '小图标为必填项', trigger: 'blur' }
+                    ],
+                    wap_banner_url: [
+                        { required: true, message: '大图标为必填项', trigger: 'blur' }
+                    ],
+                    front_name: [
+                        { required: true, message: '简介为必填项', trigger: 'blur' }
                     ],
                 }
             }
@@ -172,7 +198,7 @@
             init () {
                 let _self=this;
                 _self.loading=true;
-                util.post(this,'wx/admin/wx_ad/pageData',this.searchForm,function(datas){   
+                util.post(this,'wx/admin/wx_category/pageData',this.searchForm,function(datas){   
                     _self.data=datas.data;
                     _self.count=datas.count;
                     _self.loading=false;
@@ -189,7 +215,6 @@
             },
             add (){     
                 this.formValidate={}; 
-                this.imgDataUrl='';
                 this.modalAdd=true;       
             },
             show (param) {
@@ -198,13 +223,12 @@
              },
             edit (param) {
                 this.formValidate=util.copy(param.row);
-                this.imgDataUrl=UPLOAD_IMG_URL+this.formValidate.image_url;
                 this.modalAdd=true;        
              },
             remove (param) {
                 let _self=this;
                 this.loading=true;
-                util.post(this,'wx/admin/wx_ad/delData',{id:param.row.id},function(datas){ 
+                util.post(this,'wx/admin/wx_category/delData',{id:param.row.id},function(datas){ 
                     _self.data.splice(param.index, 1);
                     _self.loading =false;      
                     _self.$Message.success('删除成功！');
@@ -217,13 +241,13 @@
                         util.changeModalLoading(this,true);
                         let _data=util.copy(this.formValidate); 
                         if(this.formValidate&&this.formValidate.id){
-                            util.post(this,'wx/admin/wx_ad/updateData',_data,function(datas){  
+                            util.post(this,'wx/admin/wx_category/updateData',_data,function(datas){  
                                 _self.$Message.success('编辑成功！');
                                 _self.addCanFun();
                                 _self.init();      
                             });                        
                         }else{
-                            util.post(this,'wx/admin/wx_ad/addData',_data,function(datas){ 
+                            util.post(this,'wx/admin/wx_category/addData',_data,function(datas){ 
                                 _self.$Message.success('新增成功！');
                                 _self.addCanFun(); 
                                 _self.init();     
@@ -238,15 +262,7 @@
                 this.modalAdd=false; 
                 util.changeModalLoading(this);
                 this.$refs['formRef'].resetFields(); 
-            },
-            handleUpload (file) {
-                let _self=this;
-                util.imageUpload(this,file,function(datas){
-                    _self.imgDataUrl=UPLOAD_IMG_URL+datas; // Get url from response
-                    _self.formValidate.image_url=datas;
-                });      
-                return false;
-            },
+            }
         },
         mounted () {
             this.init();
