@@ -255,7 +255,7 @@
                 ],
                 data: [],
                 formValidate: {
-                    sort: 1
+                    sort_order: 1
                 },
                 ruleValidate: {
                     name: [
@@ -354,7 +354,7 @@
                 ],
                 data2: [],
                 formValidate2: {
-                    sort: 1
+                    sort_order: 1
                 },
                 ruleValidate2: {
                     name: [
@@ -417,7 +417,7 @@
                     _self.loading =false;      
                     _self.$Message.success('删除成功！');
                 });
-            },
+            },           
             addOkFun(){
                 let _self=this;
                 this.$refs['formRef'].validate((valid) => {
@@ -497,7 +497,7 @@
                 this.init2();
             },
             add2 (){     
-                this.formValidate2={}; 
+                this.formValidate2={sort_order:1}; 
                 this.imgDataUrl2='';
                 this.modalAdd2=true;       
             },

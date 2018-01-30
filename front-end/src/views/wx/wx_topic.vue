@@ -4,11 +4,10 @@
         width:120px
     }
 
-    .table-min-width3{
+     .table-min-width3{
         min-width:200px;
         width:200px
     }
-
 </style>
 <template>
      <div>
@@ -17,10 +16,10 @@
                 <Card>
                     <p slot="title">
                         <Icon type="ios-list"></Icon>
-                        制造商列表
+                        专题列表
                     </p>
                     <Row>
-                        名称：<Input v-model="searchForm.name" placeholder="请输入要搜索的名称" style="width: 200px;margin-right: 20px;" />
+                        标题：<Input v-model="searchForm.title" placeholder="请输入要搜索的标题" style="width: 200px;margin-right: 20px;" />
                         <span @click="handleSearch"><Button type="primary" icon="search">搜索</Button></span>
                     </Row>
                     <Row style="margin-top:10px;">
@@ -35,21 +34,24 @@
         </Row>
         <Modal  title="编辑"  :mask-closable="false" :closable="false" v-model="modalAdd">
             <Form ref="formRef" :model="formValidate" :rules="ruleValidate" :label-width="80">
-                <FormItem label="名称" prop="name">
-                    <Input v-model="formValidate.name"></Input>
+                <FormItem label="标题" prop="title">
+                    <Input v-model="formValidate.title"></Input>
                 </FormItem>               
-                <FormItem label="底价" prop="floor_price">
-                    <Input v-model="formValidate.floor_price" number></Input>
+                <FormItem label="副标题" prop="subtitle">
+                    <Input v-model="formValidate.subtitle"></Input>
                 </FormItem>
-                <FormItem label="图片" prop="app_list_pic_url">
-                    <img :src="imgDataUrl" style="width: 100%">
+                <FormItem label="价格" prop="price_info">
+                    <Input v-model="formValidate.price_info" number></Input>
+                </FormItem>
+                 <FormItem label="内容" prop="content">
+                    <vue-editor id="editor" useCustomImageHandler @imageAdded="handleImageAdded" v-model="formValidate.content"></vue-editor>
+                </FormItem>
+                <FormItem label="图片" prop="scene_pic_url">
+                     <img :src="imgDataUrl" style="width: 100%">
                     <Upload :before-upload="handleUpload" action="" accept="image/*">
                         <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
                     </Upload>
-                    <Tag type="border">图片大小为：750*420</Tag>
-                </FormItem>
-                <FormItem label="简介" prop="simple_desc">
-                    <Input v-model="formValidate.simple_desc"></Input>
+                    <Tag type="border">图片大小为：1440*800</Tag>
                 </FormItem>
                 <FormItem label="排序" prop="sort_order">
                     <InputNumber :min="1" v-model="formValidate.sort_order"></InputNumber>
@@ -62,17 +64,23 @@
         </Modal>    
         <Modal  title="详情"  :mask-closable="false" :closable="false" v-model="modalDetail">
             <Form :model="formValidate" :label-width="80">
-                <FormItem label="名称">
-                    <Input v-model="formValidate.name" readonly></Input>
+                <FormItem label="标题">
+                    <Input v-model="formValidate.title" readonly></Input>
                 </FormItem>
-                <FormItem label="简介">
-                    <Input v-model="formValidate.simple_desc" readonly></Input>
-                </FormItem>               
-                <FormItem label="底价">
-                    <Input v-model="formValidate.floor_price" readonly></Input>
+                 <FormItem label="副标题">
+                    <Input v-model="formValidate.subtitle" readonly></Input>
                 </FormItem>
+                <FormItem label="价格">
+                    <Input v-model="formValidate.price_info" readonly></Input>
+                </FormItem>
+                <FormItem label="内容">
+                    <vue-editor id="editor" useCustomImageHandler @imageAdded="handleImageAdded" v-model="formValidate.content"></vue-editor>
+                </FormItem>                             
                 <FormItem label="图片">
-                   <img :src="imgDataUrl" style="width: 100%;">
+                    <img :src="imgDataUrl" style="width: 100%;">
+                </FormItem>
+                <FormItem label="阅读量">
+                    <Input v-model="formValidate.read_count" readonly></Input>
                 </FormItem>
                 <FormItem label="排序">
                     <Input v-model="formValidate.sort_order" readonly></Input>
@@ -83,7 +91,11 @@
 </template>
 <script>
     import util from '@/libs/util.js';
+    import { VueEditor } from 'vue2-editor'
     export default {
+        components: {
+            VueEditor
+        },
         data () {
             return {
                 modalAdd:false,
@@ -98,22 +110,29 @@
                 count:0,
                 columns: [     
                     {
-                        title: '名称',
-                        key: 'name',
+                        title: '标题',
+                        key: 'title',
                         className: 'table-min-width',
                         ellipsis:true,
                         align: 'center',
-                    },                    
+                    },
                     {
-                        title: '底价',
-                        key: 'floor_price',
+                        title: '价格',
+                        key: 'price_info',
+                        className: 'table-min-width',
+                        ellipsis:true,
+                        align: 'center',
+                    },
+                    {
+                        title: '阅读量',
+                        key: 'read_count',
                         className: 'table-min-width',
                         ellipsis:true,
                         align: 'center',
                     },
                     {
                         title: '图片',
-                        key: 'app_list_pic_url',
+                        key: 'scene_pic_url',
                         className: 'table-min-width3',
                         ellipsis:true,
                         align: 'center',
@@ -121,7 +140,7 @@
                             return h('div', [                              
                                 h('img', {
                                     attrs:{
-                                        src:UPLOAD_IMG_URL+params.row.app_list_pic_url
+                                        src:UPLOAD_IMG_URL+params.row.scene_pic_url
                                     },
                                     style: {
                                         width: '200px'
@@ -137,35 +156,6 @@
                         className: 'table-min-width',
                         ellipsis:true,
                         align: 'center',
-                    },
-                    {
-                        title: '是否首页推荐',
-                        key: 'is_index',
-                        className: 'table-min-width',
-                        ellipsis:true,
-                        align: 'center',
-                        render: (h, params) => {
-                            return  h('div', [
-                                h('i-switch', {
-                                    props: {
-                                        value:params.row.is_index==1,
-                                        size: 'large'
-                                    },
-                                    on: {  
-                                      'on-change': (value) => {
-                                        this.changeStatus(value,params)
-                                      }  
-                                    }                                  
-                                },[
-                                    h('span', {
-                                        slot: 'open'
-                                    }, '是'),
-                                    h('span', {
-                                        slot: 'close',
-                                    }, '否')
-                                ])
-                            ]);             
-                        }
                     },
                     {
                         title: '操作',
@@ -234,16 +224,22 @@
                     sort_order: 1
                 },
                 ruleValidate: {
-                    name: [
-                        { required: true, message: '名称为必填项', trigger: 'blur' }
+                    title: [
+                        { required: true, message: '标题为必填项', trigger: 'blur' }
                     ],
-                    simple_desc: [
-                        { required: true, message: '简介为必填项', trigger: 'blur' }
-                    ],                 
-                    floor_price: [
-                        { required: true,type:'number', message: '底价为数字类型的必填项', trigger: 'blur' }
+                    content: [
+                        { required: true, message: '内容为必填项', trigger: 'blur' }
                     ],
-                    app_list_pic_url: [
+                    subtitle: [
+                        { required: true, message: '副标题为必填项', trigger: 'blur' }
+                    ],
+                    price_info: [
+                        { required: true, type:'number', message: '价格为数字类型的必填项', trigger: 'blur' }
+                    ],
+                    read_count: [
+                        { required: true, message: '阅读量为必填项', trigger: 'blur' }
+                    ],
+                    scene_pic_url: [
                         { required: true, message: '图片为必填项', trigger: 'blur' }
                     ],
                 }
@@ -253,7 +249,7 @@
             init () {
                 let _self=this;
                 _self.loading=true;
-                util.post(this,'wx/admin/wx_brand/pageData',this.searchForm,function(datas){   
+                util.post(this,'wx/admin/wx_topic/pageData',this.searchForm,function(datas){   
                     _self.data=datas.data;
                     _self.count=datas.count;
                     _self.loading=false;
@@ -269,36 +265,24 @@
             },
             add (){     
                 this.formValidate={sort_order:1}; 
+                this.formValidate.content='';
                 this.imgDataUrl='';
                 this.modalAdd=true;       
             },
             show (param) {
                 this.formValidate=util.copy(param.row);
-                this.imgDataUrl=UPLOAD_IMG_URL+this.formValidate.app_list_pic_url;
+                this.imgDataUrl=UPLOAD_IMG_URL+this.formValidate.scene_pic_url;
                 this.modalDetail=true;        
-            },
+             },
             edit (param) {
                 this.formValidate=util.copy(param.row);
-                this.imgDataUrl=UPLOAD_IMG_URL+this.formValidate.app_list_pic_url;
+                this.imgDataUrl=UPLOAD_IMG_URL+this.formValidate.scene_pic_url;
                 this.modalAdd=true;        
-            },
-            changeStatus (value,param) {
-                let _self=this;
-                this.loading=true;
-                let is_index=0;
-                if(value){
-                    is_index=1;
-                }
-                util.post(this,'wx/admin/wx_brand/changeStatus',{id:param.row.id,is_index:is_index},function(datas){ 
-                    _self.data[param.index].is_index=is_index;
-                    _self.loading =false;               
-                    _self.$Message.success('修改成功！');              
-                });
-            },    
+             },
             remove (param) {
                 let _self=this;
                 this.loading=true;
-                util.post(this,'wx/admin/wx_brand/delData',{id:param.row.id},function(datas){ 
+                util.post(this,'wx/admin/wx_topic/delData',{id:param.row.id},function(datas){ 
                     _self.data.splice(param.index, 1);
                     _self.loading =false;      
                     _self.$Message.success('删除成功！');
@@ -308,9 +292,15 @@
                 let _self=this;
                 util.imageUpload(this,file,function(datas){
                     _self.imgDataUrl=UPLOAD_IMG_URL+datas; // Get url from response
-                    _self.formValidate.app_list_pic_url=datas;
+                    _self.formValidate.scene_pic_url=datas;
                 });      
                 return false;
+            },
+            handleImageAdded: function(file, Editor, cursorLocation) {
+              util.imageUpload(this,file,function(datas){
+                  let url = UPLOAD_IMG_URL+datas; // Get url from response
+                  Editor.insertEmbed(cursorLocation, 'image', url);
+              });  
             },
             addOkFun(){
                 let _self=this;
@@ -319,13 +309,13 @@
                         util.changeModalLoading(this,true);
                         let _data=util.copy(this.formValidate); 
                         if(this.formValidate&&this.formValidate.id){
-                            util.post(this,'wx/admin/wx_brand/updateData',_data,function(datas){  
+                            util.post(this,'wx/admin/wx_topic/updateData',_data,function(datas){  
                                 _self.$Message.success('编辑成功！');
                                 _self.addCanFun();
                                 _self.init();      
                             });                        
                         }else{
-                            util.post(this,'wx/admin/wx_brand/addData',_data,function(datas){ 
+                            util.post(this,'wx/admin/wx_topic/addData',_data,function(datas){ 
                                 _self.$Message.success('新增成功！');
                                 _self.addCanFun(); 
                                 _self.init();     
