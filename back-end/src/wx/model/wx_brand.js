@@ -1,31 +1,13 @@
 /**
-*分类
+*制造商
 */
 'use strict';
 module.exports = class extends think.Model {
-  async getChildCategoryId(parentId) {
-    const childIds = await this.where({parent_id: parentId}).getField('id', 10000);
-    return childIds;
-  }
-
-  async getCategoryWhereIn(categoryId) {
-    const childIds = await this.getChildCategoryId(categoryId);
-    childIds.push(categoryId);
-    return childIds;
-  }
 
   async addData(param){
     param.create_date=think.datetime();
-    param.parent_id=0;
     param.del_flag=0;
-    //param.id=think.uuid('v1');
-    await this.add(param);
-  }
-
-  async addData2(param){
-    param.create_date=think.datetime();
-    param.del_flag=0;
-    //param.id=think.uuid('v1');
+    param.id=think.uuid('v1');
     await this.add(param);
   }
 
@@ -42,13 +24,12 @@ module.exports = class extends think.Model {
     let id=param.id;
     param.update_date=think.datetime();
     delete param.id;
-    delete param.parent_id;
     delete param.create_date;
     await this.where({id:id}).update(param);
   }
 
   async pageData(param){
-    let sql=this.page(param.current).order('sort_order').where({del_flag:0,parent_id:0});
+    let sql=this.page(param.current).where({del_flag:0}).order('create_date desc');
     if(!think.isEmpty(param.name)){
       sql=sql.where({name:['like', '%'+param.name+'%']});
     }
@@ -56,13 +37,10 @@ module.exports = class extends think.Model {
     return data;
   }
 
-  async pageData2(param){
-    let sql=this.page(param.current).order('sort_order').where({del_flag:0,parent_id:param.pid});
-    if(!think.isEmpty(param.name)){
-      sql=sql.where({name:['like', '%'+param.name+'%']});
-    }
-    let data = await sql.countSelect();
-    return data;
+  async changeStatus(param){
+    let id=param.id;
+    param.update_date=think.datetime();
+    await this.where({id:id}).update({is_index:param.is_index,update_date:param.update_date});
   }
 
   async allData(param){

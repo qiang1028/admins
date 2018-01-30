@@ -102,13 +102,14 @@
                     <Input v-model="formValidate2.name"></Input>
                 </FormItem>
                 <FormItem label="排序" prop="sort_order">
-                    <Input v-model="formValidate2.sort_order"></Input>
+                    <InputNumber :min="1" v-model="formValidate2.sort_order"></InputNumber>
                 </FormItem>
                 <FormItem label="背景图" prop="wap_banner_url">
-                    <img :src="imgDataUrl3" style="width: 100%;">
+                    <img :src="imgDataUrl3" style="width: 100px;">
                     <Upload :before-upload="handleUpload3" action="" accept="image/*">
                         <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
                     </Upload>
+                    <Tag type="border">图片大小为：400*400</Tag>
                 </FormItem>
                 <FormItem label="简介" prop="front_name">
                     <Input v-model="formValidate2.front_name"></Input>
@@ -128,7 +129,7 @@
                     <InputNumber :min="1" v-model="formValidate2.sort_order"></InputNumber>
                 </FormItem>
                 <FormItem label="背景图" prop="wap_banner_url">
-                    <Input v-model="formValidate2.wap_banner_url" readonly></Input>
+                    <img :src="imgDataUrl3" style="width: 100px;">
                 </FormItem>
                 <FormItem label="简介" prop="front_name">
                     <Input v-model="formValidate2.front_name" readonly></Input>
@@ -179,7 +180,7 @@
                     {
                         title: '操作',
                         key: 'action',
-                        width: 210,
+                        width: 250,
                         align: 'center',
                         render: (h, params) => {
                             return h('div', [
@@ -451,6 +452,7 @@
                 this.span1=12;
                 this.pParam=util.copy(param.row);
                 this.isShow=true;
+                this.handleSearch2();
             },
             handleUpload1 (file) {
                 let _self=this;
@@ -479,7 +481,8 @@
             init2 () {
                 let _self=this;
                 _self.loading2=true;
-                util.post(this,'wx/admin/wx_category/pageData',this.searchForm,function(datas){   
+                this.searchForm2.pid=this.pParam.id;
+                util.post(this,'wx/admin/wx_category/pageData2',this.searchForm2,function(datas){   
                     _self.data2=datas.data;
                     _self.count2=datas.count;
                     _self.loading2=false;
@@ -491,47 +494,50 @@
             },
             pageChange2(current){
                 this.searchForm2.current=current;
-                console.log(this.searchForm);
                 this.init2();
             },
             add2 (){     
-                this.formValidate={}; 
-                this.modalAdd=true;       
+                this.formValidate2={}; 
+                this.imgDataUrl2='';
+                this.modalAdd2=true;       
             },
             show2 (param) {
-                this.formValidate=util.copy(param.row);
-                this.modalDetail=true;        
+                this.formValidate2=util.copy(param.row);
+                this.imgDataUrl3=UPLOAD_IMG_URL+this.formValidate2.wap_banner_url;
+                this.modalDetail2=true;        
              },
             edit2 (param) {
-                this.formValidate=util.copy(param.row);
-                this.modalAdd=true;        
+                this.formValidate2=util.copy(param.row);
+                this.imgDataUrl3=UPLOAD_IMG_URL+this.formValidate2.wap_banner_url;
+                this.modalAdd2=true;        
              },
             remove2 (param) {
                 let _self=this;
-                this.loading=true;
+                this.loading2=true;
                 util.post(this,'wx/admin/wx_category/delData',{id:param.row.id},function(datas){ 
-                    _self.data.splice(param.index, 1);
-                    _self.loading =false;      
+                    _self.data2.splice(param.index, 1);
+                    _self.loading2=false;      
                     _self.$Message.success('删除成功！');
                 });
             },
             addOkFun2(){
                 let _self=this;
-                this.$refs['formRef'].validate((valid) => {
+                this.$refs['formRef2'].validate((valid) => {
                     if (valid) {
                         util.changeModalLoading(this,true);
-                        let _data=util.copy(this.formValidate); 
-                        if(this.formValidate&&this.formValidate.id){
+                        let _data=util.copy(this.formValidate2); 
+                        _data.parent_id=_self.pParam.id;
+                        if(this.formValidate2&&this.formValidate2.id){
                             util.post(this,'wx/admin/wx_category/updateData',_data,function(datas){  
                                 _self.$Message.success('编辑成功！');
-                                _self.addCanFun();
-                                _self.init();      
+                                _self.addCanFun2();
+                                _self.init2();      
                             });                        
                         }else{
-                            util.post(this,'wx/admin/wx_category/addData',_data,function(datas){ 
+                            util.post(this,'wx/admin/wx_category/addData2',_data,function(datas){ 
                                 _self.$Message.success('新增成功！');
-                                _self.addCanFun(); 
-                                _self.init();     
+                                _self.addCanFun2(); 
+                                _self.init2();     
                             });     
                         }
                     }else{
@@ -542,7 +548,7 @@
             addCanFun2(){ 
                 this.modalAdd2=false; 
                 util.changeModalLoading(this);
-                this.$refs['formRef'].resetFields(); 
+                this.$refs['formRef2'].resetFields(); 
             }
         },
         mounted () {

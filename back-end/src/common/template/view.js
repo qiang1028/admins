@@ -72,7 +72,7 @@ module.exports =  {
       for(let p of param.parameter){
         if(p.name!='id'&&p.name!='create_date'&&p.name!='update_date'&&p.name!='del_flag'){
       template+=
-      "                <FormItem label=\""+p.comment+"\" prop=\""+p.name+"\">\r\n"+
+      "                <FormItem label=\""+p.comment+"\">\r\n"+
       "                    <Input v-model=\"formValidate."+p.name+"\" readonly></Input>\r\n"+
       "                </FormItem>\r\n";    
         }   

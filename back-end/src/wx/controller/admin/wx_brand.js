@@ -1,5 +1,5 @@
 /**
-*分类
+*制造商
 */
 const Base = require('../../../admin/controller/base.js');
 module.exports = class extends Base {
@@ -8,48 +8,42 @@ module.exports = class extends Base {
   }
 
   async allDataAction() {
-    let data=await this.model('wx_category').allData()
+    let data=await this.model('wx_brand').allData()
     return this.success(data);
   }
 
   async pageDataAction() {
     let param=this.post();
-    let data=await this.model('wx_category').pageData(param);
-    return this.success(data);
-  }
-
-  async pageData2Action() {
-    let param=this.post();
-    let data=await this.model('wx_category').pageData2(param);
+    let data=await this.model('wx_brand').pageData(param);
     return this.success(data);
   }
 
   async addDataAction() {
     let param=this.post();
-    await this.model('wx_category').addData(param);
-    return this.success();
-  }
-
-  async addData2Action() {
-    let param=this.post();
-    await this.model('wx_category').addData2(param);
+    await this.model('wx_brand').addData(param);
     return this.success();
   }
 
   async updateDataAction() {
     let param=this.post();
-    await this.model('wx_category').updateData(param);
+    await this.model('wx_brand').updateData(param);
     return this.success();
   }
 
   async delDataAction() {
     let param=this.post();
-    await this.model('wx_category').delData(param);
+    await this.model('wx_brand').delData(param);
     return this.success();
   }
   async delFlagDataAction() {
     let param=this.post();
-    await this.model('wx_category').delFlagData(param);
+    await this.model('wx_brand').delFlagData(param);
+    return this.success();
+  }
+
+  async changeStatusAction() {
+    let param=this.post();
+    await this.model("wx_brand").changeStatus(param);
     return this.success();
   }
 };
