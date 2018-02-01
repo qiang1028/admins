@@ -10,7 +10,8 @@ Page({
     brand: {},
     goodsList: [],
     page: 1,
-    size: 1000
+    size: 1000,
+    img_url:app.globalData.img_url
   },
   onLoad: function (options) {
     // 页面初始化 options为页面跳转所带来的参数

@@ -41,12 +41,19 @@
                 <FormItem label="底价" prop="floor_price">
                     <Input v-model="formValidate.floor_price" number></Input>
                 </FormItem>
-                <FormItem label="图片" prop="app_list_pic_url">
+                <FormItem label="详情图片" prop="app_list_pic_url">
                     <img :src="imgDataUrl" style="width: 100%">
                     <Upload :before-upload="handleUpload" action="" accept="image/*">
                         <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
                     </Upload>
                     <Tag type="border">图片大小为：750*420</Tag>
+                </FormItem>
+                <FormItem label="首页推广背景图" prop="new_pic_url">
+                    <img :src="imgDataUrl2" style="width: 100%">
+                    <Upload :before-upload="handleUpload2" action="" accept="image/*">
+                        <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
+                    </Upload>
+                    <Tag type="border">图片大小为：760*484</Tag>
                 </FormItem>
                 <FormItem label="简介" prop="simple_desc">
                     <Input v-model="formValidate.simple_desc"></Input>
@@ -71,8 +78,11 @@
                 <FormItem label="底价">
                     <Input v-model="formValidate.floor_price" readonly></Input>
                 </FormItem>
-                <FormItem label="图片">
+                <FormItem label="详情图片">
                    <img :src="imgDataUrl" style="width: 100%;">
+                </FormItem>
+                <FormItem label="首页推广背景图" prop="new_pic_url">
+                    <img :src="imgDataUrl2" style="width: 100%;">
                 </FormItem>
                 <FormItem label="排序">
                     <Input v-model="formValidate.sort_order" readonly></Input>
@@ -92,6 +102,7 @@
                 modalLoading:false,
                 modalCanBut:true,
                 imgDataUrl:'',
+                imgDataUrl2:'',
                 searchForm:{
                     current:1
                 },
@@ -270,16 +281,19 @@
             add (){     
                 this.formValidate={sort_order:1}; 
                 this.imgDataUrl='';
+                this.imgDataUrl2='';
                 this.modalAdd=true;       
             },
             show (param) {
                 this.formValidate=util.copy(param.row);
                 this.imgDataUrl=UPLOAD_IMG_URL+this.formValidate.app_list_pic_url;
+                this.imgDataUrl2=UPLOAD_IMG_URL+this.formValidate.new_pic_url;
                 this.modalDetail=true;        
             },
             edit (param) {
                 this.formValidate=util.copy(param.row);
                 this.imgDataUrl=UPLOAD_IMG_URL+this.formValidate.app_list_pic_url;
+                this.imgDataUrl2=UPLOAD_IMG_URL+this.formValidate.new_pic_url;
                 this.modalAdd=true;        
             },
             changeStatus (value,param) {
@@ -309,6 +323,14 @@
                 util.imageUpload(this,file,function(datas){
                     _self.imgDataUrl=UPLOAD_IMG_URL+datas; // Get url from response
                     _self.formValidate.app_list_pic_url=datas;
+                });      
+                return false;
+            },
+            handleUpload2 (file) {
+                let _self=this;
+                util.imageUpload(this,file,function(datas){
+                    _self.imgDataUrl2=UPLOAD_IMG_URL+datas; // Get url from response
+                    _self.formValidate.new_pic_url=datas;
                 });      
                 return false;
             },

@@ -1,5 +1,6 @@
 var util = require('../../utils/util.js');
 var api = require('../../config/api.js');
+var app = getApp();
 
 Page({
   data: {
@@ -9,7 +10,8 @@ Page({
     scrollLeft: 0,
     scrollTop: 0,
     goodsCount: 0,
-    scrollHeight: 0
+    scrollHeight: 0,
+    img_url:app.globalData.img_url
   },
   onLoad: function (options) {
     this.getCatalog();

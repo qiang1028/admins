@@ -9,7 +9,10 @@ Page({
         size: 10,
         count: 0,
         scrollTop: 0,
-        showPage: false
+        showPage: false,
+        img_url:app.globalData.img_url,
+        totalPages:0,
+        currentPage:0
     },
     onLoad: function (options) {
         // 页面初始化 options为页面跳转所带来的参数
@@ -31,13 +34,13 @@ Page({
     nextPage: function (event) {
       console.log();
         var that = this;
-        if (this.data.page+1 > that.data.count / that.data.size) {
+        if (this.data.currentPag<= this.data.totalPages) {
             return true;
         }
 
         
         that.setData({
-            "page": parseInt(that.data.page) + 1
+            "page": parseInt(that.data.currentPage) + 1
         });
 
         this.getTopic();
@@ -65,7 +68,9 @@ Page({
               scrollTop: 0,
               topicList: res.data.data,
               showPage: true,
-              count: res.data.count
+              count: res.data.count,
+              totalPages:res.data.totalPages,
+              currentPage:res.data.currentPage
             });
           }
           wx.hideToast();

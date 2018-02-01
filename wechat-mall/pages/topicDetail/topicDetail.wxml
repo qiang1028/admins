@@ -42,7 +42,7 @@
     </view>
     <view class="b">
       <navigator class="item" wx:for="{{topicList}}" url="../topicDetail/topicDetail?id={{item.id}}">
-        <image class="img" src="{{item.scene_pic_url}}"></image>
+        <image class="img" src="{{img_url+item.scene_pic_url}}"></image>
         <text class="title">{{item.title}}</text>
       </navigator>
     </view>
