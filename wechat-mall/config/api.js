@@ -1,5 +1,5 @@
-var NewApiRootUrl = 'http://127.0.0.1:8360/wx/api/';
-//var NewApiRootUrl = 'https://demo.housailei.info/wx/api/';
+//var NewApiRootUrl = 'http://127.0.0.1:8360/wx/api/';
+var NewApiRootUrl = 'https://demo.housailei.info/wx/api/';
 
 module.exports = {
     IndexUrl: NewApiRootUrl + 'index/index', //首页数据接口

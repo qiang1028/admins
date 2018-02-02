@@ -33,7 +33,7 @@ module.exports = [
       error(err, ctx) {
         let _id=think.datetime(new Date(),'YYYYMMDDHHmmss'+id());
         think.logger.error("异常编号:",_id," , 异常内容:",err);
-        return ctx.fail(err.errno,"请求失败！错误ID："+_id);
+        return ctx.fail(Number(ctx.body.errno),"请求失败！错误ID："+_id);
       }
     }
   },

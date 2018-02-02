@@ -181,7 +181,7 @@ module.exports =  {
         if(p.name!='id'&&p.name!='create_date'&&p.name!='update_date'&&p.name!='del_flag'){
       template+=
       "                    "+p.name+": [\r\n"+
-      "                        { required: true, message: '"+p.comment+"为必填项', trigger: 'blur' }\r\n"+
+      "                        { required: true, message: '"+p.comment+"为必填项'}\r\n"+
       "                    ],\r\n";
         }   
       }   
