@@ -56,6 +56,19 @@ module.exports = class extends think.Model {
     return data;
   }
 
+  async categoryList(){
+  	let _data=[];
+    let data=await this.order('sort_order').where({del_flag:0,parent_id:0}).select();
+    for (var i = 0; i < data.length; i++) {		
+		let item=data[i];
+		let len =_data.push(item);
+        let child=await this.where({parent_id:item.id,del_flag:0}).order("sort_order").select();
+		_data[len - 1].child = child;
+    }
+    return data;
+  }
+
+
   async pageData2(param){
     let sql=this.page(param.current).order('sort_order').where({del_flag:0,parent_id:param.pid});
     if(!think.isEmpty(param.name)){
