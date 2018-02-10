@@ -200,7 +200,7 @@
         },
         mounted () {
             let _self=this;
-            util.post(this,'sys_menu/getMenuTree',{},function(datas){ 
+            util.post(this,'admin/sys_menu/getMenuTree',{},function(datas){ 
                 _self.menuList =datas;                          
             });
             this.init();

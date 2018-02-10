@@ -67,7 +67,7 @@
                 <Button type="primary" @click="addOkFun" :loading="modalLoading">确定</Button>
             </div>
         </Modal>    
-        <Modal  title="详情"  :mask-closable="false" :closable="false" v-model="modalDetail">
+        <Modal  title="详情"  v-model="modalDetail">
             <Form :model="formValidate" :label-width="80">
                 <FormItem label="名称">
                     <Input v-model="formValidate.name" readonly></Input>
@@ -88,6 +88,8 @@
                     <Input v-model="formValidate.sort_order" readonly></Input>
                 </FormItem>
             </Form>
+            <div slot="footer">
+            </div>
         </Modal>    
     </div>
 </template>

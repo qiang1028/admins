@@ -91,22 +91,22 @@ module.exports = class extends think.Model {
         on: ['f.brand_id', 'h.id']
       }).where({'f.del_flag':0}).order('f.create_date desc');
     if(!think.isEmpty(param.category_id)&&param.category_id!="-1"){
-      sql=sql.where({category_id:['like', '%'+param.category_id+'%']});
+      sql=sql.where({'f.category_id':['like', '%'+param.category_id+'%']});
     }
     if(!think.isEmpty(param.name)){
-      sql=sql.where({name:['like', '%'+param.name+'%']});
+      sql=sql.where({'f.name':['like', '%'+param.name+'%']});
     }
     if(!think.isEmpty(param.brand_id)&&param.brand_id!="-1"){
-      sql=sql.where({brand_id:['like', '%'+param.brand_id+'%']});
+      sql=sql.where({'f.brand_id':['like', '%'+param.brand_id+'%']});
     }
     if(!think.isEmpty(param.is_on_sale)&&param.is_on_sale!="-1"){
-      sql=sql.where({is_on_sale:['like', '%'+param.is_on_sale+'%']});
+      sql=sql.where({'f.is_on_sale':['like', '%'+param.is_on_sale+'%']});
     }
     if(!think.isEmpty(param.is_new)&&param.is_new!="-1"){
-      sql=sql.where({is_new:['like', '%'+param.is_new+'%']});
+      sql=sql.where({'f.is_new':['like', '%'+param.is_new+'%']});
     }
     if(!think.isEmpty(param.is_hot)&&param.is_hot!="-1"){
-      sql=sql.where({is_hot:['like', '%'+param.is_hot+'%']});
+      sql=sql.where({'f.is_hot':['like', '%'+param.is_hot+'%']});
     }
     let data = await sql.countSelect();
     return data;

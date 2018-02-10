@@ -1,5 +1,5 @@
 /**
-*属性
+*商品轮播图
 */
 'use strict';
 module.exports = class extends think.Model {
@@ -29,16 +29,8 @@ module.exports = class extends think.Model {
   }
 
   async pageData(param){
-    let sql=this.page(param.current).where({del_flag:0,attribute_category_id:param.pid}).order('sort_order');
-    if(!think.isEmpty(param.name)){
-      sql=sql.where({name:['like', '%'+param.name+'%']});
-    }
+    let sql=this.page(param.current).where({del_flag:0,goods_id:param.goods_id}).order('sort_order');
     let data = await sql.countSelect();
-    return data;
-  }
-
-  async findListByPid(param){
-    let data=await this.where({del_flag:0,attribute_category_id:param.pid}).select();
     return data;
   }
 

@@ -1,5 +1,5 @@
 /**
-*属性
+*商品属性
 */
 'use strict';
 module.exports = class extends think.Model {
@@ -29,16 +29,15 @@ module.exports = class extends think.Model {
   }
 
   async pageData(param){
-    let sql=this.page(param.current).where({del_flag:0,attribute_category_id:param.pid}).order('sort_order');
-    if(!think.isEmpty(param.name)){
-      sql=sql.where({name:['like', '%'+param.name+'%']});
-    }
+    let sql=this.page(param.current).field(['f.*', 'g.name as attribute_name'])
+      .alias('f')
+      .join({
+        table: 'wx_attribute',
+        join: 'left',
+        as: 'g',
+        on: ['f.attribute_id', 'g.id']
+      }).where({'f.del_flag':0,'f.goods_id':param.goods_id}).order('f.create_date desc');
     let data = await sql.countSelect();
-    return data;
-  }
-
-  async findListByPid(param){
-    let data=await this.where({del_flag:0,attribute_category_id:param.pid}).select();
     return data;
   }
 

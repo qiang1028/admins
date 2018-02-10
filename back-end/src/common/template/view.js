@@ -67,7 +67,7 @@ module.exports =  {
       "                <Button type=\"primary\" @click=\"addOkFun\" :loading=\"modalLoading\">确定</Button>\r\n"+
       "            </div>\r\n"+
       "        </Modal>    \r\n"+
-       "        <Modal  title=\"详情\"  :mask-closable=\"false\" :closable=\"false\" v-model=\"modalDetail\">\r\n"+
+       "        <Modal  title=\"详情\" v-model=\"modalDetail\">\r\n"+
       "            <Form :model=\"formValidate\" :label-width=\"80\">\r\n";
       for(let p of param.parameter){
         if(p.name!='id'&&p.name!='create_date'&&p.name!='update_date'&&p.name!='del_flag'){
@@ -79,6 +79,8 @@ module.exports =  {
       }   
       template+=                
       "            </Form>\r\n"+
+      "            <div slot=\"footer\">\r\n"+
+      "            </div>\r\n"+
       "        </Modal>    \r\n"+
       "    </div>\r\n"+
       "</template>\r\n"+
@@ -94,6 +96,9 @@ module.exports =  {
       "                modalCanBut:true,\r\n"+
       "                searchForm:{\r\n"+
       "                    current:1\r\n"+
+      "                },\r\n"+
+      "                data: [],\r\n"+
+      "                formValidate: {\r\n"+
       "                },\r\n"+
       "                count:0,\r\n"+
       "                columns: [     \r\n"; 
@@ -172,10 +177,6 @@ module.exports =  {
       "                        }\r\n"+
       "                    }\r\n"+
       "                ],\r\n"+
-      "                data: [],\r\n"+
-      "                formValidate: {\r\n"+
-      "                    sort: 1\r\n"+
-      "                },\r\n"+
       "                ruleValidate: {\r\n"; 
       for(let p of param.parameter){
         if(p.name!='id'&&p.name!='create_date'&&p.name!='update_date'&&p.name!='del_flag'){

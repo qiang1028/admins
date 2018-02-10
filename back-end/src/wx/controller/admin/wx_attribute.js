@@ -12,6 +12,12 @@ module.exports = class extends Base {
     return this.success(data);
   }
 
+  async findListByPidAction() {
+    let param=this.post();
+    let data=await this.model('wx_attribute').findListByPid(param)
+    return this.success(data);
+  }
+  
   async pageDataAction() {
     let param=this.post();
     let data=await this.model('wx_attribute').pageData(param);
