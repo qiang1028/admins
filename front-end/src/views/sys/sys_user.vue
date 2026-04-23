@@ -217,9 +217,9 @@
                             const status = params.row.status;
                             return h('i-switch', {
                                 props: {
-                                    value: status === 1,
-                                    trueValue: 1,
-                                    falseValue: 0
+                                    value: status,
+                                    trueValue: "1",
+                                    falseValue: "0"
                                 },
                                 scopedSlots: {
                                     open: () => h('span', '正常'),
@@ -455,19 +455,73 @@
         background: linear-gradient(135deg, #f0f2f5 0%, #e8ecf1 50%, #f5f7fa 100%);
         min-height: 100vh;
         position: relative;
+        // 表格样式
+        .data-table {
+            border-radius: 12px;
+            overflow: hidden;
 
-        &::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 20%, rgba(24, 144, 255, 0.05) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 80%, rgba(64, 169, 255, 0.05) 0%, transparent 50%);
-            pointer-events: none;
+            .ivu-table-wrapper {
+                border-radius: 12px;
+                overflow: hidden;
+
+                .ivu-table {
+                    font-size: 14px;
+
+                    th {
+                        background: linear-gradient(135deg, #fafbfc 0%, #f0f2f5 100%) !important;
+                        color: #1a1a2e;
+                        font-weight: 600;
+                    }
+
+                    td {
+                        color: #475569;
+                    }
+                }
+            }
+
+            .cell-user {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                .user-avatar {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    background: linear-gradient(135deg, @user-blue, @user-light);
+                    color: #fff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 600;
+                    font-size: 14px;
+                }
+
+                .user-info {
+                    .user-name {
+                        font-weight: 500;
+                        color: #1a1a2e;
+                    }
+                }
+            }
+
+            .cell-role {
+                color: @user-blue;
+                font-weight: 500;
+            }
+
+            .date-cell {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                color: #64748b;
+                font-size: 13px;
+
+                .date-icon {
+                    color: @user-light;
+                }
+            }
         }
-
         // 页面标题区域
         .page-header {
             background: linear-gradient(135deg, #096dd9 0%, #1890ff 50%, #40a9ff 100%);
@@ -491,27 +545,27 @@
                 pointer-events: none;
             }
 
-            .header-title {
-                font-size: 26px;
-                font-weight: 700;
-                margin-bottom: 8px;
-                display: flex;
-                align-items: center;
-                gap: 14px;
+            
+        }
+        .header-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
 
-                .header-icon {
-                    font-size: 32px;
-                }
-            }
-
-            .header-desc {
-                color: rgba(255, 255, 255, 0.8);
-                font-size: 14px;
-                margin-left: 46px;
+            .header-icon {
+                font-size: 32px;
             }
         }
 
-        // 统计卡片
+        .header-desc {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-left: 0px;
+        }
+         // 统计卡片
         .stats-container {
             margin-bottom: 24px;
 
@@ -592,7 +646,6 @@
                 border-left: 4px solid @warning-color;
             }
         }
-
         // 主内容卡片
         .content-card {
             background: @glass-bg;
@@ -657,73 +710,7 @@
             }
         }
 
-        // 表格样式
-        .data-table {
-            border-radius: 12px;
-            overflow: hidden;
-
-            .ivu-table-wrapper {
-                border-radius: 12px;
-                overflow: hidden;
-
-                .ivu-table {
-                    font-size: 14px;
-
-                    th {
-                        background: linear-gradient(135deg, #fafbfc 0%, #f0f2f5 100%) !important;
-                        color: #1a1a2e;
-                        font-weight: 600;
-                    }
-
-                    td {
-                        color: #475569;
-                    }
-                }
-            }
-
-            .cell-user {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-
-                .user-avatar {
-                    width: 36px;
-                    height: 36px;
-                    border-radius: 50%;
-                    background: linear-gradient(135deg, @user-blue, @user-light);
-                    color: #fff;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-weight: 600;
-                    font-size: 14px;
-                }
-
-                .user-info {
-                    .user-name {
-                        font-weight: 500;
-                        color: #1a1a2e;
-                    }
-                }
-            }
-
-            .cell-role {
-                color: @user-blue;
-                font-weight: 500;
-            }
-
-            .date-cell {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                color: #64748b;
-                font-size: 13px;
-
-                .date-icon {
-                    color: @user-light;
-                }
-            }
-        }
+        
 
         // 操作按钮
         .action-btn {
@@ -742,6 +729,23 @@
                 color: #fff !important;
             }
         }
+        &::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 20%, rgba(24, 144, 255, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(64, 169, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        
+
+       
+
+        
     }
 
     // 模态框样式

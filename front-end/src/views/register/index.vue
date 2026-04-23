@@ -141,14 +141,14 @@
                                 <div class="input-glow"></div>
                             </div>
                         </FormItem>
-                        <FormItem prop="role_id" class="form-item-animated">
+                        <!-- <FormItem prop="role_id" class="form-item-animated">
                             <div class="input-wrapper select-wrapper">
                                 <Icon type="ios-briefcase-outline" class="input-icon"></Icon>
                                 <Select v-model="form.role_id" placeholder="请选择角色" class="animated-select">
                                     <Option v-for="item in roleList" :value="item.id" :key="item.id">{{ item.name }}</Option>
                                 </Select>
                             </div>
-                        </FormItem>
+                        </FormItem> -->
                         <FormItem class="button-wrapper">
                             <Button 
                                 @click="handleSubmit" 
@@ -191,7 +191,7 @@
         </div>
         
         <div class="register-footer">
-            <span class="footer-text">© 2024</span>
+            <span class="footer-text">© 2026</span>
             <span class="footer-divider">|</span>
             <span class="footer-text">水稻生长可视化预测系统</span>
             <span class="footer-divider">-</span>
@@ -355,12 +355,12 @@ export default {
         },
         // 加载角色列表
         loadRoleList () {
-            let _self = this;
-            util.post(this, 'admin/sys_role/allData', {}, function(datas) {
-                if (datas && datas.length > 0) {
-                    _self.roleList = datas;
-                }
-            });
+            // let _self = this;
+            // util.post(this, 'admin/sys_role/allData', {}, function(datas) {
+            //     if (datas && datas.length > 0) {
+            //         _self.roleList = datas;
+            //     }
+            // });
         },
 
         // 提交注册
@@ -376,7 +376,7 @@ export default {
                         password: _self.form.password,
                         email: _self.form.email || '',
                         phone: _self.form.phone || '',
-                        role_id: _self.form.role_id
+                        role_id: '37a460f0-c476-11f0-9b3a-13a6ec3a3b4e'
                     };
 
                     util.post(_self, 'admin/sys_user/register', params, function(datas) {

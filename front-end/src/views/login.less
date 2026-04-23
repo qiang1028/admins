@@ -1,29 +1,647 @@
-.login{
+.login {
     width: 100%;
-    height: 100%;
-    background-image: url('https://file.iviewui.com/iview-admin/login_bg.jpg');
-    background-size: cover;
-    background-position: center;
+    height: 100vh;
     position: relative;
-    &-con{
-        position: absolute;
-        right: 160px;
-        top: 50%;
-        transform: translateY(-60%);
-        width: 300px;
-        &-header{
-            font-size: 16px;
-            font-weight: 300;
-            text-align: center;
-            padding: 30px 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0a3d2e 0%, #0d5c4a 25%, #1a7f5a 50%, #0d5c4a 75%, #0a3d2e 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+
+    @keyframes gradientShift {
+        0% {
+            background-position: 0% 50%;
         }
-        .form-con{
-            padding: 10px 0 0;
+
+        50% {
+            background-position: 100% 50%;
         }
-        .login-tip{
-            font-size: 10px;
-            text-align: center;
-            color: #c3c3c3;
+
+        100% {
+            background-position: 0% 50%;
         }
     }
+
+    // 动态粒子背景
+    .particles-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(129, 199, 132, 0.6);
+            border-radius: 50%;
+            animation: floatParticle 20s infinite;
+
+            &.large {
+                width: 10px;
+                height: 10px;
+                background: rgba(165, 214, 167, 0.4);
+            }
+
+            &.small {
+                width: 4px;
+                height: 4px;
+                background: rgba(200, 230, 201, 0.8);
+            }
+        }
+    }
+
+    // 水稻叶片装饰
+    .rice-leaf-decorations {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+
+        .rice-leaf {
+            position: absolute;
+            opacity: 0.15;
+
+            &.leaf-1 {
+                left: -50px;
+                top: 20%;
+                width: 200px;
+                transform: rotate(-15deg);
+                animation: swayLeaf 8s ease-in-out infinite;
+            }
+
+            &.leaf-2 {
+                left: -30px;
+                top: 50%;
+                width: 180px;
+                transform: rotate(-25deg);
+                animation: swayLeaf 10s ease-in-out infinite reverse;
+            }
+
+            &.leaf-3 {
+                right: -40px;
+                top: 30%;
+                width: 220px;
+                transform: rotate(20deg);
+                animation: swayLeaf 9s ease-in-out infinite;
+            }
+
+            &.leaf-4 {
+                right: -20px;
+                top: 60%;
+                width: 160px;
+                transform: rotate(30deg);
+                animation: swayLeaf 7s ease-in-out infinite reverse;
+            }
+
+            &.leaf-5 {
+                left: 10%;
+                bottom: 15%;
+                width: 150px;
+                transform: rotate(-10deg);
+                animation: swayLeaf 11s ease-in-out infinite;
+            }
+
+            &.leaf-6 {
+                right: 15%;
+                bottom: 20%;
+                width: 180px;
+                transform: rotate(15deg);
+                animation: swayLeaf 9s ease-in-out infinite reverse;
+            }
+
+            svg {
+                width: 100%;
+                height: auto;
+
+                path {
+                    fill: none;
+                    stroke: #81C784;
+                    stroke-width: 2;
+                }
+            }
+        }
+
+        @keyframes swayLeaf {
+
+            0%,
+            100% {
+                transform: translateX(0) rotate(0deg);
+            }
+
+            25% {
+                transform: translateX(5px) rotate(3deg);
+            }
+
+            75% {
+                transform: translateX(-5px) rotate(-3deg);
+            }
+        }
+    }
+
+    // 光晕效果
+    .glow-effects {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: pulseGlow 6s ease-in-out infinite;
+
+            &.glow-1 {
+                width: 400px;
+                height: 400px;
+                background: radial-gradient(circle, #4CAF50, transparent);
+                top: -100px;
+                left: -100px;
+            }
+
+            &.glow-2 {
+                width: 300px;
+                height: 300px;
+                background: radial-gradient(circle, #81C784, transparent);
+                bottom: -50px;
+                right: 10%;
+                animation-delay: 2s;
+            }
+
+            &.glow-3 {
+                width: 250px;
+                height: 250px;
+                background: radial-gradient(circle, #A5D6A7, transparent);
+                top: 40%;
+                left: 30%;
+                animation-delay: 4s;
+            }
+        }
+
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    // 底部波浪
+    .wave-decoration {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 120px;
+        overflow: hidden;
+
+        svg {
+            width: 200%;
+            height: 100%;
+            animation: waveMove 10s linear infinite;
+
+            path {
+                fill: rgba(255, 255, 255, 0.08);
+            }
+        }
+
+        @keyframes waveMove {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+    }
+
+    // 登录容器
+    &-con {
+        position: absolute;
+        right: 10%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 420px;
+        z-index: 10;
+
+        @media (max-width: 768px) {
+            right: 50%;
+            transform: translate(50%, -50%);
+            width: 90%;
+            max-width: 420px;
+        }
+    }
+
+    // 登录卡片
+    .login-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        box-shadow:
+            0 25px 50px -12px rgba(0, 0, 0, 0.4),
+            0 0 40px rgba(129, 199, 132, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        overflow: hidden;
+        animation: cardFloat 3s ease-in-out infinite;
+
+        @keyframes cardFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .card-border-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    #81C784,
+                    #4CAF50,
+                    #81C784,
+                    transparent);
+            background-size: 200% 100%;
+            animation: borderShine 3s linear infinite;
+        }
+
+        @keyframes borderShine {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .ivu-card-head {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 32px 24px 24px;
+            text-align: center;
+
+            p {
+                height: 72px;
+            }
+        }
+
+        .ivu-card-body {
+            padding: 32px 40px 40px;
+        }
+    }
+
+    // 标题样式
+    .p-title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 0 !important;
+
+        .title-icon-wrapper {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .title-bg {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, rgba(129, 199, 132, 0.3), rgba(76, 175, 80, 0.2));
+                border-radius: 50%;
+                animation: iconPulse 2s ease-in-out infinite;
+
+                @keyframes iconPulse {
+
+                    0%,
+                    100% {
+                        transform: scale(1);
+                        opacity: 0.8;
+                    }
+
+                    50% {
+                        transform: scale(1.1);
+                        opacity: 1;
+                    }
+                }
+            }
+
+            .title-icon {
+                font-size: 36px;
+                color: #fff;
+                position: relative;
+                z-index: 1;
+                animation: iconBounce 2s ease-in-out infinite;
+
+                @keyframes iconBounce {
+
+                    0%,
+                    100% {
+                        transform: translateY(0);
+                    }
+
+                    50% {
+                        transform: translateY(-3px);
+                    }
+                }
+            }
+        }
+
+        .title-text {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+
+            .title-main {
+                font-size: 24px;
+                font-weight: 700;
+                color: #fff;
+                letter-spacing: 2px;
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            }
+
+            .title-sub {
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.7);
+                letter-spacing: 1px;
+            }
+        }
+    }
+
+    // 表单样式
+    .form-con {
+        padding-top: 8px;
+    }
+
+    .form-item-animated {
+        margin-bottom: 28px;
+
+        .input-wrapper {
+            position: relative;
+
+            .input-icon {
+                position: absolute;
+                left: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 20px;
+                color: rgba(255, 255, 255, 0.6);
+                z-index: 2;
+                transition: all 0.3s ease;
+            }
+
+            .animated-input {
+                .ivu-input {
+                    background: rgba(255, 255, 255, 0.08);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    border-radius: 12px;
+                    padding: 12px 16px 12px 48px;
+                    height: 50px;
+                    font-size: 15px;
+                    color: #fff;
+                    transition: all 0.3s ease;
+
+                    &::placeholder {
+                        color: rgba(255, 255, 255, 0.45);
+                    }
+
+                    &:focus {
+                        background: rgba(255, 255, 255, 0.12);
+                        border-color: #81C784;
+                        box-shadow:
+                            0 0 0 3px rgba(129, 199, 132, 0.2),
+                            0 4px 20px rgba(0, 0, 0, 0.2);
+
+                        &+.input-underline {
+                            width: 100%;
+                        }
+                    }
+
+                    &:hover {
+                        border-color: rgba(255, 255, 255, 0.3);
+                    }
+                }
+
+                .ivu-input-prefix {
+                    i {
+                        color: rgba(255, 255, 255, 0.6);
+                    }
+                }
+            }
+
+            .input-underline {
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                width: 0;
+                height: 2px;
+                background: linear-gradient(90deg, #81C784, #4CAF50);
+                transition: all 0.3s ease;
+                transform: translateX(-50%);
+            }
+
+            &:hover .input-icon {
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+            &:focus-within .input-icon {
+                color: #81C784;
+            }
+        }
+    }
+
+    // 登录按钮
+    .button-wrapper {
+        margin-top: 32px;
+        margin-bottom: 0;
+
+        .login-button {
+            height: 52px;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 6px;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32) !important;
+            border: none !important;
+            color: #fff !important;
+            box-shadow:
+                0 8px 25px rgba(76, 175, 80, 0.4),
+                0 4px 10px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                transition: left 0.5s ease;
+            }
+
+            &:hover {
+                transform: translateY(-3px);
+                box-shadow:
+                    0 12px 35px rgba(76, 175, 80, 0.5),
+                    0 6px 15px rgba(0, 0, 0, 0.3);
+
+                &::before {
+                    left: 100%;
+                }
+            }
+
+            &:active {
+                transform: translateY(-1px);
+            }
+
+            .btn-icon {
+                margin-right: 8px;
+                font-size: 18px;
+            }
+
+            .btn-text {
+                letter-spacing: 8px;
+            }
+
+            .loading-dots {
+                display: inline-flex;
+                gap: 4px;
+                margin-right: 8px;
+
+                span {
+                    width: 6px;
+                    height: 6px;
+                    background: #fff;
+                    border-radius: 50%;
+                    animation: loadingDot 1.4s ease-in-out infinite both;
+
+                    &:nth-child(1) {
+                        animation-delay: 0s;
+                    }
+
+                    &:nth-child(2) {
+                        animation-delay: 0.2s;
+                    }
+
+                    &:nth-child(3) {
+                        animation-delay: 0.4s;
+                    }
+                }
+            }
+
+            @keyframes loadingDot {
+
+                0%,
+                80%,
+                100% {
+                    transform: scale(0.6);
+                    opacity: 0.5;
+                }
+
+                40% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    // 注册链接
+    .options {
+        margin-top: 28px;
+        text-align: center;
+
+        .signup-option {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+                color: #81C784;
+
+                span {
+                    text-decoration: underline;
+                }
+            }
+
+            .option-icon {
+                margin-right: 6px;
+                font-size: 16px;
+            }
+
+            span {
+                color: #A5D6A7;
+                font-weight: 500;
+            }
+        }
+    }
+
+    // 底部信息
+    .login-footer {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 10;
+
+        .footer-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer-divider {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .highlight {
+            color: rgba(129, 199, 132, 0.8);
+        }
+    }
+}
+
+// 输入框验证错误样式
+.ivu-form-item-error {
+    .animated-input .ivu-input {
+        border-color: #f56c6c !important;
+        box-shadow: 0 0 0 3px rgba(245, 108, 108, 0.2) !important;
+    }
+
+    .input-icon {
+        color: #f56c6c !important;
+    }
+}
+
+// 全局滚动条隐藏
+.login::-webkit-scrollbar {
+    display: none;
 }

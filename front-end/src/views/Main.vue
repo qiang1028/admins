@@ -1,6 +1,3 @@
-<style lang="less">
-    @import "./main.less";
-</style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
         <div class="sidebar-menu-con" :style="{width: shrink?'72px':'240px', overflow: shrink ? 'visible' : 'auto'}">
@@ -14,11 +11,11 @@
                 :active-name="activeName">
             </shrinkable-menu>
         </div>
-        <div class="main-header-con" :style="{paddingLeft: shrink?'72px':'240px'}">
+        <div class="main-header-con" :style="{paddingLeft: shrink?'72px':'240px', display: 'flex', alignItems: 'center', width: '100%', height: '64px', position: 'fixed', top: 0, zIndex: 20}">
             <div class="main-header">
                 <div class="navicon-con">
                     <Button :style="{transform: 'rotateZ(' + (this.shrink ? '-90' : '0') + 'deg)'}" type="text" @click="toggleClick" class="menu-toggle-btn">
-                        <Icon type="ios-menu" size="26"></Icon>
+                        <Icon type="navicon" size="26"></Icon>
                     </Button>
                 </div>
                 <div class="header-middle-con">
@@ -76,6 +73,7 @@
         </div>
     </div>
 </template>
+
 <script>
     import shrinkableMenu from './main-components/shrinkable-menu/shrinkable-menu.vue';
     import tagsPageOpened from './main-components/tags-page-opened.vue';
@@ -202,3 +200,7 @@
         }
     };
 </script>
+
+<style lang="less">
+    @import "./main.less";
+</style>

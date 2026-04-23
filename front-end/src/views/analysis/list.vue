@@ -124,6 +124,7 @@
             </div>
             <div class="content-detail" v-html="details.info"></div>
             <div slot="footer" style="text-align:center;border-top:1px solid #f0f0f0;padding:16px;">
+                <Button type="primary" icon="ios-download-outline" @click="downloadReport" style="margin-right:12px;">下载报告</Button>
                 <Button type="text" @click="modalDetail = false">关闭</Button>
             </div>
         </Modal>
@@ -334,6 +335,94 @@
                 this.modalDetail=true
                 util.post(this,'admin/sys_analysis/getData',{id:param.row.id},function(datas){ 
                    _self.details=datas;
+                   // 处理图片横向展示
+                   _self.$nextTick(() => {
+                       _self.processImages();
+                   });
+                });
+            },
+            // 处理图片横向展示
+            processImages() {
+                const detailContent = document.querySelector('.analysis-page .content-detail');
+                if (!detailContent) return;
+                
+                // 查找所有独立的图片
+                const images = detailContent.querySelectorAll('img');
+                if (images.length === 0) return;
+                
+                // 检查是否已经有 image-gallery
+                let gallery = detailContent.querySelector('.image-gallery');
+                if (!gallery) {
+                    gallery = document.createElement('div');
+                    gallery.className = 'image-gallery';
+                } else {
+                    gallery.innerHTML = '';
+                }
+                
+                // 为图片添加标签
+                const labels = ['帧 1', '帧 2', '预测图片', '图片4', '图片5', '图片6'];
+                images.forEach((img, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'image-item';
+                    item.style.animationDelay = `${index * 0.1}s`;
+                    
+                    const label = document.createElement('div');
+                    label.className = 'image-label';
+                    label.textContent = labels[index] || ('图片' + (index + 1));
+                    
+                    item.appendChild(label);
+                    item.appendChild(img.cloneNode(true));
+                    gallery.appendChild(item);
+                    
+                    // 移除原图
+                    img.remove();
+                });
+                
+                // 找到第一个图片后面的位置插入 gallery
+                const firstImg = detailContent.querySelector('img');
+                if (firstImg) {
+                    firstImg.parentNode.insertBefore(gallery, firstImg);
+                } else {
+                    detailContent.insertBefore(gallery, detailContent.firstChild);
+                }
+                
+                // 处理预测结果文字
+                this.processPredictionResult(detailContent);
+            },
+            // 处理分析结果文字样式
+            processPredictionResult(detailContent) {
+                // 查找包含"预测"或"结果"的文本段落
+                const paragraphs = detailContent.querySelectorAll('p, h4, div');
+                paragraphs.forEach(p => {
+                    const text = p.textContent;
+                    // 如果包含预测相关关键词
+                    if (text.includes('预测') || text.includes('结果') || text.includes('准确率') || text.includes('置信度')) {
+                        // 检查是否已经有 analysis-result 类
+                        if (!p.classList.contains('analysis-result')) {
+                            // 查找紧跟的兄弟元素作为值
+                            let nextEl = p.nextElementSibling;
+                            if (nextEl && (nextEl.textContent.includes('%') || nextEl.textContent.includes('概率') || /\d+\.?\d*/.test(nextEl.textContent))) {
+                                // 创建分析结果容器
+                                const resultDiv = document.createElement('div');
+                                resultDiv.className = 'analysis-result';
+                                
+                                const labelEl = document.createElement('div');
+                                labelEl.className = 'result-label';
+                                labelEl.textContent = text.replace(/[：:]/g, '').trim() || '分析结果';
+                                
+                                const valueEl = document.createElement('div');
+                                valueEl.className = 'result-value';
+                                valueEl.textContent = nextEl.textContent.trim();
+                                
+                                resultDiv.appendChild(labelEl);
+                                resultDiv.appendChild(valueEl);
+                                
+                                p.parentNode.insertBefore(resultDiv, nextEl);
+                                p.remove();
+                                nextEl.remove();
+                            }
+                        }
+                    }
                 });
             },
             remove (param) {
@@ -353,6 +442,41 @@
                         });
                     }
                 });                          
+            },
+            // 下载报告
+            downloadReport() {
+                if (!this.details.title || !this.details.info) {
+                    this.$Message.warning('暂无报告内容');
+                    return;
+                }
+                
+                const printWindow = window.open('', '_blank');
+                if (!printWindow) {
+                    this.$Message.warning('请允许弹出窗口以便下载PDF');
+                    return;
+                }
+                
+                var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + this.details.title + '</title>' +
+                    '<style>' +
+                    '*{margin:0;padding:0;box-sizing:border-box;}' +
+                    'body{font-family:"Microsoft YaHei","PingFang SC","SimSun",sans-serif;padding:40px;max-width:800px;margin:0 auto;background:#fafbfc;color:#333;}' +
+                    'h2{text-align:center;font-size:20px;color:#333;border-bottom:2px solid #2d8cf0;padding-bottom:15px;margin:0 0 30px 0;}' +
+                    '.content{color:#475569;line-height:1.8;font-size:14px;background:#fafbfc;padding:20px;border-radius:8px;}' +
+                    '.content p{margin-bottom:12px;background:#fff;padding:12px;border-radius:6px;}' +
+                    '.content img{max-width:100%;width:100%;height:180px;object-fit:cover;border-radius:10px;display:block;margin:16px 0;box-shadow:0 2px 12px rgba(0,0,0,0.1);}' +
+                    '.image-gallery{display:flex;flex-wrap:nowrap;gap:20px;margin:24px 0;width:100%;}' +
+                    '.image-gallery .image-item{flex:1;min-width:0;background:#fff;padding:15px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);}' +
+                    '.image-gallery .image-label{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:14px;background:linear-gradient(135deg,#00D9A5,#4CAF50);color:#fff;padding:2px 10px;border-radius:10px;font-weight:600;width:fit-content;}' +
+                    '.image-gallery img{width:100% !important;height:180px;object-fit:cover;border-radius:10px;display:block;box-shadow:0 2px 12px rgba(0,0,0,0.1);}' +
+                    '.frame-tag{background:linear-gradient(135deg,#00D9A5,#4CAF50);color:#fff;padding:2px 10px;border-radius:10px;font-size:12px;font-weight:600;}' +
+                    '.analysis-result{margin:28px 0;font-size:15px;background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);}' +
+                    '.result-label{font-size:14px;font-weight:600;color:#666;margin-bottom:8px;}' +
+                    '.result-value{font-size:18px;font-weight:600;color:#333;line-height:1.5;}' +
+                    '@media print{body{padding:20px;background:#fff;}.content{background:#fff;}.content p{background:#fff;}.analysis-result{background:#fff;}.image-item{background:#fff;box-shadow:none;}}' +
+                    '</style></head><body><h2>' + this.details.title + '</h2><div class="content">' + this.details.info + '</div>' +
+                    '<scr' + 'ipt>window.onload=function(){setTimeout(function(){window.print();},500);}</scr' + 'ipt></body></html>';
+                printWindow.document.write(html);
+                printWindow.document.close();
             },
            
             addOkFun(){
@@ -409,7 +533,250 @@
     @glass-bg: rgba(255, 255, 255, 0.95);
     @shadow-light: 0 4px 16px rgba(0, 0, 0, 0.08);
     @shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+    // 详情模态框
+            .detail-modal {
+                .ivu-modal {
+                    .ivu-modal-content {
+                        border-radius: 20px;
+                        overflow: hidden;
+                        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                    }
+                }
 
+                .modal-header-custom {
+                    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1f2937 100%);
+                    padding: 24px 28px;
+                    border-bottom: none;
+
+                    .modal-title {
+                        color: #fff;
+                        font-size: 20px;
+                        font-weight: 600;
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+
+                        .title-icon {
+                            font-size: 24px;
+                            background: linear-gradient(135deg, #667eea, #764ba2);
+                            -webkit-background-clip: text;
+                            -webkit-text-fill-color: transparent;
+                        }
+                    }
+                }
+
+                .content-detail {
+                    height: 55vh;
+                    overflow-y: auto;
+                    padding: 28px;
+                    background: linear-gradient(135deg, #fafbfc 0%, #f8fafc 100%);
+                    border-radius: 16px;
+                    border: 1px solid #e2e8f0;
+
+                    h3 {
+                        text-align: center;
+                        color: #1e293b;
+                        font-size: 24px;
+                        font-weight: 700;
+                        margin-bottom: 20px;
+                        padding-bottom: 20px;
+                        border-bottom: 3px solid @primary-color;
+                        position: relative;
+
+                        &::after {
+                            content: '';
+                            position: absolute;
+                            bottom: -3px;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            width: 60px;
+                            height: 3px;
+                            background: linear-gradient(135deg, #667eea, #764ba2);
+                        }
+                    }
+
+                    h4 {
+                        color: #1e293b;
+                        font-size: 17px;
+                        font-weight: 600;
+                        margin: 24px 0 14px;
+                        padding-left: 14px;
+                        border-left: 4px solid @primary-color;
+                    }
+
+                    p {
+                        color: #475569;
+                        line-height: 1.9;
+                        margin-bottom: 12px;
+                        font-size: 16px;
+                    }
+
+                    img {
+                        max-width: 100%;
+                        border-radius: 12px;
+                        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+                        margin: 20px 0;
+                        transition: transform 0.3s;
+
+                        &:hover {
+                            transform: scale(1.02);
+                        }
+                    }
+
+                    hr {
+                        border: none;
+                        border-top: 2px dashed #e2e8f0;
+                        margin: 28px 0;
+                    }
+
+                    strong {
+                        color: #1e293b;
+                    }
+                }
+
+                // 图片横向一排展示样式
+                .image-gallery {
+                    display: flex;
+                    flex-wrap: nowrap;
+                    gap: 20px;
+                    margin: 24px 0;
+                    animation: galleryFadeIn 0.5s ease-out;
+                    
+                    @keyframes galleryFadeIn {
+                        from {
+                            opacity: 0;
+                            transform: translateY(15px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                    
+                    .image-item {
+                        flex: 1;
+                        position: relative;
+                        border:2px dashed rgba(0, 217, 165, 0.4);
+                        border-radius:12px;
+                        padding:10px;
+                        .image-label {
+                            display: inline-block !important;
+                            align-items: center;
+                            gap: 8px;
+                            margin-bottom: 0px;
+                            font-size: 14px;
+                            color: #A0A0A0;
+                            background: linear-gradient(135deg, #00D9A5, #4CAF50);
+                            color: #fff;
+                            padding: 2px 10px;
+                            border-radius: 10px;
+                            
+                            font-weight: 600;
+                            
+                        }
+                        
+                        img {
+                            width: 100%;
+                            height: 180px;
+                            object-fit: cover;
+                            border-radius: 10px;
+                            display: block;
+                            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+                            transition: all 0.3s ease;
+                            margin:5px auto;
+                            &:hover {
+                                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+                                transform: translateY(-3px);
+                            }
+                        }
+                    }
+                }
+                
+                // 分析结果样式
+                .analysis-result {
+                    margin: 28px 0;
+                    animation: resultSlideUp 0.5s ease-out;
+                    font-size:16px;
+                    @keyframes resultSlideUp {
+                        from {
+                            opacity: 0;
+                            transform: translateY(15px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                    
+                    .result-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #666;
+                        margin-bottom: 8px;
+                        letter-spacing: 1px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        
+                        &::before {
+                            content: '';
+                            width: 8px;
+                            height: 8px;
+                            background: #00D9A5;
+                            border-radius: 50%;
+                        }
+                    }
+                    
+                    .result-value {
+                        font-size: 18px;
+                        font-weight: 600;
+                        color: #333;
+                        line-height: 1.5;
+                    }
+                }
+                
+                // 保留旧类名兼容性
+                .prediction-result {
+                    .analysis-result();
+                }
+            }
+
+            // 添加/编辑模态框
+            .add-modal {
+                .ivu-modal {
+                    .ivu-modal-content {
+                        border-radius: 20px;
+                        overflow: hidden;
+                        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                    }
+                }
+
+                .modal-header-custom {
+                    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1f2937 100%);
+                    padding: 24px 28px;
+                    border-bottom: none;
+
+                    .modal-title {
+                        color: #fff;
+                        font-size: 20px;
+                        font-weight: 600;
+                        text-align: center;
+                    }
+                }
+
+                .form-container {
+                    padding: 24px;
+                }
+
+                .modal-footer-custom {
+                    padding: 20px 24px;
+                    border-top: 1px solid #f1f5f9;
+                    background: #fafbfc;
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 12px;
+                }
+            }
     // 页面容器 - 所有样式嵌套在此
     .analysis-page {
         padding: 24px;
@@ -830,143 +1197,7 @@
                 }
             }
 
-            // 详情模态框
-            .detail-modal {
-                .ivu-modal {
-                    .ivu-modal-content {
-                        border-radius: 20px;
-                        overflow: hidden;
-                        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                    }
-                }
-
-                .modal-header-custom {
-                    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1f2937 100%);
-                    padding: 24px 28px;
-                    border-bottom: none;
-
-                    .modal-title {
-                        color: #fff;
-                        font-size: 20px;
-                        font-weight: 600;
-                        display: flex;
-                        align-items: center;
-                        gap: 12px;
-
-                        .title-icon {
-                            font-size: 24px;
-                            background: linear-gradient(135deg, #667eea, #764ba2);
-                            -webkit-background-clip: text;
-                            -webkit-text-fill-color: transparent;
-                        }
-                    }
-                }
-
-                .content-detail {
-                    height: 55vh;
-                    overflow-y: auto;
-                    padding: 28px;
-                    background: linear-gradient(135deg, #fafbfc 0%, #f8fafc 100%);
-                    border-radius: 16px;
-                    border: 1px solid #e2e8f0;
-
-                    h3 {
-                        text-align: center;
-                        color: #1e293b;
-                        font-size: 24px;
-                        font-weight: 700;
-                        margin-bottom: 20px;
-                        padding-bottom: 20px;
-                        border-bottom: 3px solid @primary-color;
-                        position: relative;
-
-                        &::after {
-                            content: '';
-                            position: absolute;
-                            bottom: -3px;
-                            left: 50%;
-                            transform: translateX(-50%);
-                            width: 60px;
-                            height: 3px;
-                            background: linear-gradient(135deg, #667eea, #764ba2);
-                        }
-                    }
-
-                    h4 {
-                        color: #1e293b;
-                        font-size: 17px;
-                        font-weight: 600;
-                        margin: 24px 0 14px;
-                        padding-left: 14px;
-                        border-left: 4px solid @primary-color;
-                    }
-
-                    p {
-                        color: #475569;
-                        line-height: 1.9;
-                        margin-bottom: 14px;
-                    }
-
-                    img {
-                        max-width: 100%;
-                        border-radius: 12px;
-                        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-                        margin: 20px 0;
-                        transition: transform 0.3s;
-
-                        &:hover {
-                            transform: scale(1.02);
-                        }
-                    }
-
-                    hr {
-                        border: none;
-                        border-top: 2px dashed #e2e8f0;
-                        margin: 28px 0;
-                    }
-
-                    strong {
-                        color: #1e293b;
-                    }
-                }
-            }
-
-            // 添加/编辑模态框
-            .add-modal {
-                .ivu-modal {
-                    .ivu-modal-content {
-                        border-radius: 20px;
-                        overflow: hidden;
-                        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                    }
-                }
-
-                .modal-header-custom {
-                    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1f2937 100%);
-                    padding: 24px 28px;
-                    border-bottom: none;
-
-                    .modal-title {
-                        color: #fff;
-                        font-size: 20px;
-                        font-weight: 600;
-                        text-align: center;
-                    }
-                }
-
-                .form-container {
-                    padding: 24px;
-                }
-
-                .modal-footer-custom {
-                    padding: 20px 24px;
-                    border-top: 1px solid #f1f5f9;
-                    background: #fafbfc;
-                    display: flex;
-                    justify-content: flex-end;
-                    gap: 12px;
-                }
-            }
+            
 
             // 分页样式
             .pagination-wrapper {

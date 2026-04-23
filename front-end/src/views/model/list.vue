@@ -506,17 +506,23 @@
                     <p><strong>生成时间：</strong>${now.toLocaleString('zh-CN')}</p>
                     <hr/>
                     <h4>一、预测结果图片</h4>
-                    <p> 
-                        <span>帧1</span>
-                        <img src="http://localhost:8000${this.img1}" style="max-width:100%;border-radius:8px;" />
-                        <span>帧2</span>
-                        <img src="http://localhost:8000${this.img2}" style="max-width:100%;border-radius:8px;" />
-                        <span>预测的生长情况</span>
-                        <img src="${this.img3}" style="max-width:100%;border-radius:8px;" />
-                    </p>
+                    <div class="image-gallery"> 
+                        <div class="image-item">
+                            <span class="image-label">帧1</span>
+                            <img src="http://localhost:8000${this.img1}" style="max-width:100%;border-radius:8px;" />
+                        </div>
+                         <div class="image-item">
+                            <span class="image-label">帧2</span>
+                            <img src="http://localhost:8000${this.img2}" style="max-width:100%;border-radius:8px;" />
+                        </div>
+                        <div class="image-item">
+                            <span class="image-label">预测的生长情况</span>
+                            <img src="${this.img3}" style="max-width:100%;border-radius:8px;" />
+                        </div>
+                    </div>
                     <hr/>
                     <h4>二、分析结果</h4>
-                    ${this.predictInfo.analysis}
+                    <div class="analysis-result">${this.predictInfo.analysis}</div>
                     <hr/>
                     <h4>三、备注</h4>
                     <p>本报告由金堂水稻智慧监测平台自动生成，基于水稻生长图片序列预测分析。</p>

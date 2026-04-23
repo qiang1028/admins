@@ -1,6 +1,3 @@
-<style lang="less">
-    @import "../styles/menu.less";
-</style>
 <template>
     <div class="sidebar-menu-con ivu-layout" style="height: 100%;">
         <!-- Logo 区域 -->
@@ -125,3 +122,7 @@ export default {
     }
 };
 </script>
+
+<style lang="less">
+    @import "../styles/menu.less";
+</style>

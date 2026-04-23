@@ -1,10 +1,5 @@
 <template>
     <div class="rice-page">
-        <!-- 飘落粒子 -->
-        <div class="falling-particles">
-            <div class="particle" v-for="i in 15" :key="i" :style="getParticleStyle(i)"></div>
-        </div>
-        
         <!-- 页面标题区域 -->
         <div class="page-header">
             <div class="header-title">
@@ -19,7 +14,7 @@
             <Row :gutter="16">
                 <Col span="8">
                     <div class="stat-card stat-total">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #2d8cf0, #5aa5ff);">
+                        <div class="stat-icon">
                             <Icon type="ios-images-outline" />
                         </div>
                         <div class="stat-value">{{ count }}</div>
@@ -28,7 +23,7 @@
                 </Col>
                 <Col span="8">
                     <div class="stat-card stat-rice">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #4CAF50, #81C784);">
+                        <div class="stat-icon">
                             <Icon type="ios-checkmark-circle" />
                         </div>
                         <div class="stat-value">{{ data.length }}</div>
@@ -37,7 +32,7 @@
                 </Col>
                 <Col span="8">
                     <div class="stat-card stat-success">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #19be6b, #52cb80);">
+                        <div class="stat-icon">
                             <Icon type="ios-cloud-done-outline" />
                         </div>
                         <div class="stat-value">{{ uploadSuccess }}</div>
@@ -174,16 +169,30 @@
                     {
                         title: '预览图片',
                         key: 'url',
-                        width: 100,
+                        width: 120,
                         align: 'center',
                         render: (h, params) => {
+                            const imgSrc = params.row.file_path || '';
                             return h('div', {
                                 class: 'image-cell'
                             }, [
                                 h('img', {
                                     attrs: {
-                                        src:  params.row.file_path,
+                                        src: imgSrc,
                                         alt: 'Rice Image'
+                                    },
+                                    domProps: {
+                                        onError: (e) => {
+                                            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzk5OTkiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+5aSP5LqrPC90ZXh0Pjwvc3ZnPg==';
+                                        }
+                                    },
+                                    style: {
+                                        width: '60px',
+                                        height: '60px',
+                                        objectFit: 'cover',
+                                        borderRadius: '8px',
+                                        cursor: 'pointer',
+                                        border: '1px solid #e8e8e8'
                                     }
                                 })
                             ]);
@@ -243,16 +252,6 @@
             }
         },
         methods: {
-            getParticleStyle(index) {
-                const duration = Math.random() * 5 + 8;
-                const delay = Math.random() * 10;
-                const left = Math.random() * 100;
-                return {
-                    left: `${left}%`,
-                    animationDuration: `${duration}s`,
-                    animationDelay: `${delay}s`
-                };
-            },
             handleReset() {
                 this.searchForm.name = '';
                 this.searchForm.current = 1;
@@ -352,446 +351,172 @@
 
 <style lang="less">
     // ==========================================
-    // 极致美化水稻管理页面 - 水稻可视化系统
+    // 水稻管理页面 - 清新简洁风格
     // ==========================================
-    
-    // 水稻可视化主题色变量 - 绿色农业主题
-    @primary-color: #2d8cf0;
-    @success-color: #19be6b;
-    @warning-color: #ff9900;
-    @danger-color: #ed4014;
-    @rice-green: #4CAF50;
-    @rice-dark: #1B5E20;
-    @rice-light: #81C784;
-    @rice-accent: #A5D6A7;
-    @bg-dark: #0a1a0a;
-    @bg-card: rgba(255, 255, 255, 0.03);
-    @accent-gradient: linear-gradient(135deg, #4CAF50, #8BC34A, #CDDC39);
-    @glass-bg: rgba(255, 255, 255, 0.05);
-    @shadow-light: 0 4px 16px rgba(0, 0, 0, 0.1);
-    @shadow-hover: 0 12px 40px rgba(76, 175, 80, 0.2);
+
+    // 主题色变量
+    @primary-color: #19be6b;
+    @primary-light: #5cd79c;
+    @primary-dark: #0fb875;
+    @bg-light: #f5f7fa;
+    @card-bg: #ffffff;
+    @text-primary: #17233d;
+    @text-secondary: #515a6e;
+    @text-muted: #808695;
+    @border-color: #e8e8e8;
+    @shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+    @shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+    @shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
 
     // 页面容器
     .rice-page {
         padding: 24px;
         min-height: 100vh;
-        position: relative;
-        background: linear-gradient(135deg, #0a1a0a 0%, #0d260d 50%, #0a1a0a 100%);
-        overflow: hidden;
-
-        // 动态背景
-        &::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, rgba(129, 199, 132, 0.3), transparent),
-                radial-gradient(2px 2px at 40px 70px, rgba(76, 175, 80, 0.3), transparent),
-                radial-gradient(1px 1px at 90px 40px, rgba(165, 214, 167, 0.4), transparent),
-                radial-gradient(2px 2px at 130px 80px, rgba(129, 199, 132, 0.25), transparent);
-            background-repeat: repeat;
-            background-size: 180px 180px;
-            animation: starsMove 40s linear infinite;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        @keyframes starsMove {
-            from {
-                background-position: 0 0;
-            }
-            to {
-                background-position: 180px 360px;
-            }
-        }
-
-        // 光效叠加
-        &::after {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(76, 175, 80, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(139, 195, 74, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 50% 50%, rgba(165, 214, 167, 0.05) 0%, transparent 50%);
-            animation: bgPulse 6s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        @keyframes bgPulse {
-            0%, 100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 0.6;
-            }
-            50% {
-                transform: scale(1.1) rotate(3deg);
-                opacity: 1;
-            }
-        }
-
-        // 飘落的水稻粒子
-        .falling-particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-            overflow: hidden;
-
-            .particle {
-                position: absolute;
-                width: 4px;
-                height: 12px;
-                background: linear-gradient(to bottom, @rice-light, transparent);
-                border-radius: 2px;
-                opacity: 0.4;
-                animation: fall linear infinite;
-
-                @keyframes fall {
-                    0% {
-                        transform: translateY(-100vh) rotate(0deg);
-                        opacity: 0;
-                    }
-                    10% {
-                        opacity: 0.4;
-                    }
-                    90% {
-                        opacity: 0.4;
-                    }
-                    100% {
-                        transform: translateY(100vh) rotate(360deg);
-                        opacity: 0;
-                    }
-                }
-            }
-        }
+        background: linear-gradient(180deg, @bg-light 0%, #fff 100%);
     }
 
     // 页面标题区域
     .page-header {
-        background: linear-gradient(135deg, rgba(27, 94, 32, 0.95), rgba(46, 125, 50, 0.95), rgba(56, 142, 60, 0.95));
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 32px 36px;
-        margin-bottom: 28px;
-        color: #fff;
-        box-shadow: 
-            0 10px 40px rgba(27, 94, 32, 0.4),
-            0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-        position: relative;
-        overflow: hidden;
-        z-index: 10;
-        animation: headerSlide 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-        border: 1px solid rgba(129, 199, 132, 0.3);
+        background: linear-gradient(135deg, #fff 0%, #f0f5f0 100%);
+        border-radius: 16px;
+        padding: 28px 32px;
+        margin-bottom: 24px;
+        box-shadow: @shadow-md;
+        border: 1px solid @border-color;
+        animation: slideDown 0.4s ease-out;
 
-        @keyframes headerSlide {
-            0% {
-                opacity: 0;
-                transform: translateY(-30px) scale(0.95);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(129, 199, 132, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        &::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(129, 199, 132, 0.15), transparent, rgba(76, 175, 80, 0.15), transparent);
-            animation: borderRotate 10s linear infinite;
-        }
-
-        @keyframes borderRotate {
+        @keyframes slideDown {
             from {
-                transform: rotate(0deg);
+                opacity: 0;
+                transform: translateY(-10px);
             }
             to {
-                transform: rotate(360deg);
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
         .header-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 10px;
+            font-size: 24px;
+            font-weight: 600;
+            color: @text-primary;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 16px;
-            position: relative;
-            z-index: 1;
+            gap: 12px;
 
             .header-icon {
-                font-size: 36px;
-                background: linear-gradient(135deg, #A5D6A7 0%, #81C784 50%, #66BB6A 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                filter: drop-shadow(0 2px 8px rgba(129, 199, 132, 0.5));
-                animation: leafSway 3s ease-in-out infinite;
-                position: relative;
-
-                @keyframes leafSway {
-                    0%, 100% {
-                        transform: rotate(-5deg);
-                    }
-                    50% {
-                        transform: rotate(5deg);
-                    }
-                }
+                font-size: 32px;
+                color: @primary-color;
             }
 
             .title-text {
-                position: relative;
-                color: #fff;
-                text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-
-                &::after {
-                    content: '';
-                    position: absolute;
-                    bottom: -4px;
-                    left: 0;
-                    width: 100%;
-                    height: 3px;
-                    background: linear-gradient(90deg, @rice-light, @rice-accent, transparent);
-                    animation: underlineExpand 2s ease-out forwards;
-                }
-
-                @keyframes underlineExpand {
-                    from {
-                        width: 0;
-                    }
-                    to {
-                        width: 100%;
-                    }
-                }
+                background: linear-gradient(135deg, @text-primary 0%, @text-secondary 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
             }
         }
 
         .header-desc {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 15px;
-            position: relative;
-            z-index: 1;
-            margin-left: 52px;
-            animation: fadeInUp 0.6s ease-out 0.3s both;
+            color: @text-muted;
+            font-size: 14px;
+            margin-left: 44px;
         }
     }
 
     // 统计卡片区域
     .stats-container {
-        margin-bottom: 28px;
-        position: relative;
-        z-index: 10;
-        animation: fadeInUp 0.6s ease-out 0.2s both;
+        margin-bottom: 24px;
 
         .ivu-row {
-            margin: 0 -12px;
+            margin: 0 -8px;
 
             .ivu-col {
-                padding: 0 12px;
+                padding: 0 8px;
             }
         }
     }
 
     .stat-card {
-        background: @glass-bg;
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        padding: 28px;
-        box-shadow: 
-            0 8px 32px rgba(0, 0, 0, 0.2),
-            0 0 0 1px rgba(129, 199, 132, 0.1) inset;
-        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid rgba(129, 199, 132, 0.15);
-        position: relative;
-        overflow: hidden;
-        animation: cardBounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+        background: @card-bg;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: @shadow-sm;
+        border: 1px solid @border-color;
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.4s ease-out backwards;
 
         &:nth-child(1) { animation-delay: 0.1s; }
         &:nth-child(2) { animation-delay: 0.2s; }
         &:nth-child(3) { animation-delay: 0.3s; }
 
-        @keyframes cardBounceIn {
-            0% {
+        @keyframes fadeInUp {
+            from {
                 opacity: 0;
-                transform: translateY(30px) scale(0.9);
+                transform: translateY(10px);
             }
-            100% {
+            to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateY(0);
             }
-        }
-
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-color), transparent);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        &::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
-            opacity: 0.05;
-            transition: all 0.5s;
         }
 
         &:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 
-                0 20px 50px rgba(0, 0, 0, 0.3),
-                0 0 30px rgba(76, 175, 80, 0.2);
-
-            &::before {
-                opacity: 1;
-            }
-
-            &::after {
-                transform: scale(1.5);
-                opacity: 0.1;
-            }
-
-            .stat-icon {
-                transform: scale(1.15) rotate(8deg);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            }
-
-            .stat-value {
-                background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                text-shadow: 0 0 30px var(--accent-color);
-            }
+            transform: translateY(-4px);
+            box-shadow: @shadow-lg;
         }
 
         &.stat-total {
-            --accent-color: @primary-color;
-            --accent-light: #5aa5ff;
-            border-left: 4px solid @primary-color;
+            border-left: 4px solid #2d8cf0;
+            
+            .stat-icon {
+                background: linear-gradient(135deg, #2d8cf0, #5aa5ff);
+            }
         }
 
         &.stat-rice {
-            --accent-color: @rice-green;
-            --accent-light: @rice-light;
-            border-left: 4px solid @rice-green;
+            border-left: 4px solid @primary-color;
+            
+            .stat-icon {
+                background: linear-gradient(135deg, @primary-color, @primary-light);
+            }
         }
 
         &.stat-success {
-            --accent-color: @success-color;
-            --accent-light: #52cb80;
-            border-left: 4px solid @success-color;
+            border-left: 4px solid #19be6b;
+            
+            .stat-icon {
+                background: linear-gradient(135deg, #19be6b, #52cb80);
+            }
         }
 
         .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(25, 190, 107, 0.25);
 
-            &::after {
-                content: '';
-                position: absolute;
-                top: -50%;
-                left: -50%;
-                width: 200%;
-                height: 200%;
-                background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.2), transparent);
-                animation: iconShine 3s linear infinite;
-            }
-            
             .ivu-icon {
-                font-size: 32px;
+                font-size: 28px;
                 color: #fff;
-                position: relative;
-                z-index: 1;
-            }
-            
-            @keyframes iconShine {
-                from {
-                    transform: rotate(0deg);
-                }
-                to {
-                    transform: rotate(360deg);
-                }
             }
         }
 
         .stat-value {
-            font-size: 38px;
-            font-weight: 800;
+            font-size: 32px;
+            font-weight: 700;
+            color: @text-primary;
             line-height: 1;
             margin-bottom: 8px;
-            transition: all 0.4s;
-            position: relative;
-            display: inline-block;
-
-            &::after {
-                content: '';
-                position: absolute;
-                bottom: -2px;
-                left: 0;
-                width: 40px;
-                height: 3px;
-                background: var(--accent-color);
-                border-radius: 2px;
-                animation: valueUnderline 0.5s ease-out forwards;
-            }
-        }
-
-        @keyframes valueUnderline {
-            from {
-                width: 0;
-            }
-            to {
-                width: 40px;
-            }
         }
 
         .stat-label {
-            font-size: 15px;
-            color: rgba(255, 255, 255, 0.6);
-            font-weight: 500;
+            font-size: 14px;
+            color: @text-muted;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -800,113 +525,52 @@
                 content: '';
                 width: 6px;
                 height: 6px;
-                background: var(--accent-color);
+                background: @primary-color;
                 border-radius: 50%;
-                animation: labelPulse 1.5s ease-in-out infinite;
-            }
-
-            @keyframes labelPulse {
-                0%, 100% {
-                    opacity: 0.5;
-                    transform: scale(1);
-                }
-                50% {
-                    opacity: 1;
-                    transform: scale(1.2);
-                }
             }
         }
     }
 
     // 主内容卡片
     .content-card {
-        background: @glass-bg;
-        backdrop-filter: blur(20px);
-        border-radius: 20px;
-        box-shadow: 
-            0 10px 40px rgba(0, 0, 0, 0.2),
-            0 0 0 1px rgba(129, 199, 132, 0.1) inset;
-        border: 1px solid rgba(129, 199, 132, 0.15);
+        background: @card-bg;
+        border-radius: 16px;
+        box-shadow: @shadow-md;
+        border: 1px solid @border-color;
         overflow: hidden;
-        position: relative;
-        z-index: 10;
-        animation: fadeInUp 0.6s ease-out 0.4s both;
-
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.5), transparent);
-        }
+        animation: fadeInUp 0.4s ease-out 0.3s backwards;
 
         .card-header {
-            padding: 24px 32px;
-            border-bottom: 1px solid rgba(129, 199, 132, 0.15);
-            background: linear-gradient(135deg, rgba(27, 94, 32, 0.8), rgba(46, 125, 50, 0.8));
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-
-            &::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 1px;
-                background: linear-gradient(90deg, transparent, rgba(129, 199, 132, 0.3), transparent);
-            }
+            padding: 20px 24px;
+            border-bottom: 1px solid @border-color;
+            background: linear-gradient(135deg, #fafafa 0%, #fff 100%);
 
             .card-title {
-                font-size: 18px;
+                font-size: 16px;
                 font-weight: 600;
-                color: #fff;
+                color: @text-primary;
                 display: flex;
                 align-items: center;
-                gap: 12px;
+                gap: 10px;
 
                 .title-icon {
-                    color: @rice-light;
-                    font-size: 22px;
-                    animation: iconPulse 2s ease-in-out infinite;
-                }
-
-                @keyframes iconPulse {
-                    0%, 100% {
-                        transform: scale(1);
-                    }
-                    50% {
-                        transform: scale(1.1);
-                    }
+                    color: @primary-color;
+                    font-size: 20px;
                 }
 
                 .title-badge {
-                    background: linear-gradient(135deg, @rice-green, @rice-light);
+                    background: linear-gradient(135deg, @primary-color, @primary-light);
                     color: #fff;
-                    padding: 4px 10px;
+                    padding: 3px 10px;
                     border-radius: 20px;
                     font-size: 12px;
                     font-weight: 500;
-                    animation: badgePulse 2s ease-in-out infinite;
-                }
-
-                @keyframes badgePulse {
-                    0%, 100% {
-                        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
-                    }
-                    50% {
-                        box-shadow: 0 0 0 8px rgba(76, 175, 80, 0);
-                    }
                 }
             }
         }
 
         .card-body {
-            padding: 32px;
+            padding: 24px;
         }
     }
 
@@ -914,164 +578,74 @@
     .search-area {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 12px;
         flex-wrap: wrap;
-        margin-bottom: 28px;
-        padding: 24px;
-        background: linear-gradient(135deg, rgba(27, 94, 32, 0.6), rgba(46, 125, 50, 0.6));
-        border-radius: 16px;
-        border: 1px solid rgba(129, 199, 132, 0.2);
-        position: relative;
-        overflow: hidden;
-        animation: searchSlide 0.5s ease-out 0.5s both;
-
-        @keyframes searchSlide {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(129, 199, 132, 0.05), transparent, rgba(76, 175, 80, 0.05));
-            pointer-events: none;
-        }
+        margin-bottom: 20px;
 
         .search-input {
-            width: 320px;
-            transition: all 0.4s;
+            width: 280px;
 
             .ivu-input-wrapper {
                 .ivu-input {
-                    height: 42px;
-                    border-radius: 12px;
-                    background: rgba(255, 255, 255, 0.05);
-                    border: 1px solid rgba(129, 199, 132, 0.2);
-                    color: #fff;
-                    font-size: 14px;
-                    transition: all 0.3s;
-
-                    &::placeholder {
-                        color: rgba(255, 255, 255, 0.4);
-                    }
-
-                    &:hover {
-                        border-color: rgba(129, 199, 132, 0.5);
-                        background: rgba(255, 255, 255, 0.08);
-                    }
+                    height: 38px;
+                    border-radius: 8px;
+                    border-color: @border-color;
 
                     &:focus {
-                        border-color: @rice-green;
-                        background: rgba(255, 255, 255, 0.1);
-                        box-shadow: 
-                            0 0 0 3px rgba(76, 175, 80, 0.2),
-                            0 0 20px rgba(76, 175, 80, 0.2);
+                        border-color: @primary-color;
+                        box-shadow: 0 0 0 2px rgba(25, 190, 107, 0.1);
                     }
-                }
-
-                .ivu-input-icon {
-                    color: rgba(255, 255, 255, 0.5);
                 }
             }
         }
 
         .btn-search {
-            height: 42px;
-            padding: 0 24px;
-            background: linear-gradient(135deg, @rice-green, @rice-light) !important;
+            height: 38px;
+            padding: 0 20px;
+            background: linear-gradient(135deg, @primary-color, @primary-light) !important;
             border: none !important;
-            border-radius: 12px;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4) !important;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-
-            &::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-                transition: left 0.5s;
-            }
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(25, 190, 107, 0.3) !important;
 
             &:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5) !important;
-
-                &::before {
-                    left: 100%;
-                }
+                transform: translateY(-1px);
+                box-shadow: 0 6px 16px rgba(25, 190, 107, 0.4) !important;
             }
         }
 
         .btn-reset {
-            height: 42px;
-            padding: 0 20px;
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(129, 199, 132, 0.2) !important;
-            color: rgba(255, 255, 255, 0.7) !important;
-            border-radius: 12px;
-            transition: all 0.3s;
+            height: 38px;
+            padding: 0 18px;
+            border-radius: 8px;
+            border: 1px solid @border-color !important;
 
             &:hover {
-                border-color: @rice-green !important;
-                color: @rice-light !important;
-                background: rgba(76, 175, 80, 0.1) !important;
+                border-color: @primary-color !important;
+                color: @primary-color !important;
             }
         }
     }
 
     // 表格样式
     .data-table {
-        border-radius: 16px;
+        border-radius: 12px;
         overflow: hidden;
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(129, 199, 132, 0.05);
+        border: 1px solid @border-color;
 
         .ivu-table-wrapper {
-            border-radius: 16px;
-            overflow: hidden;
+            border: none;
 
             .ivu-table {
-                background: transparent;
                 font-size: 14px;
 
-                &::before, &::after {
-                    display: none;
-                }
-
                 th {
-                    background: linear-gradient(135deg, rgba(27, 94, 32, 0.95), rgba(46, 125, 50, 0.95)) !important;
-                    color: #fff;
+                    background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%) !important;
+                    color: @text-primary;
                     font-weight: 600;
                     font-size: 14px;
-                    padding: 18px 16px !important;
-                    border-bottom: 2px solid rgba(76, 175, 80, 0.3) !important;
-                    position: relative;
-
-                    &::after {
-                        content: '';
-                        position: absolute;
-                        bottom: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 2px;
-                        background: linear-gradient(90deg, transparent, @rice-green, transparent);
-                    }
+                    padding: 16px !important;
+                    border-bottom: 1px solid @border-color !important;
 
                     .ivu-table-cell {
                         padding: 0;
@@ -1082,83 +656,46 @@
                 }
 
                 td {
-                    padding: 18px 16px !important;
-                    color: rgba(255, 255, 255, 0.8);
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-                    background: transparent !important;
-                    transition: all 0.3s;
+                    padding: 16px !important;
+                    color: @text-secondary;
+                    border-bottom: 1px solid @border-color !important;
                 }
 
-                tr {
-                    transition: all 0.3s;
-                    animation: rowSlideIn 0.5s ease-out backwards;
-
-                    &:nth-child(1) { animation-delay: 0.05s; }
-                    &:nth-child(2) { animation-delay: 0.1s; }
-                    &:nth-child(3) { animation-delay: 0.15s; }
-                    &:nth-child(4) { animation-delay: 0.2s; }
-                    &:nth-child(5) { animation-delay: 0.25s; }
-                    &:nth-child(6) { animation-delay: 0.3s; }
-                    &:nth-child(7) { animation-delay: 0.35s; }
-                    &:nth-child(8) { animation-delay: 0.4s; }
-                    &:nth-child(9) { animation-delay: 0.45s; }
-                    &:nth-child(10) { animation-delay: 0.5s; }
-
-                    @keyframes rowSlideIn {
-                        from {
-                            opacity: 0;
-                            transform: translateX(-20px);
-                        }
-                        to {
-                            opacity: 1;
-                            transform: translateX(0);
-                        }
-                    }
-
-                    &:hover td {
-                        background: rgba(76, 175, 80, 0.1) !important;
-                        transform: scale(1.01);
-                    }
-                }
-
-                .ivu-table-row-hover td {
-                    background: rgba(76, 175, 80, 0.15) !important;
+                tr:hover td {
+                    background: #f8fff9 !important;
                 }
             }
         }
 
         .image-cell {
+            display: flex;
+            justify-content: center;
+            
             img {
-                width: 50px;
-                height: 50px;
+                width: 60px;
+                height: 60px;
                 object-fit: cover;
-                border-radius: 12px;
-                border: 2px solid rgba(76, 175, 80, 0.3);
-                transition: all 0.4s;
+                border-radius: 8px;
                 cursor: pointer;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                border: 1px solid @border-color;
+                transition: all 0.3s ease;
 
                 &:hover {
-                    transform: scale(1.15) rotate(2deg);
-                    border-color: @rice-green;
-                    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+                    transform: scale(1.1);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
                 }
             }
         }
 
         .date-cell {
-            color: rgba(255, 255, 255, 0.6);
+            color: @text-muted;
             font-size: 13px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
+            gap: 6px;
 
             .date-icon {
-                color: @rice-light;
-                animation: iconPulse 2s ease-in-out infinite;
+                color: @text-muted;
             }
         }
     }
@@ -1166,41 +703,43 @@
     // 操作按钮
     .action-btn {
         display: flex;
-        gap: 12px;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    // 分页样式
+    .pagination-wrapper {
+        margin-top: 20px;
+        padding: 16px 0;
+        display: flex;
         justify-content: center;
 
-        .btn-delete {
-            padding: 0 16px;
-            height: 34px;
-            background: rgba(237, 65, 20, 0.1) !important;
-            border: 1px solid rgba(237, 65, 20, 0.3) !important;
-            color: #ff6b6b !important;
-            border-radius: 10px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+        .ivu-page {
+            .ivu-page-item {
+                border-radius: 8px;
+                border-color: @border-color;
+                transition: all 0.3s ease;
 
-            &::before {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 0;
-                height: 0;
-                background: radial-gradient(circle, rgba(237, 65, 20, 0.3) 0%, transparent 70%);
-                border-radius: 50%;
-                transform: translate(-50%, -50%);
-                transition: width 0.4s, height 0.4s;
+                &:hover {
+                    border-color: @primary-color;
+                    color: @primary-color;
+                }
+
+                &.ivu-page-item-active {
+                    background: linear-gradient(135deg, @primary-color, @primary-light);
+                    border-color: transparent;
+                    color: #fff;
+                    box-shadow: 0 4px 12px rgba(25, 190, 107, 0.3);
+                }
             }
 
-            &:hover {
-                transform: translateY(-2px);
-                background: rgba(237, 65, 20, 0.2) !important;
-                box-shadow: 0 4px 15px rgba(237, 65, 20, 0.3) !important;
+            .ivu-page-prev, .ivu-page-next {
+                border-radius: 8px;
+                border-color: @border-color;
 
-                &::before {
-                    width: 200px;
-                    height: 200px;
+                &:hover {
+                    border-color: @primary-color;
+                    color: @primary-color;
                 }
             }
         }
@@ -1210,273 +749,92 @@
     .custom-modal {
         .ivu-modal {
             .ivu-modal-content {
-                border-radius: 24px;
+                border-radius: 16px;
                 overflow: hidden;
-                background: linear-gradient(135deg, rgba(27, 94, 32, 0.98), rgba(46, 125, 50, 0.98));
-                box-shadow: 
-                    0 25px 80px rgba(0, 0, 0, 0.5),
-                    0 0 0 1px rgba(129, 199, 132, 0.2);
-                animation: modalSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            }
-
-            @keyframes modalSlide {
-                from {
-                    opacity: 0;
-                    transform: scale(0.9) translateY(20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: scale(1) translateY(0);
-                }
             }
         }
 
         .modal-header-custom {
-            background: linear-gradient(135deg, rgba(27, 94, 32, 0.95), rgba(46, 125, 50, 0.95));
-            padding: 28px 32px;
-            border-bottom: none;
-            position: relative;
-            overflow: hidden;
-
-            &::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-                animation: headerShimmer 3s ease-in-out infinite;
-            }
-
-            @keyframes headerShimmer {
-                0%, 100% {
-                    transform: translateX(-100%);
-                }
-                50% {
-                    transform: translateX(100%);
-                }
-            }
+            background: linear-gradient(135deg, #fafafa 0%, #fff 100%);
+            padding: 20px 24px;
+            border-bottom: 1px solid @border-color;
 
             .modal-title {
-                color: #fff;
-                font-size: 22px;
+                color: @text-primary;
+                font-size: 18px;
                 font-weight: 600;
                 display: flex;
                 align-items: center;
-                gap: 14px;
-                position: relative;
-                z-index: 1;
+                gap: 10px;
 
                 .title-icon {
-                    font-size: 26px;
-                    color: @rice-light;
-                    animation: iconFloat 2s ease-in-out infinite;
-                }
-
-                @keyframes iconFloat {
-                    0%, 100% {
-                        transform: translateY(0);
-                    }
-                    50% {
-                        transform: translateY(-3px);
-                    }
+                    font-size: 22px;
+                    color: @primary-color;
                 }
             }
         }
 
         .form-container {
-            padding: 32px;
+            padding: 24px;
 
             .ivu-form-item-label {
-                color: @rice-light;
+                color: @text-secondary;
                 font-weight: 500;
             }
 
             .ivu-input, .ivu-select-selection {
-                border-radius: 12px;
-                background: rgba(255, 255, 255, 0.05);
-                border-color: rgba(129, 199, 132, 0.2);
-                color: #fff;
-
-                &::placeholder {
-                    color: rgba(255, 255, 255, 0.4);
-                }
+                border-radius: 8px;
+                border-color: @border-color;
 
                 &:focus {
-                    border-color: @rice-green;
-                    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
-                }
-            }
-
-            .ivu-select-dropdown {
-                background: rgba(27, 94, 32, 0.98);
-                border: 1px solid rgba(129, 199, 132, 0.2);
-                border-radius: 12px;
-
-                .ivu-select-item {
-                    color: rgba(255, 255, 255, 0.8);
-
-                    &:hover {
-                        background: rgba(76, 175, 80, 0.1);
-                    }
-
-                    &.ivu-select-item-selected {
-                        background: rgba(76, 175, 80, 0.2);
-                        color: @rice-light;
-                    }
+                    border-color: @primary-color;
+                    box-shadow: 0 0 0 2px rgba(25, 190, 107, 0.1);
                 }
             }
         }
 
         .modal-footer-custom {
-            padding: 24px 32px;
-            border-top: 1px solid rgba(129, 199, 132, 0.15);
-            background: rgba(0, 0, 0, 0.2);
+            padding: 16px 24px;
+            border-top: 1px solid @border-color;
             display: flex;
             justify-content: flex-end;
-            gap: 16px;
+            gap: 12px;
 
             .btn-cancel {
-                padding: 0 24px;
-                height: 40px;
-                background: rgba(255, 255, 255, 0.05) !important;
-                border: 1px solid rgba(255, 255, 255, 0.1) !important;
-                color: rgba(255, 255, 255, 0.7) !important;
-                border-radius: 12px;
-                transition: all 0.3s;
+                border-radius: 8px;
+                border-color: @border-color;
 
                 &:hover {
-                    border-color: @rice-green !important;
-                    color: @rice-light !important;
-                    background: rgba(76, 175, 80, 0.1) !important;
+                    border-color: @primary-color;
+                    color: @primary-color;
                 }
             }
 
             .btn-confirm {
-                padding: 0 28px;
-                height: 40px;
-                background: linear-gradient(135deg, @rice-green, @rice-light) !important;
+                border-radius: 8px;
+                background: linear-gradient(135deg, @primary-color, @primary-light) !important;
                 border: none !important;
-                color: #fff !important;
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4) !important;
-                transition: all 0.3s;
+                box-shadow: 0 4px 12px rgba(25, 190, 107, 0.3) !important;
 
                 &:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5) !important;
+                    transform: translateY(-1px);
+                    box-shadow: 0 6px 16px rgba(25, 190, 107, 0.4) !important;
                 }
             }
-        }
-    }
-
-    // 分页样式
-    .pagination-wrapper {
-        margin-top: 28px;
-        padding: 24px 0;
-        display: flex;
-        justify-content: center;
-        animation: fadeInUp 0.5s ease-out 0.6s both;
-
-        .ivu-page {
-            .ivu-page-item {
-                border-radius: 10px;
-                background: rgba(255, 255, 255, 0.05);
-                border: 1px solid rgba(129, 199, 132, 0.15);
-                color: rgba(255, 255, 255, 0.8);
-                transition: all 0.3s;
-                min-width: 36px;
-                height: 36px;
-                line-height: 36px;
-
-                &:hover {
-                    border-color: @rice-green;
-                    color: @rice-light;
-                    background: rgba(76, 175, 80, 0.1);
-                    transform: translateY(-2px);
-                }
-
-                &.ivu-page-item-active {
-                    background: linear-gradient(135deg, @rice-green, @rice-light);
-                    border-color: transparent;
-                    color: #fff;
-                    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
-                    font-weight: 600;
-                }
-            }
-
-            .ivu-page-prev, .ivu-page-next {
-                border-radius: 10px;
-                background: rgba(255, 255, 255, 0.05);
-                border: 1px solid rgba(129, 199, 132, 0.15);
-                color: rgba(255, 255, 255, 0.7);
-
-                &:hover {
-                    border-color: @rice-green;
-                    color: @rice-light;
-                }
-            }
-
-            .ivu-page-options {
-                .ivu-page-options-elevator {
-                    input {
-                        background: rgba(255, 255, 255, 0.05);
-                        border: 1px solid rgba(129, 199, 132, 0.15);
-                        color: #fff;
-                        border-radius: 8px;
-
-                        &:focus {
-                            border-color: @rice-green;
-                            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // 动画
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
         }
     }
 
     // 响应式
     @media (max-width: 768px) {
-        padding: 16px;
+        .rice-page {
+            padding: 16px;
+        }
 
         .page-header {
-            padding: 24px 20px;
+            padding: 20px;
 
             .header-title {
-                font-size: 22px;
-
-                .header-icon {
-                    font-size: 28px;
-                }
-            }
-
-            .header-desc {
-                font-size: 13px;
-                margin-left: 0;
+                font-size: 20px;
             }
         }
 
@@ -1486,15 +844,6 @@
 
             .search-input {
                 width: 100%;
-            }
-        }
-
-        .stat-card {
-            margin-bottom: 16px;
-            padding: 20px;
-
-            .stat-value {
-                font-size: 32px;
             }
         }
     }

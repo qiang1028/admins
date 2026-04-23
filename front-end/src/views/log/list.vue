@@ -826,7 +826,7 @@
                                         }
                                     }
                                 }, [
-                                    h('Icon', { props: { type: 'ios-eye-outline' } }),
+                                   
                                     h('span', '查看')
                                 ]),
                                 h('Button', {

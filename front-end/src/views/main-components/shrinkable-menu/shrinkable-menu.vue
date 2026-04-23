@@ -1,6 +1,3 @@
-<style lang="less">
-    @import "./styles/menu.less";
-</style>
 <template>
     <div class="ivu-layout ivu-layout-has-sider ivu-layout-sider-collapse-mode">
         <div class="sidebar-menu-con" :class="shrink ? 'ivu-layout-sider-collapsed' : ''">
@@ -75,9 +72,5 @@ export default {
 </script>
 
 <style lang="less">
-.ivu-layout-sider-collapse-mode {
-    .main-component-con {
-        margin-left: 0;
-    }
-}
+    @import "./styles/menu.less";
 </style>

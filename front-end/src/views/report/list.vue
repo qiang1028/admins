@@ -314,7 +314,57 @@
             }
         }
 
-        // 详情模态框
+        
+        // 分页样式
+        .pagination-wrapper {
+            margin-top: 20px;
+            padding: 16px 0;
+            display: flex;
+            justify-content: center;
+
+            .ivu-page {
+                .ivu-page-item {
+                    border-radius: 6px;
+
+                    &.ivu-page-item-active {
+                        background: linear-gradient(135deg, @report-blue, @report-light);
+                        border-color: @report-blue;
+                    }
+                }
+
+                .ivu-page-prev, .ivu-page-next {
+                    border-radius: 6px;
+                }
+            }
+        }
+
+        // 响应式
+        @media (max-width: 768px) {
+            padding: 16px;
+
+            .page-header {
+                padding: 20px;
+
+                .header-title {
+                    font-size: 20px;
+                }
+            }
+
+            .search-area {
+                flex-direction: column;
+                align-items: stretch;
+
+                .search-input {
+                    width: 100%;
+                }
+            }
+
+            .stat-card {
+                margin-bottom: 12px;
+            }
+        }
+    }
+    // 详情模态框
         .detail-modal {
             .ivu-modal {
                 .ivu-modal-content {
@@ -394,6 +444,7 @@
                     margin-bottom: 12px;
                     padding: 12px;
                     background: #fff;
+                    font-size: 16px;
                     border-radius: 6px;
                 }
 
@@ -412,6 +463,109 @@
                 strong {
                     color: #2c3e50;
                     font-weight: 600;
+                }
+
+                // 图片横向一排展示样式
+                .image-gallery {
+                    display: flex;
+                    flex-wrap: nowrap;
+                    gap: 20px;
+                    margin: 24px 0;
+                    animation: galleryFadeIn 0.5s ease-out;
+                    
+                    @keyframes galleryFadeIn {
+                        from {
+                            opacity: 0;
+                            transform: translateY(15px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                    
+                    .image-item {
+                        flex: 1;
+                        position: relative;
+                        
+                        .image-label {
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                            margin-bottom: 10px;
+                            font-size: 14px;
+                        
+                            background: linear-gradient(135deg, #00D9A5, #4CAF50);
+                            color: #fff;
+                            padding: 2px 10px;
+                            border-radius: 10px;
+                            font-weight: 600;
+                            
+                        }
+                        
+                        img {
+                            width: 100%;
+                            height: 180px;
+                            object-fit: cover;
+                            border-radius: 10px;
+                            display: block;
+                            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+                            transition: all 0.3s ease;
+                            
+                            &:hover {
+                                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+                                transform: translateY(-3px);
+                            }
+                        }
+                    }
+                }
+                
+                // 分析结果样式
+                .analysis-result {
+                    margin: 28px 0;
+                    animation: resultSlideUp 0.5s ease-out;
+                    font-size:15px;
+                    @keyframes resultSlideUp {
+                        from {
+                            opacity: 0;
+                            transform: translateY(15px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                    
+                    .result-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #666;
+                        margin-bottom: 8px;
+                        letter-spacing: 1px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        
+                        &::before {
+                            content: '';
+                            width: 8px;
+                            height: 8px;
+                            background: #00D9A5;
+                            border-radius: 50%;
+                        }
+                    }
+                    
+                    .result-value {
+                        font-size: 18px;
+                        font-weight: 600;
+                        color: #333;
+                        line-height: 1.5;
+                    }
+                }
+                
+                // 保留旧类名兼容性
+                .prediction-result {
+                    .analysis-result();
                 }
             }
 
@@ -434,55 +588,6 @@
             }
         }
 
-        // 分页样式
-        .pagination-wrapper {
-            margin-top: 20px;
-            padding: 16px 0;
-            display: flex;
-            justify-content: center;
-
-            .ivu-page {
-                .ivu-page-item {
-                    border-radius: 6px;
-
-                    &.ivu-page-item-active {
-                        background: linear-gradient(135deg, @report-blue, @report-light);
-                        border-color: @report-blue;
-                    }
-                }
-
-                .ivu-page-prev, .ivu-page-next {
-                    border-radius: 6px;
-                }
-            }
-        }
-
-        // 响应式
-        @media (max-width: 768px) {
-            padding: 16px;
-
-            .page-header {
-                padding: 20px;
-
-                .header-title {
-                    font-size: 20px;
-                }
-            }
-
-            .search-area {
-                flex-direction: column;
-                align-items: stretch;
-
-                .search-input {
-                    width: 100%;
-                }
-            }
-
-            .stat-card {
-                margin-bottom: 12px;
-            }
-        }
-    }
 </style>
 
 <template>
@@ -582,9 +687,10 @@
                 </div>
             </div>
             <div class="modal-body">
-                <div class="content-detail" v-html="details.info"></div>
+                <div class="content-detail" ref="reportContent" v-html="details.info"></div>
             </div>
             <div slot="footer" class="modal-footer">
+                <Button type="primary" icon="ios-download-outline" @click="downloadReport" style="margin-right:12px;">下载报告</Button>
                 <Button type="text" @click="modalDetail = false">关闭</Button>
             </div>
         </Modal>
@@ -593,6 +699,7 @@
 
 <script>
     import util from '@/libs/util.js';
+    import html2canvas from 'html2canvas';
     export default {
         data () {
             return {
@@ -651,10 +758,7 @@
                             return h('div', {
                                 class: 'date-cell'
                             }, [
-                                h('Icon', {
-                                    props: { type: 'ios-clock-outline' },
-                                    class: 'date-icon'
-                                }),
+                                
                                 h('span', params.row.update_date)
                             ]);
                         }
@@ -677,7 +781,7 @@
                                         }
                                     }
                                 }, [
-                                    h('Icon', { props: { type: 'ios-eye-outline' } }),
+                                    
                                     h('span', '查看详情')
                                 ])
                             ]);
@@ -748,6 +852,94 @@
                 this.modalDetail=true
                 util.post(this,'admin/sys_analysis/getData',{id:param.row.id},function(datas){ 
                    _self.details=datas;
+                   // 处理图片横向展示
+                   _self.$nextTick(() => {
+                       _self.processImages();
+                   });
+                });
+            },
+            // 处理图片横向展示
+            processImages() {
+                const detailContent = document.querySelector('.report-page .content-detail');
+                if (!detailContent) return;
+                
+                // 查找所有独立的图片
+                const images = detailContent.querySelectorAll('img');
+                if (images.length === 0) return;
+                
+                // 检查是否已经有 image-gallery
+                let gallery = detailContent.querySelector('.image-gallery');
+                if (!gallery) {
+                    gallery = document.createElement('div');
+                    gallery.className = 'image-gallery';
+                } else {
+                    gallery.innerHTML = '';
+                }
+                
+                // 为图片添加标签
+                const labels = ['帧 1', '帧 2', '预测图片', '图片4', '图片5', '图片6'];
+                images.forEach((img, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'image-item';
+                    item.style.animationDelay = `${index * 0.1}s`;
+                    
+                    const label = document.createElement('div');
+                    label.className = 'image-label';
+                    label.textContent = labels[index] || ('图片' + (index + 1));
+                    
+                    item.appendChild(label);
+                    item.appendChild(img.cloneNode(true));
+                    gallery.appendChild(item);
+                    
+                    // 移除原图
+                    img.remove();
+                });
+                
+                // 找到第一个图片后面的位置插入 gallery
+                const firstImg = detailContent.querySelector('img');
+                if (firstImg) {
+                    firstImg.parentNode.insertBefore(gallery, firstImg);
+                } else {
+                    detailContent.insertBefore(gallery, detailContent.firstChild);
+                }
+                
+                // 处理预测结果文字
+                this.processPredictionResult(detailContent);
+            },
+            // 处理分析结果文字样式
+            processPredictionResult(detailContent) {
+                // 查找包含"预测"或"结果"的文本段落
+                const paragraphs = detailContent.querySelectorAll('p, h4, div');
+                paragraphs.forEach(p => {
+                    const text = p.textContent;
+                    // 如果包含预测相关关键词
+                    if (text.includes('预测') || text.includes('结果') || text.includes('准确率') || text.includes('置信度')) {
+                        // 检查是否已经有 analysis-result 类
+                        if (!p.classList.contains('analysis-result')) {
+                            // 查找紧跟的兄弟元素作为值
+                            let nextEl = p.nextElementSibling;
+                            if (nextEl && (nextEl.textContent.includes('%') || nextEl.textContent.includes('概率') || /\d+\.?\d*/.test(nextEl.textContent))) {
+                                // 创建分析结果容器
+                                const resultDiv = document.createElement('div');
+                                resultDiv.className = 'analysis-result';
+                                
+                                const labelEl = document.createElement('div');
+                                labelEl.className = 'result-label';
+                                labelEl.textContent = text.replace(/[：:]/g, '').trim() || '分析结果';
+                                
+                                const valueEl = document.createElement('div');
+                                valueEl.className = 'result-value';
+                                valueEl.textContent = nextEl.textContent.trim();
+                                
+                                resultDiv.appendChild(labelEl);
+                                resultDiv.appendChild(valueEl);
+                                
+                                p.parentNode.insertBefore(resultDiv, nextEl);
+                                p.remove();
+                                nextEl.remove();
+                            }
+                        }
+                    }
                 });
             },
             remove (param) {
@@ -767,6 +959,41 @@
                         });
                     }
                 });                          
+            },
+            // 下载报告
+            downloadReport() {
+                if (!this.details.title || !this.details.info) {
+                    this.$Message.warning('暂无报告内容');
+                    return;
+                }
+                
+                const printWindow = window.open('', '_blank');
+                if (!printWindow) {
+                    this.$Message.warning('请允许弹出窗口以便下载PDF');
+                    return;
+                }
+                
+                var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + this.details.title + '</title>' +
+                    '<style>' +
+                    '*{margin:0;padding:0;box-sizing:border-box;}' +
+                    'body{font-family:"Microsoft YaHei","PingFang SC","SimSun",sans-serif;padding:40px;max-width:800px;margin:0 auto;background:#fafbfc;color:#333;}' +
+                    'h2{text-align:center;font-size:20px;color:#333;border-bottom:2px solid #6b8eb5;padding-bottom:15px;margin:0 0 30px 0;}' +
+                    '.content{color:#475569;line-height:1.8;font-size:14px;background:#fafbfc;padding:20px;border-radius:8px;}' +
+                    '.content p{margin-bottom:12px;background:#fff;padding:12px;border-radius:6px;}' +
+                    '.content img{max-width:100%;width:100%;height:180px;object-fit:cover;border-radius:10px;display:block;margin:16px 0;box-shadow:0 2px 12px rgba(0,0,0,0.1);}' +
+                    '.image-gallery{display:flex;flex-wrap:nowrap;gap:20px;margin:24px 0;width:100%;}' +
+                    '.image-gallery .image-item{flex:1;min-width:0;background:#fff;padding:15px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);}' +
+                    '.image-gallery .image-label{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:14px;background:linear-gradient(135deg,#00D9A5,#4CAF50);color:#fff;padding:2px 10px;border-radius:10px;font-weight:600;width:fit-content;}' +
+                    '.image-gallery img{width:100% !important;height:180px;object-fit:cover;border-radius:10px;display:block;box-shadow:0 2px 12px rgba(0,0,0,0.1);}' +
+                    '.frame-tag{background:linear-gradient(135deg,#00D9A5,#4CAF50);color:#fff;padding:2px 10px;border-radius:10px;font-size:12px;font-weight:600;}' +
+                    '.analysis-result{margin:28px 0;font-size:15px;background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);}' +
+                    '.result-label{font-size:14px;font-weight:600;color:#666;margin-bottom:8px;}' +
+                    '.result-value{font-size:18px;font-weight:600;color:#333;line-height:1.5;}' +
+                    '@media print{body{padding:20px;background:#fff;}.content{background:#fff;}.content p{background:#fff;}.analysis-result{background:#fff;}.image-item{background:#fff;box-shadow:none;}}' +
+                    '</style></head><body><h2>' + this.details.title + '</h2><div class="content">' + this.details.info + '</div>' +
+                    '<scr' + 'ipt>window.onload=function(){setTimeout(function(){window.print();},500);}</scr' + 'ipt></body></html>';
+                printWindow.document.write(html);
+                printWindow.document.close();
             }
         },
         mounted () {

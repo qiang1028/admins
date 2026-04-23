@@ -1,46 +1,466 @@
-.user-infor{
+// ==========================================
+// 首页仪表盘样式 - 现代科技风格
+// ==========================================
+
+.dashboard-container {
+    min-height: 100%;
+    background: linear-gradient(135deg, #0a0e27 0%, #0d1b2a 50%, #1a1f4e 100%);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+
+    // 背景装饰
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+            radial-gradient(ellipse at top left, rgba(0, 217, 165, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at bottom right, rgba(102, 126, 234, 0.08) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
+    // ==========================================
+    // 顶部导航栏
+    // ==========================================
+    .dashboard-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        position: relative;
+        z-index: 10;
+
+        .header-left {
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-size: 20px;
+                font-weight: 700;
+                color: #fff;
+
+                i {
+                    font-size: 28px;
+                    color: #00D9A5;
+                    animation: logoRotate 10s linear infinite;
+                }
+
+                @keyframes logoRotate {
+                    from {
+                        transform: rotate(0deg);
+                    }
+
+                    to {
+                        transform: rotate(360deg);
+                    }
+                }
+            }
+        }
+
+        .header-center {
+            .time-box {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                color: #fff;
+
+                i {
+                    font-size: 18px;
+                    color: #00D9A5;
+                }
+
+                .time {
+                    font-size: 28px;
+                    font-weight: 700;
+                    font-family: 'Roboto Mono', monospace;
+                    letter-spacing: 2px;
+                }
+
+                .date {
+                    font-size: 14px;
+                    color: rgba(255, 255, 255, 0.6);
+                    margin-left: 8px;
+                }
+            }
+        }
+
+        .header-right {
+            .weather-box {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #fff;
+                font-size: 14px;
+
+                i {
+                    font-size: 20px;
+                    color: #FFD93D;
+                }
+            }
+        }
+    }
+
+    // ==========================================
+    // 主内容区
+    // ==========================================
+    .dashboard-content {
+        padding: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    // ==========================================
+    // 统计卡片行
+    // ==========================================
+    .stat-row {
+        margin-bottom: 16px;
+
+        .ivu-col {
+            margin-bottom: 16px;
+        }
+    }
+
+    .stat-card {
+        height: 100px;
+        border-radius: 16px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        &:hover {
+            transform: translateY(-4px) scale(1.02);
+
+            &::before {
+                opacity: 1;
+            }
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+
+            i {
+                font-size: 30px;
+                color: #fff;
+            }
+        }
+
+        .stat-info {
+            flex: 1;
+            margin-left: 20px;
+            position: relative;
+            z-index: 1;
+
+            .stat-value {
+                font-size: 32px;
+                font-weight: 800;
+                color: #fff;
+                line-height: 1;
+                margin-bottom: 6px;
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            }
+
+            .stat-label {
+                font-size: 13px;
+                color: rgba(255, 255, 255, 0.7);
+                letter-spacing: 0.5px;
+            }
+        }
+
+        .stat-trend {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+
+            i {
+                font-size: 20px;
+            }
+
+            &.up {
+                background: rgba(76, 175, 80, 0.2);
+                color: #4CAF50;
+                box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            }
+
+            &.down {
+                background: rgba(244, 67, 54, 0.2);
+                color: #F44336;
+                box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+            }
+        }
+
+        // 统计卡片变体
+        &.stat-card-1 {
+            background: linear-gradient(135deg, rgba(0, 217, 165, 0.2) 0%, rgba(0, 184, 148, 0.1) 100%);
+            border: 1px solid rgba(0, 217, 165, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 217, 165, 0.15);
+
+            .stat-icon {
+                background: linear-gradient(135deg, #00D9A5 0%, #00B894 100%);
+                box-shadow: 0 4px 20px rgba(0, 217, 165, 0.4);
+            }
+
+            &::before {
+                background: linear-gradient(135deg, rgba(0, 217, 165, 0.1) 0%, transparent 100%);
+            }
+        }
+
+        &.stat-card-2 {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
+
+            .stat-icon {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            }
+        }
+
+        &.stat-card-3 {
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.2) 0%, rgba(245, 124, 0, 0.1) 100%);
+            border: 1px solid rgba(255, 152, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(255, 152, 0, 0.15);
+
+            .stat-icon {
+                background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+                box-shadow: 0 4px 20px rgba(255, 152, 0, 0.4);
+            }
+        }
+
+        &.stat-card-4 {
+            background: linear-gradient(135deg, rgba(244, 67, 54, 0.2) 0%, rgba(211, 47, 47, 0.1) 100%);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            box-shadow: 0 8px 32px rgba(244, 67, 54, 0.15);
+
+            .stat-icon {
+                background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+                box-shadow: 0 4px 20px rgba(244, 67, 54, 0.4);
+            }
+        }
+    }
+
+    // ==========================================
+    // 主内容行
+    // ==========================================
+    .main-row {
+        margin-bottom: 16px;
+    }
+
+    .sub-row {
+        margin-top: 16px;
+    }
+
+    // ==========================================
+    // 卡片通用样式
+    // ==========================================
+    .card-box {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+
+        &:hover {
+            border-color: rgba(0, 217, 165, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(0, 217, 165, 0.1) 0%, transparent 100%);
+
+            .header-title {
+                font-size: 16px;
+                font-weight: 600;
+                color: #fff;
+            }
+
+            .header-tag {
+                margin-left: 12px;
+                padding: 4px 10px;
+                background: rgba(0, 217, 165, 0.15);
+                border: 1px solid rgba(0, 217, 165, 0.3);
+                border-radius: 20px;
+                font-size: 11px;
+                color: #00D9A5;
+                font-weight: 500;
+            }
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+    }
+
+    // ==========================================
+    // 环境监测区域
+    // ==========================================
+    .env-section {
+        .card-body {
+            padding: 12px;
+        }
+    }
+
+    // ==========================================
+    // 待办事项区域
+    // ==========================================
+    .todo-section {
+        .card-body {
+            padding: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+
+            &::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: rgba(0, 217, 165, 0.3);
+                border-radius: 2px;
+            }
+        }
+    }
+
+    .todo-list {
+        .todo-item {
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    // ==========================================
+    // 响应式适配
+    // ==========================================
+    @media screen and (max-width: 768px) {
+        .dashboard-header {
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+
+            .header-center .time-box {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+
+        .stat-card {
+            height: auto;
+            flex-direction: column;
+            text-align: center;
+            padding: 16px;
+
+            .stat-info {
+                margin: 12px 0;
+            }
+        }
+
+        .todo-list {
+            grid-template-columns: 1fr !important;
+        }
+    }
+}
+
+// ==========================================
+// 旧版首页兼容样式
+// ==========================================
+.user-infor {
     height: 135px;
 }
-.avator-img{
+
+.avator-img {
     display: block;
     width: 80%;
     max-width: 100px;
     height: auto;
 }
-.card-user-infor-name{
+
+.card-user-infor-name {
     font-size: 2em;
-    color: #2d8cf0;
+    color: #00D9A5;
 }
-.card-title{
-    color: #abafbd;
+
+.card-title {
+    color: rgba(255, 255, 255, 0.6);
 }
-.made-child-con-middle{
+
+.made-child-con-middle {
     height: 100%;
 }
-.to-do-list-con{
+
+.to-do-list-con {
     height: 145px;
     overflow: auto;
 }
-.to-do-item{
+
+.to-do-item {
     padding: 2px;
 }
-.infor-card-con{
+
+.infor-card-con {
     height: 100px;
 }
-.infor-card-icon-con{
+
+.infor-card-icon-con {
     height: 100%;
     color: white;
     border-radius: 3px 0 0 3px;
 }
-.map-con{
+
+.map-con {
     height: 305px;
 }
-.map-incon{
+
+.map-incon {
     height: 100%;
 }
-.data-source-row{
+
+.data-source-row {
     height: 200px;
 }
-.line-chart-con{
+
+.line-chart-con {
     height: 150px;
 }

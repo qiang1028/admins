@@ -1,20 +1,18 @@
 <template>
     <div class="login" @keydown.enter="handleSubmit">
-        <!-- Canvas粒子背景 -->
-        <canvas id="particles-canvas"></canvas>
-        
         <!-- 动态渐变背景 -->
-        <div class="gradient-bg">
-            <div class="gradient-orb orb-1"></div>
-            <div class="gradient-orb orb-2"></div>
-            <div class="gradient-orb orb-3"></div>
+        <div class="particles-bg">
+            <div class="particle large" v-for="i in 15" :key="'large-'+i" :style="getParticleStyle(i, 'large')"></div>
+            <div class="particle" v-for="i in 30" :key="'normal-'+i" :style="getParticleStyle(i, 'normal')"></div>
+            <div class="particle small" v-for="i in 20" :key="'small-'+i" :style="getParticleStyle(i, 'small')"></div>
         </div>
         
-        <!-- 浮动水稻叶片装饰 -->
-        <div class="rice-decorations">
+        <!-- 水稻叶片装饰 -->
+        <div class="rice-leaf-decorations">
             <div class="rice-leaf leaf-1">
                 <svg viewBox="0 0 100 50" fill="none">
                     <path d="M5 45 Q30 25 50 5 Q70 25 95 45" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M20 45 Q40 30 50 20 Q60 30 80 45" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/>
                 </svg>
             </div>
             <div class="rice-leaf leaf-2">
@@ -32,30 +30,37 @@
                     <path d="M5 45 Q30 25 50 5 Q70 25 95 45" stroke="currentColor" stroke-width="2" fill="none"/>
                 </svg>
             </div>
+            <div class="rice-leaf leaf-5">
+                <svg viewBox="0 0 100 50" fill="none">
+                    <path d="M5 45 Q30 25 50 5 Q70 25 95 45" stroke="currentColor" stroke-width="2" fill="none"/>
+                </svg>
+            </div>
+            <div class="rice-leaf leaf-6">
+                <svg viewBox="0 0 100 50" fill="none">
+                    <path d="M5 45 Q30 25 50 5 Q70 25 95 45" stroke="currentColor" stroke-width="2" fill="none"/>
+                </svg>
+            </div>
         </div>
         
-        <!-- 星光粒子 -->
-        <div class="star-particles">
-            <div class="star" v-for="i in 20" :key="i" :style="getStarStyle(i)"></div>
+        <!-- 光晕效果 -->
+        <div class="glow-effects">
+            <div class="glow-orb glow-1"></div>
+            <div class="glow-orb glow-2"></div>
+            <div class="glow-orb glow-3"></div>
         </div>
-        
-        <!-- 科技网格线 -->
-        <div class="grid-overlay"></div>
 
         <div class="login-con">
             <Card :bordered="false" class="login-card">
-                <!-- 卡片光效 -->
-                <div class="card-glow"></div>
-                <div class="card-shine"></div>
+                <div class="card-border-glow"></div>
                 
                 <p slot="title" class="p-title">
                     <span class="title-icon-wrapper">
+                        <div class="title-bg"></div>
                         <Icon type="ios-leaf" class="title-icon"></Icon>
-                        <div class="icon-ring"></div>
                     </span>
                     <span class="title-text">
                         <span class="title-main">水稻生长可视化预测系统</span>
-                        <span class="title-sub typewriter">Rice Growth Visualization System</span>
+                        <span class="title-sub">Rice Growth Visualization System</span>
                     </span>
                 </p>
                 
@@ -68,10 +73,8 @@
                                     v-model="form.userName" 
                                     placeholder="请输入用户名" 
                                     class="animated-input"
-                                >
-                                </Input>
+                                ></Input>
                                 <div class="input-underline"></div>
-                                <div class="input-glow"></div>
                             </div>
                         </FormItem>
                         <FormItem prop="password" class="form-item-animated">
@@ -82,10 +85,8 @@
                                     v-model="form.password" 
                                     placeholder="请输入密码" 
                                     class="animated-input"
-                                >
-                                </Input>
+                                ></Input>
                                 <div class="input-underline"></div>
-                                <div class="input-glow"></div>
                             </div>
                         </FormItem>
                         <FormItem class="button-wrapper">
@@ -106,8 +107,6 @@
                                     </span>
                                     <span class="loading-text">登录中...</span>
                                 </span>
-                                <div class="button-ripple"></div>
-                                <div class="button-shine"></div>
                             </Button>
                         </FormItem>
                     </Form>
@@ -124,7 +123,8 @@
         <!-- 底部波浪装饰 -->
         <div class="wave-decoration">
             <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
-                <path d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,90 1440,60 L1440,120 L0,120 Z" fill="rgba(255,255,255,0.05)"/>
+                <path d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,90 1440,60 L1440,120 L0,120 Z"/>
+                <path d="M720,60 C1080,120 1440,0 1800,60 C1980,90 2100,90 2160,60 L2160,120 L720,120 Z"/>
             </svg>
         </div>
         
@@ -162,15 +162,16 @@ export default {
     mounted () {
         localStorage.clear();
         console.log('清除数据。。。');
-        this.initParticles();
     },
     methods: {
-        getStarStyle(index) {
-            const size = Math.random() * 4 + 2;
-            const duration = Math.random() * 3 + 2;
-            const delay = Math.random() * 5;
-            const left = Math.random() * 100;
-            const top = Math.random() * 100;
+        getParticleStyle(index, type) {
+            const seed = index * 137.508;
+            const size = type === 'large' ? 10 : type === 'small' ? 4 : 6;
+            const duration = 15 + (index % 10);
+            const delay = (index * 0.5) % 10;
+            const left = ((seed * 1.618) % 100);
+            const top = ((seed * 0.618) % 100);
+            
             return {
                 width: `${size}px`,
                 height: `${size}px`,
@@ -179,75 +180,6 @@ export default {
                 animationDuration: `${duration}s`,
                 animationDelay: `${delay}s`
             };
-        },
-        initParticles() {
-            const canvas = document.getElementById('particles-canvas');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            
-            const particles = [];
-            const particleCount = 80;
-            const colors = ['#4CAF50', '#81C784', '#A5D6A7', '#667eea', '#764ba2'];
-            
-            for (let i = 0; i < particleCount; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 3 + 1,
-                    speedX: Math.random() * 0.5 - 0.25,
-                    speedY: Math.random() * 0.5 - 0.25,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    opacity: Math.random() * 0.5 + 0.2
-                });
-            }
-            
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                particles.forEach(p => {
-                    p.x += p.speedX;
-                    p.y += p.speedY;
-                    
-                    if (p.x < 0) p.x = canvas.width;
-                    if (p.x > canvas.width) p.x = 0;
-                    if (p.y < 0) p.y = canvas.height;
-                    if (p.y > canvas.height) p.y = 0;
-                    
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                    ctx.fillStyle = p.color;
-                    ctx.globalAlpha = p.opacity;
-                    ctx.fill();
-                    
-                    particles.forEach(p2 => {
-                        const dx = p.x - p2.x;
-                        const dy = p.y - p2.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        
-                        if (distance < 150) {
-                            ctx.beginPath();
-                            ctx.moveTo(p.x, p.y);
-                            ctx.lineTo(p2.x, p2.y);
-                            ctx.strokeStyle = p.color;
-                            ctx.globalAlpha = (1 - distance / 150) * 0.2;
-                            ctx.lineWidth = 0.5;
-                            ctx.stroke();
-                        }
-                    });
-                });
-                
-                requestAnimationFrame(animate);
-            }
-            
-            animate();
-            
-            window.addEventListener('resize', () => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            });
         },
         handleSubmit () {         
             let _self=this;
@@ -278,8 +210,9 @@ export default {
             });
         },
         Register() {
+            console.log("sss")
             this.$router.push({
-                path: '/register'
+                name: 'register'
             });
         }
     }

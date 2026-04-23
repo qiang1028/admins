@@ -12,6 +12,14 @@ export const loginRouter = {
     component: resolve => { require(['@/views/login.vue'], resolve); }
 };
 
+export const registerRouter = {
+    path: '/register',
+    name: 'register',
+    meta: {
+        title: '后台管理系统 - 注册'
+    },
+    component: resolve => { require(['@/views/register/index.vue'], resolve); }
+};
 export const page404 = {
     path: '/*',
     name: 'error-404',
@@ -52,7 +60,7 @@ export const otherRouter = {
     redirect: '/home',
     component: Main,
     children: [
-        { path: 'home', title: {i18n: 'home'}, name: 'home_index', component: resolve => { require(['@/views/sys/home.vue'], resolve); } },
+        { path: 'home', title: { i18n: 'home' }, name: 'home_index', component: resolve => { require(['@/views/sys/home.vue'], resolve); } },
         { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: resolve => { require(['@/views/sys/own-space.vue'], resolve); } },
         { path: 'message', title: '消息中心', name: 'message_index', component: resolve => { require(['@/views/demo/message/message.vue'], resolve); } }
     ]
@@ -64,12 +72,12 @@ export let appRouter = [
 ]
 
 
-if(localStorage.getItem("user")){   
-    if(localStorage.getItem('menuList')){
+if (localStorage.getItem("user")) {
+    if (localStorage.getItem('menuList')) {
         let list = JSON.parse(localStorage.getItem('menuList'));
-        appRouter =util.reloadMenu(list);
+        appRouter = util.reloadMenu(list);
     }
-    
+
 }
 
 
@@ -77,6 +85,7 @@ if(localStorage.getItem("user")){
 export const routers = [
     loginRouter,
     otherRouter,
+    registerRouter,
     locking,
     ...appRouter,
     page500,
