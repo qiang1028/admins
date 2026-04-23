@@ -8,7 +8,7 @@ let util = {
 
 };
 util.title = function (title) {
-    title = title || '后台管理系统';
+    title = title || '数据可视化预测系统';
     window.document.title = title;
 };
 
@@ -17,38 +17,87 @@ const ajaxUrl = env === 'development'
     : env === 'production'
         ? 'https://demo.housailei.info/'
         : 'https://demo.housailei.info/';
-        
-window.UPLOAD_IMG_URL='http://p2fovavhn.bkt.clouddn.com/';
 
+window.UPLOAD_IMG_URL = 'http://p2fovavhn.bkt.clouddn.com/';
+const basePYUrl = "http://localhost:8000/"
+util.basePYUrl = basePYUrl
+util.ajaxUrl = ajaxUrl
 util.ajax = axios.create({
     baseURL: ajaxUrl,
     timeout: 30000,
 });
-
-util.post = function (vm,url, param,cb) {
+util.post1 = function (vm, url, param, cb) {
+    let axiosIns = axios.create({
+        baseURL: basePYUrl,
+        timeout: 30000,
+        headers: {
+            "Content-Type": "application/json",
+            "x-token": localStorage.getItem('token')
+        }
+    });
+    axiosIns.post(url, param).then(res => {
+        console.log(res, 'res');
+        vm.loading = false;
+        if ((res && res.success)) {
+            cb(res.data.data ? res.data.data : res.data);
+        } else {
+        }
+    }).catch(err => {
+        console.log(err);
+        vm.$Message.destroy();
+        util.changeModalLoading(vm);
+        vm.$Message.error('请求数据异常，请稍后重试！');
+    })
+};
+util.delete1 = function (vm, url, param, cb) {
+    let axiosIns = axios.create({
+        baseURL: basePYUrl,
+        timeout: 30000,
+        headers: {
+            "Content-Type": "application/json",
+            "x-token": localStorage.getItem('token')
+        }
+    });
+    axiosIns.delete(url, param).then(res => {
+        console.log(res, 'res');
+        vm.loading = false;
+        if ((res && res.success)) {
+            cb(res.data.data ? res.data.data : res.data);
+        } else {
+        }
+    }).catch(err => {
+        console.log(err);
+        vm.$Message.destroy();
+        util.changeModalLoading(vm);
+        vm.$Message.error('请求数据异常，请稍后重试！');
+    })
+};
+util.post = function (vm, url, param, cb) {
     let axiosIns = axios.create({
         baseURL: ajaxUrl,
         timeout: 30000,
-        headers: {"Content-Type": "application/json",
-                  "x-token":localStorage.getItem('token')
+        headers: {
+            "Content-Type": "application/json",
+            "x-token": localStorage.getItem('token')
         }
     });
-    axiosIns.post(url, param ).then( res => {  
-        console.log(res.data);
-        vm.loading =false; 
-        if(res&&res.status==200&&res.data&&res.data.errno==0){
-            cb(res.data.data);
-        }else{
+    axiosIns.post(url, param).then(res => {
+        console.log(res, 'res');
+
+        vm.loading = false;
+        if ((res && res.status == 200 && res.data && res.data.errno == 0) || (res && res.data && res.data.status == 'success')) {
+            cb(res.data.data ? res.data.data : res.data);
+        } else {
             vm.$Message.destroy();
             util.changeModalLoading(vm);
-            if(res.data&&res.data.errmsg&&res.data.errmsg.length>0){
+            if (res.data && res.data.errmsg && res.data.errmsg.length > 0) {
                 vm.$Message.error(res.data.errmsg);
-            }else{
+            } else {
                 vm.$Message.error('请求数据异常，请稍后重试！');
-            }           
+            }
         }
-        
-        
+
+
     }).catch(err => {
         console.log(err);
         vm.$Message.destroy();
@@ -57,73 +106,102 @@ util.post = function (vm,url, param,cb) {
     })
 };
 
-util.imageUpload = function (vm,file,cb) {
-    vm.$Notice.info({title:'图片上传中，请耐心等待...',duration:0})
+util.imageUpload = function (vm, file, cb) {
+    vm.$Notice.info({ title: '图片上传中，请耐心等待...', duration: 0 })
     var formData = new FormData();
-    formData.append('file', file);
-    util.post(vm,'admin/common/uploadToken',{},function(datas){ 
+    formData.append('files', file);
+    util.post(vm, 'admin/common/uploadToken', {}, function (datas) {
         formData.append('token', datas.token);
         axios({
-           url: 'http://up.qiniu.com',
-           method: 'POST',
-           data: formData
+            url: 'http://localhost:8000/upload-image',
+            method: 'POST',
+            data: formData
         })
-        .then((result) => {
+            .then((result) => {
+                console.log(result)
+                vm.$Notice.destroy();
+                cb(result.data);
+            })
+            .catch((err) => {
+                console.log(err);
+                vm.$Notice.destroy();
+                vm.$Notice.error({ title: '上传图片出错，请重试！', duration: 2 });
+            })
+    });
+};
+util.imageUpload1 = function (vm, file, cb) {
+    vm.$Notice.info({ title: '图片上传中，请耐心等待...', duration: 0 })
+    var formData = new FormData();
+    formData.append('files', file);
+    util.post(vm, 'admin/common/uploadToken', {}, function (datas) {
+        formData.append('token', datas.token);
+        util.post(vm, 'admin/common/uploadImage', formData, function (result) {
+            console.log(result)
             vm.$Notice.destroy();
-            cb(result.data.key);
-        })           
-        .catch((err) => {
-            console.log(err);
-            vm.$Notice.destroy();
-            vm.$Notice.error({title:'上传图片出错，请重试！',duration:2});
-        })                         
+            cb(result);
+        })
+        // axios({
+        //     url: ajaxUrl + 'admin/common/uploadImage',//uploadImage
+        //     method: 'POST',
+        //     data: formData
+        // })
+        //     .then((result) => {
+        //         console.log(result)
+        //         vm.$Notice.destroy();
+        //         cb(result.data);
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //         vm.$Notice.destroy();
+        //         vm.$Notice.error({ title: '上传图片出错，请重试！', duration: 2 });
+        //     })
     });
 };
 
-      
 
-util.changeModalLoading=function (vm , flag) {
-    if(flag){
+
+util.changeModalLoading = function (vm, flag) {
+    if (flag) {
         vm.modalLoading = true;
         vm.modalCanBut = false;
-    }else{
+    } else {
         vm.modalLoading = false;
         vm.modalCanBut = true;
         vm.loading = false;
     }
-    
+
 };
 
-util.copy=function (datas) {
-    let obj={};  
-    obj=JSON.parse(JSON.stringify(datas));
-    return obj    
+util.copy = function (datas) {
+    let obj = {};
+    obj = JSON.parse(JSON.stringify(datas));
+    return obj
 };
 
-util.showDictLabel=function (type,value) {
-    let dicts=localStorage.getItem('dicts');  
-    if(dicts){
-        dicts=JSON.parse(dicts);
-        if(dicts&&dicts[type]&&dicts[type][value]){
-            return dicts[type][value]; 
+util.showDictLabel = function (type, value) {
+    let dicts = localStorage.getItem('dicts');
+    if (dicts) {
+        dicts = JSON.parse(dicts);
+        if (dicts && dicts[type] && dicts[type][value]) {
+            return dicts[type][value];
         }
     }
-    return '-';     
+    return '-';
 };
 
-util.showDictList=function (type) {
-    let list=[];  
-    let dicts=localStorage.getItem('dicts');
-    if(dicts){
-        dicts=JSON.parse(dicts);
-        if(dicts&&dicts[type]){
-            let obj=dicts[type];
-            for(var key in obj){
-                list.push({value:key,label:obj[key]});
+util.showDictList = function (type) {
+    let list = [];
+    let dicts = localStorage.getItem('dicts');
+    if (dicts) {
+        dicts = JSON.parse(dicts);
+        if (dicts && dicts[type]) {
+            let obj = dicts[type];
+            for (var key in obj) {
+                list.push({ value: key, label: obj[key] });
             }
-        }   
-    } 
-    return list    
+        }
+    }
+    return list
 };
 
 util.inOf = function (arr, targetArr) {
@@ -247,7 +325,7 @@ util.setCurrentPath = function (vm, name) {
                     name: 'home_index'
                 }
             ];
-        } else if (currentPathObj.children.length <= 1 &&!currentPathObj.children[0].icon&& currentPathObj.name !== 'home') {
+        } else if (currentPathObj.children.length <= 1 && !currentPathObj.children[0].icon && currentPathObj.name !== 'home') {
             currentPathArr = [
                 {
                     title: '首页',
@@ -369,42 +447,58 @@ util.checkUpdate = function (vm) {
         }
     });
 };
+util.notice = function (vm, msg) {
+    vm.$Notice.info({
+        title: 'warning',
+        desc: `<p>${msg}</p>`
+    });
+}
+util.get = function (url, param, cb) {
+    axios.get(url).then(res => {
+        cb(res)
+    });
+};
 
+util.get_home = function (url, param, cb) {
+    axios.get(ajaxUrl + url).then(res => {
+        cb(res)
+    });
+};
 
-util.reloadMenu=function(list){
+util.reloadMenu = function (list) {
     let _menuList = [];
-    list.forEach((item, index) => {              
-        if (!item.children||item.children.length == 0) {
-            let _item={};
-            _item.path='/'+item.name;
-            _item.icon=item.icon;
-            _item.name=item.name;
-            _item.title=item.title;
-            _item.component=Main;
-            _item.children=[{
+    list.forEach((item, index) => {
+        if (!item.children || item.children.length == 0) {
+            let _item = {};
+            _item.path = '/' + item.name;
+            _item.icon = item.icon;
+            _item.name = item.name;
+            _item.title = item.title;
+            _item.component = Main;
+            _item.children = [{
                 path: 'index',
-                name: item.name+'_index',
+                name: item.name + '_index',
                 title: item.title,
-                component: resolve => { require(['@/views/'+item.href+'.vue'], resolve); }
+                component: resolve => { require(['@/views/' + item.href + '.vue'], resolve); }
             }];
             _menuList.push(_item);
         } else {
-            let _item={};
-            _item.path='/'+item.name;
-            _item.icon=item.icon;
-            _item.name=item.name;
-            _item.title=item.title;
-            _item.component=Main;
-            _item.children=[];
-            item.children.forEach((item2, index) => {                        
+            let _item = {};
+            _item.path = '/' + item.name;
+            _item.icon = item.icon;
+            _item.name = item.name;
+            _item.title = item.title;
+            _item.component = Main;
+            _item.children = [];
+            item.children.forEach((item2, index) => {
                 _item.children.push({
                     path: item2.name,
                     icon: item2.icon,
                     name: item2.name,
                     title: item2.title,
-                    component: resolve => { require(['@/views/'+item2.href+'.vue'], resolve); }
+                    component: resolve => { require(['@/views/' + item2.href + '.vue'], resolve); }
                 });
-            });                 
+            });
             _menuList.push(_item);
         }
     });

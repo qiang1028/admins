@@ -1,11 +1,9 @@
 const path = require('path');
 const isDev = think.env === 'development';
-const id_16 = require('id-16');
-const id = id_16.generator(4);
 const kcors = require('kcors');
 
 module.exports = [
-  {  
+  {
     handle: kcors, // 处理跨域
     options: {}
   },
@@ -31,9 +29,16 @@ module.exports = [
       debug: true,
       sourceMap: false,
       error(err, ctx) {
-        let _id=think.datetime(new Date(),'YYYYMMDDHHmmss'+id());
-        think.logger.error("异常编号:",_id," , 异常内容:",err);
-        return ctx.fail(Number(ctx.body.errno),"请求失败！错误ID："+_id);
+        let now = new Date();
+        let _id = now.getFullYear() +
+          String(now.getMonth() + 1).padStart(2, '0') +
+          String(now.getDate()).padStart(2, '0') +
+          String(now.getHours()).padStart(2, '0') +
+          String(now.getMinutes()).padStart(2, '0') +
+          String(now.getSeconds()).padStart(2, '0') +
+          Math.random().toString(36).substr(2, 4);
+        think.logger.error("异常编号:", _id, " , 异常内容:", err.message || err);
+        return ctx.fail(9999, "请求失败！错误ID：" + _id);
       }
     }
   },

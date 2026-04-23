@@ -1,36 +1,32 @@
 <style lang="less">
-    @import './styles/menu.less';
+    @import "./styles/menu.less";
 </style>
-
 <template>
-    <div :style="{background: bgColor}" class="ivu-shrinkable-menu">
-        <slot name="top"></slot>
-        <sidebar-menu 
-            v-show="!shrink"
-            :menu-theme="theme" 
-            :menu-list="menuList" 
-            :open-names="openNames"
-            @on-change="handleChange"
-        ></sidebar-menu>
-        <sidebar-menu-shrink 
-            v-show="shrink"
-            :menu-theme="theme" 
-            :menu-list="menuList" 
-            :icon-color="shrinkIconColor"
-            @on-change="handleChange"
-        ></sidebar-menu-shrink>
+    <div class="ivu-layout ivu-layout-has-sider ivu-layout-sider-collapse-mode">
+        <div class="sidebar-menu-con" :class="shrink ? 'ivu-layout-sider-collapsed' : ''">
+            <sidebar-menu 
+                :menu-list="menuList"
+                :active-name="activeName"
+                :open-names="openNames"
+                :theme="theme"
+                @on-select="turnToPage"
+                :shrink="shrink"
+            ></sidebar-menu>
+        </div>
+        <div class="main-component-con">
+            <slot></slot>
+        </div>
     </div>
 </template>
 
 <script>
 import sidebarMenu from './components/sidebarMenu.vue';
-import sidebarMenuShrink from './components/sidebarMenuShrink.vue';
-import util from '@/libs/util';
+import Util from '@/libs/util';
+
 export default {
     name: 'shrinkableMenu',
     components: {
-        sidebarMenu,
-        sidebarMenuShrink
+        sidebarMenu
     },
     props: {
         shrink: {
@@ -39,45 +35,49 @@ export default {
         },
         menuList: {
             type: Array,
-            required: true
+            default: () => []
+        },
+        beforePush: {
+            type: Function,
+            default: () => {
+                return (name) => true;
+            }
+        },
+        openNames: {
+            type: Array,
+            default: () => []
+        },
+        activeName: {
+            type: String,
+            default: ''
         },
         theme: {
             type: String,
-            default: 'dark',
-            validator (val) {
-                return util.oneOf(val, ['dark', 'light']);
-            }
-        },
-        beforePush: {
-            type: Function
-        },
-        openNames: {
-            type: Array
-        }
-    },
-    computed: {
-        bgColor () {
-            return this.theme === 'dark' ? '#495060' : '#fff';
-        },
-        shrinkIconColor () {
-            return this.theme === 'dark' ? '#fff' : '#495060';
+            default: 'dark'
         }
     },
     methods: {
-        handleChange (name) {
-            let willpush = true;
-            if (this.beforePush !== undefined) {
-                if (!this.beforePush(name)) {
-                    willpush = false;
-                }
-            }
-            if (willpush) {
+        handleSelect (name) {
+            let willPush = this.beforePush(name);
+            if (willPush) {
                 this.$router.push({
                     name: name
                 });
             }
-            this.$emit('on-change', name);
+            this.$emit('on-select', name);
+        },
+        turnToPage (name) {
+            Util.openNewPage(this.$parent.$parent, name, this.$route.params || {}, this.$route.query || {});
+            this.handleSelect(name);
         }
     }
 };
 </script>
+
+<style lang="less">
+.ivu-layout-sider-collapse-mode {
+    .main-component-con {
+        margin-left: 0;
+    }
+}
+</style>

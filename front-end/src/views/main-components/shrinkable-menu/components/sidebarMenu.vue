@@ -1,64 +1,127 @@
 <style lang="less">
-    @import '../styles/menu.less';
+    @import "../styles/menu.less";
 </style>
-
 <template>
-    <Menu ref="sideMenu" :active-name="$route.name" :open-names="openNames" :theme="menuTheme" width="auto" @on-select="changeMenu">
-        <template v-for="item in menuList">
-            <MenuItem v-if="item.children.length<=1&&!item.children[0].icon" :name="item.children[0].name" :key="item.id">
-                <Icon :type="item.icon" :size="iconSize" :key="item.id"></Icon>
-                <span class="layout-text" :key="item.id">{{ itemTitle(item) }}</span>
-            </MenuItem>
-
-            <Submenu v-if="item.children.length >=1&&item.children[0].icon" :name="item.name" :key="item.id">
-                <template slot="title">
-                    <Icon :type="item.icon" :size="iconSize"></Icon>
-                    <span class="layout-text">{{ itemTitle(item) }}</span>
-                </template>
-                <template v-for="child in item.children">
-                    <MenuItem :name="child.name" :key="child.id">
-                        <Icon :type="child.icon" :size="iconSize" :key="child.id"></Icon>
-                        <span class="layout-text" :key="child.id">{{ itemTitle(child) }}</span>
-                    </MenuItem>
-                </template>
-            </Submenu>
-        </template>
-    </Menu>
+    <div class="sidebar-menu-con ivu-layout" style="height: 100%;">
+        <!-- Logo 区域 -->
+        <div class="logo-con">
+            <div class="logo-icon-wrapper">
+                <div class="logo-icon-inner">
+                    <Icon type="ios-leaf" class="logo-icon" />
+                </div>
+                <div class="logo-glow"></div>
+            </div>
+            <div class="logo-text-group">
+                <div class="logo-title-wrap">
+                    <span class="logo-title">智慧农业</span>
+                    <span class="logo-badge">管理平台</span>
+                </div>
+                <div class="logo-slogan">SMART AGRICULTURE</div>
+            </div>
+        </div>
+        
+        <!-- 菜单 -->
+        <div class="menu-scroll-wrapper">
+            <Menu 
+                ref="sideMenu" 
+                :active-name="activeName" 
+                :theme="theme" 
+                width="auto" 
+                @on-select="handleSelect"
+                class="sidebar-menu"
+            >
+                <!-- 遍历所有菜单项（扁平化） -->
+                <menu-item 
+                    v-for="item in flatMenuList" 
+                    :key="item.name" 
+                    :name="item.name"
+                >
+                    <div class="menu-item-wrapper">
+                        <Icon :type="item.icon || 'ios-radio-button-off'" class="menu-item-icon" />
+                        <span class="menu-item-text">{{ item.title }}</span>
+                    </div>
+                </menu-item>
+            </Menu>
+        </div>
+        
+        <!-- 底部信息 -->
+        <div class="sidebar-footer">
+            <div class="footer-divider">
+                <span class="divider-line"></span>
+                <span class="divider-dot"></span>
+                <span class="divider-line"></span>
+            </div>
+            <div class="footer-content">
+                <div class="footer-version">
+                    <span class="version-tag">v</span>
+                    <span class="version-number">2.0</span>
+                    <span class="version-badge">PRO</span>
+                </div>
+                <div class="footer-copyright">© 2024 Smart Agri</div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
 export default {
     name: 'sidebarMenu',
     props: {
-        menuList: Array,
-        iconSize: Number,
-        menuTheme: {
+        shrink: {
+            type: Boolean,
+            default: false
+        },
+        menuList: {
+            type: Array,
+            default: () => []
+        },
+        activeName: {
             type: String,
-            default: 'dark'
+            default: ''
         },
         openNames: {
-            type: Array
+            type: Array,
+            default: () => []
+        },
+        theme: {
+            type: String,
+            default: 'dark'
+        }
+    },
+    computed: {
+        // 扁平化菜单列表（所有子菜单项平铺）
+        flatMenuList() {
+            const result = [];
+            this.menuList.forEach(item => {
+                if (item.children && item.children.length > 0) {
+                    item.children.forEach(child => {
+                        if (!child.hideInMenu) {
+                            result.push({
+                                ...child,
+                                name: child.name,
+                                title: child.title,
+                                icon: child.icon
+                            });
+                        }
+                    });
+                } else if (!item.hideInMenu) {
+                    result.push(item);
+                }
+            });
+            return result;
         }
     },
     methods: {
-        changeMenu (active) {
-            this.$emit('on-change', active);
-        },
-        itemTitle (item) {
-            if (typeof item.title === 'object') {
-                return this.$t(item.title.i18n);
-            } else {
-                return item.title;
-            }
+        handleSelect(name) {
+            this.$emit('on-select', name);
         }
     },
-    updated () {
+    updated() {
         this.$nextTick(() => {
             if (this.$refs.sideMenu) {
-                this.$refs.sideMenu.updateOpened();
+                this.$refs.sideMenu.updateActiveName();
             }
         });
     }
-
 };
 </script>

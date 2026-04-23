@@ -6,7 +6,7 @@
     <div>
         <Card>
             <p slot="title">
-                <Icon type="person"></Icon>
+                <Icon type="md-person"></Icon>
                 个人信息
             </p>
             <div>
@@ -36,11 +36,11 @@
                         <span>{{ userForm.rolename }}</span>
                     </FormItem>
                     <FormItem label="登录密码：">
-                        <Button type="text" size="small" @click="showEditPassword">修改密码</Button>
+                        <Button size="primary" type="ghost" @click="showEditPassword">修改密码</Button>
                     </FormItem>
                     <div>
-                        <Button type="text" style="width: 100px;" @click="cancelEditUserInfor">取消</Button>
-                        <Button type="primary" style="width: 100px;" :loading="save_loading" @click="saveEdit">保存</Button>
+                        <Button type="ghost" style="width: 80px;" @click="cancelEditUserInfor">取消</Button>
+                        <Button type="primary" style="width: 80px;" :loading="save_loading" @click="saveEdit">保存</Button>
                     </div>
                 </Form>
             </div>

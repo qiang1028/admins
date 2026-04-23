@@ -2,7 +2,7 @@ const fileCache = require('think-cache-file');
 const nunjucks = require('think-view-nunjucks');
 const fileSession = require('think-session-file');
 const mysql = require('think-model-mysql');
-const {Console, File, DateFile} = require('think-logger3');
+const { Console, File, DateFile } = require('think-logger3');
 const path = require('path');
 const isDev = think.env === 'development';
 
@@ -36,13 +36,13 @@ exports.model = {
   },
   mysql: {
     handle: mysql,
-    database: 'thinkjs-iview-admin',
+    database: 'rice',
     prefix: '',
     encoding: 'utf8',
     host: 'localhost',
     port: '3306',
     user: 'root',
-    password: '1234',
+    password: '123456',
     dateStrings: true
   }
 };
