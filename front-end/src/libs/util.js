@@ -36,9 +36,8 @@ util.post1 = function (vm, url, param, cb) {
         }
     });
     axiosIns.post(url, param).then(res => {
-        console.log(res, 'res');
         vm.loading = false;
-        if ((res && res.success)) {
+        if (res) {
             cb(res.data.data ? res.data.data : res.data);
         } else {
         }

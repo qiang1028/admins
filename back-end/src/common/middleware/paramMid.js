@@ -61,7 +61,7 @@ module.exports = (options = {}) => {
       }
       const endTime = Date.now();
       if(status==200){
-        think.logger.info('返回状态:',status,',返回结果:',JSON.stringify(ctx.body));
+        // think.logger.info('返回状态:',status,',返回结果:',JSON.stringify(ctx.body));
       }else{
         think.logger.error('返回状态:',status,',返回结果:',JSON.stringify(ctx.body));
       }

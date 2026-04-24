@@ -4,7 +4,7 @@
         <div class="logo-con">
             <div class="logo-icon-wrapper">
                 <div class="logo-icon-inner">
-                    <Icon type="ios-leaf" class="logo-icon" />
+                    <Icon type="leaf" class="logo-icon"></Icon>
                 </div>
                 <div class="logo-glow"></div>
             </div>

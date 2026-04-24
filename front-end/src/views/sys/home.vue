@@ -2,6 +2,20 @@
 
 <template>
     <div class="dashboard-container">
+        <!-- 动态粒子背景 -->
+        <div class="particles-bg">
+            <div class="particle large" v-for="i in 10" :key="'large-'+i" :style="getParticleStyle(i, 'large')"></div>
+            <div class="particle medium" v-for="i in 15" :key="'medium-'+i" :style="getParticleStyle(i, 'medium')"></div>
+            <div class="particle small" v-for="i in 20" :key="'small-'+i" :style="getParticleStyle(i, 'small')"></div>
+        </div>
+
+        <!-- 光晕效果 -->
+        <div class="glow-effects">
+            <div class="glow-orb glow-1"></div>
+            <div class="glow-orb glow-2"></div>
+            <div class="glow-orb glow-3"></div>
+        </div>
+
         <!-- 顶部导航 -->
         <div class="dashboard-header">
             <div class="header-left">
@@ -32,11 +46,11 @@
                 <Col :xs="12" :sm="12" :md="6">
                     <div class="stat-card stat-card-1">
                         <div class="stat-icon">
-                            <Icon type="ios-people" />
+                            <Icon type="leaf" />
                         </div>
                         <div class="stat-info">
-                            <div class="stat-value">{{ dashboardData.stats.userCount }}</div>
-                            <div class="stat-label">系统用户</div>
+                            <div class="stat-value">{{ dashboardData.stats.riceCount || 0 }}</div>
+                            <div class="stat-label">水稻记录</div>
                         </div>
                         <div class="stat-trend up">
                             <Icon type="md-arrow-up" />
@@ -46,11 +60,11 @@
                 <Col :xs="12" :sm="12" :md="6">
                     <div class="stat-card stat-card-2">
                         <div class="stat-icon">
-                            <Icon type="ios-leaf"></Icon>
+                            <Icon type="ios-cloud-outline"></Icon>
                         </div>
                         <div class="stat-info">
-                            <div class="stat-value">{{ dashboardData.stats.riceArea }}</div>
-                            <div class="stat-label">种植面积(万亩)</div>
+                            <div class="stat-value">{{ dashboardData.stats.modelCount || 0 }}</div>
+                            <div class="stat-label">水稻预测模型</div>
                         </div>
                         <div class="stat-trend up">
                             <Icon type="md-arrow-up" />
@@ -63,8 +77,8 @@
                             <Icon type="ios-analytics" />
                         </div>
                         <div class="stat-info">
-                            <div class="stat-value">{{ dashboardData.stats.yieldPerMu }}</div>
-                            <div class="stat-label">预估亩产量(kg)</div>
+                            <div class="stat-value">{{ dashboardData.stats.totalYield-1 || 0 }}</div>
+                            <div class="stat-label">用户总数</div>
                         </div>
                         <div class="stat-trend up">
                             <Icon type="md-arrow-up" />
@@ -74,11 +88,11 @@
                 <Col :xs="12" :sm="12" :md="6">
                     <div class="stat-card stat-card-4">
                         <div class="stat-icon">
-                            <Icon type="help-circle"></Icon>
+                            <Icon type="document-text" />
                         </div>
                         <div class="stat-info">
-                            <div class="stat-value">{{ dashboardData.stats.logCount }}</div>
-                            <div class="stat-label">日志记录</div>
+                            <div class="stat-value">{{ dashboardData.stats.reportCount || 0 }}</div>
+                            <div class="stat-label">分析报告</div>
                         </div>
                         <div class="stat-trend" :class="warnings.length > 0 ? 'down' : 'up'">
                             <Icon :type="warnings.length > 0 ? 'md-arrow-down' : 'md-checkmark-circle'" />
@@ -112,24 +126,24 @@
                         </Col>
                     </Row>
                     <Row :gutter="16" class="sub-row">
-                        <!-- 产量趋势 -->
+                        <!-- 水稻管理数据 -->
                         <Col :span="12">
                             <div class="card-box">
                                 <div class="card-header">
-                                    <Icon type="md-trending-up" class="header-icon" />
-                                    <span class="header-title">产量预测趋势</span>
+                                    <Icon type="leaf" class="header-icon" />
+                                    <span class="header-title">水稻数据</span>
                                 </div>
                                 <div class="card-body" v-if="yieldData!='{}'">
                                     <service-requests :data="yieldData"></service-requests>
                                 </div>
                             </div>
                         </Col>
-                        <!-- 生长周期 -->
+                        <!-- 分析报告 -->
                         <Col :span="12">
                             <div class="card-box">
                                 <div class="card-header">
-                                    <Icon type="md-calendar" class="header-icon" />
-                                    <span class="header-title">生长周期进度</span>
+                                    <Icon type="document-text" class="header-icon" />
+                                    <span class="header-title">分析报告</span>
                                 </div>
                                 <div class="card-body" v-if="growthData!='{}'">
                                     <visite-volume :data="growthData"></visite-volume>
@@ -145,7 +159,7 @@
                     <div class="card-box env-section">
                         <div class="card-header">
                             <Icon type="md-cloud" class="header-icon" />
-                            <span class="header-title">环境实时监测</span>
+                            <span class="header-title">田间环境监测</span>
                             <span class="live-indicator">
                                 <span class="pulse-dot"></span>LIVE
                             </span>
@@ -164,13 +178,13 @@
                         </div>
                     </div>
 
-                    <!-- 产量因素 -->
-                    <div class="card-box" style="margin-top:16px;">
+                    <!-- 用户角色分布 -->
+                    <div class="card-box" style="margin-top:20px;">
                         <div class="card-header">
-                            <Icon type="md-pie" class="header-icon" />
-                            <span class="header-title">产量影响因素</span>
+                            <Icon type="person" class="header-icon" />
+                            <span class="header-title">角色分布</span>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" >
                             <data-source-pie :data="yieldFactors"></data-source-pie>
                         </div>
                     </div>
@@ -188,25 +202,31 @@
                 </Col>
             </Row>
 
-            <!-- 第三行：农事提醒 -->
-            <Row :gutter="16" class="todo-row">
-                <Col :span="24">
+            <!-- 第三行：系统日志 -->
+            <Row :gutter="16"  class="todo-row">
+                <Col :span="24" >
                     <div class="card-box todo-section">
                         <div class="card-header">
-                            <Icon type="md-notifications" class="header-icon" />
-                            <span class="header-title">农事提醒</span>
-                            <span class="todo-count">{{ todoList.length }} 条待办</span>
+                            <Icon type="md-list-box" class="header-icon" />
+                            <span class="header-title">系统日志</span>
+                            <span class="todo-count">{{ todoList.length }} 条记录</span>
                         </div>
                         <div class="card-body">
-                            <div class="todo-list">
-                                <div v-for="item in todoList" :key="item.id" class="todo-item" :class="'priority-' + item.priority">
-                                    <div class="todo-status">
-                                        <Icon v-if="item.status === 'completed'" type="md-checkmark-circle" class="completed" />
-                                        <span v-else class="status-dot"></span>
+                            <div class="log-list">
+                                <div v-for="item in todoList" :key="item.id" class="log-item" :class="'log-' + item.priority">
+                                    <div class="log-time">
+                                        <Icon type="ios-time-outline" />
+                                        <span>{{ formatLogTime(item.createTime) }}</span>
                                     </div>
-                                    <div class="todo-content">
-                                        <span class="todo-text">{{ item.title }}</span>
-                                        <Tag :color="getTagColor(item.tag)" size="small">{{ item.tag }}</Tag>
+                                    <div class="log-user">
+                                        <Icon type="md-person" />
+                                        <span>{{ item.userName }}</span>
+                                    </div>
+                                    <div class="log-content">
+                                        <span class="log-text">{{ item.title }}</span>
+                                    </div>
+                                    <div class="log-tag">
+                                        <Tag :color="getLogTagColor(item.tag)" size="small">{{ item.tag }}</Tag>
                                     </div>
                                 </div>
                             </div>
@@ -308,7 +328,7 @@ export default {
                     bg: 'linear-gradient(135deg, #FF9800, #F57C00)'
                 },
                 {
-                    icon: 'ios-flame',
+                    icon: 'waterdrop',
                     label: '空气湿度',
                     value: env.humidity || '--',
                     unit: '%',
@@ -334,10 +354,11 @@ export default {
     mounted () {
         this.updateTime();
         this.loadDashboardData();
-        this.timer = setInterval(() => {
-            this.updateTime();
-            this.loadEnvData(); // 每3秒刷新环境数据
-        }, 3000);
+        this.loadEnvData();
+        // this.timer = setInterval(() => {
+        //     this.updateTime();
+        //     this.loadEnvData(); // 每3秒刷新环境数据
+        // }, 3000);
     },
     beforeDestroy () {
         if (this.timer) {
@@ -345,6 +366,38 @@ export default {
         }
     },
     methods: {
+        getParticleStyle(index, type) {
+            const seed = index * 137.508;
+            let size, duration, opacity;
+
+            if (type === 'large') {
+                size = 8;
+                duration = 20 + (index % 8);
+                opacity = 0.4 + (index % 3) * 0.1;
+            } else if (type === 'medium') {
+                size = 5;
+                duration = 15 + (index % 6);
+                opacity = 0.3 + (index % 3) * 0.1;
+            } else {
+                size = 3;
+                duration = 12 + (index % 5);
+                opacity = 0.2 + (index % 3) * 0.1;
+            }
+
+            const left = (seed * 1.618) % 100;
+            const top = (seed * 0.618) % 100;
+            const delay = (index * 0.8) % 10;
+
+            return {
+                width: size + 'px',
+                height: size + 'px',
+                left: left + '%',
+                top: top + '%',
+                opacity: opacity,
+                animationDuration: duration + 's',
+                animationDelay: delay + 's'
+            };
+        },
         updateTime () {
             const now = new Date();
             this.currentTime = now.toLocaleTimeString('zh-CN', {
@@ -393,6 +446,24 @@ export default {
             };
             console.log(colorMap[tag])
             return colorMap[tag] || 'default';
+        },
+        getLogTagColor (tag) {
+            const colorMap = {
+                '错误': 'red',
+                '警告': 'orange',
+                '信息': 'blue',
+                '成功': 'green'
+            };
+            return colorMap[tag] || 'default';
+        },
+        formatLogTime (timeStr) {
+            if (!timeStr) return '--';
+            const date = new Date(timeStr);
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${month}月${day}日 ${hours}:${minutes}`;
         }
     }
 };
@@ -465,7 +536,84 @@ export default {
     }
 }
 
-/* 农事提醒样式 */
+/* 系统日志样式 */
+.log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .log-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 16px;
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 8px;
+        border-left: 3px solid #00D9A5;
+        transition: all 0.3s;
+
+        &:hover {
+            background: rgba(0, 217, 165, 0.08);
+            transform: translateX(4px);
+        }
+
+        &.log-urgent {
+            border-left-color: #F44336;
+        }
+
+        &.log-high {
+            border-left-color: #FF9800;
+        }
+
+        .log-time {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            min-width: 100px;
+
+            i {
+                font-size: 14px;
+                color: #00D9A5;
+            }
+        }
+
+        .log-user {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            min-width: 80px;
+
+            i {
+                font-size: 14px;
+                color: #667eea;
+            }
+        }
+
+        .log-content {
+            flex: 1;
+            min-width: 0;
+
+            .log-text {
+                color: #E8E8E8;
+                font-size: 13px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: block;
+            }
+        }
+
+        .log-tag {
+            flex-shrink: 0;
+        }
+    }
+}
+
+/* 保留原农事提醒样式（兼容） */
 .todo-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));

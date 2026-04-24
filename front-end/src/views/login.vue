@@ -189,6 +189,7 @@ export default {
                     util.post(this,'admin/sys_user/login',{login_name:this.form.userName,password:this.form.password},function(datas){
                         _self.loading = true;
                         localStorage.setItem('user', datas.login_name);
+                        localStorage.setItem('userInfo', JSON.stringify(datas)); // 保存完整用户信息
                         localStorage.setItem('token', datas.token);    
                         localStorage.setItem('menuList', JSON.stringify(datas.menu));                        
                         localStorage.setItem('dicts',JSON.stringify(datas.dicts));            

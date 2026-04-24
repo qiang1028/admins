@@ -4,7 +4,6 @@ module.exports = class extends think.Model {
 	async addData(param) {
 		param.create_date = think.datetime();
 		param.update_date = param.create_date
-		console.log(param, "params")
 
 		await this.add(param);
 	}

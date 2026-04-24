@@ -404,19 +404,27 @@
                     {
                         title: '模型大小',
                         key: 'model_size',
-                         width: 100,
+                        width: 100,
                         className: 'table-min-width',
-                        ellipsis:true
+                        ellipsis:true,
+                        render: (h, params) => {
+                            let size = params.row.model_size;
+                            if (size && size > 0) {
+                                let sizeInMB = (size / (1024 * 1024)).toFixed(2);
+                                return h('span', sizeInMB + ' M');
+                            }
+                            return h('span', '-');
+                        }
                     },
                     {
                         title: '操作',
                         key: 'action',
-                        width: 100,
+                        width: 180,
                         align: 'center',
                         ellipsis:true,
                         render: (h, params) => {
-                            return h('div', [   
-                             h('Button', {
+                            let buttons = [
+                                h('Button', {
                                     props: {
                                         type: 'info',
                                         size: 'small'
@@ -429,9 +437,26 @@
                                             this.edit(params);
                                         }
                                     }
-                                }, '进行预测')                         
-                                
-                            ]);
+                                }, '进行预测')
+                            ];
+                            // 只有管理员才能看到删除按钮
+                            if (this.isAdmin) {
+                                buttons.push(h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.deleteModel(params);
+                                        }
+                                    }
+                                }, '删除'));
+                            }
+                            return h('div', buttons);
                         }
                     }
                 ],               
@@ -449,6 +474,21 @@
                 filelist1:[],
                 filelist2:[],
                 allList:[]
+            }
+        },
+        computed: {
+            isAdmin() {
+                let userInfo = localStorage.getItem('userInfo');
+                if (userInfo) {
+                    try {
+                        let user = JSON.parse(userInfo);
+                        // id为1的是超级管理员
+                        return user.id == '1' || user.id == 1;
+                    } catch (e) {
+                        return false;
+                    }
+                }
+                return false;
             }
         },
         methods: {
@@ -555,6 +595,27 @@
                     }
                 })
             },
+            deleteModel(param) {
+                this.$Modal.confirm({
+                    title: '确认删除',
+                    content: '确定要删除模型【' + param.row.model_name + '】吗？此操作不可恢复！',
+                    onOk: () => {
+                        let _self = this;
+                        util.post1(this, '/db/delete-model', { model_name: param.row.model_name }, function(datas) {
+                            console.log(datas)
+                            if (datas.success || datas.status === 'success') {
+                                _self.$Message.success('删除成功');
+                                _self.init();
+                            } else {
+                                _self.$Message.error('删除失败：' + (datas.message || '未知错误'));
+                            }
+                        });
+                    },
+                    onCancel: () => {
+                        // 取消操作
+                    }
+                });
+            },
             init () {
                 let _self=this;
                 _self.loading=true;
@@ -574,7 +635,7 @@
                 console.log("current",current)
                 this.searchForm.current=current;
                 // 天机获取的条数
-                
+                this.init()
             },
             
             add (){           
