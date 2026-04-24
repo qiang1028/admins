@@ -85,148 +85,254 @@ export default {
                 const chartData = this.cityData && this.cityData.length > 0 ? this.cityData : defaultData;
 
                 const option = {
-                    backgroundColor: 'transparent',
-                    tooltip: {
-                        trigger: 'item',
-                        backgroundColor: 'rgba(10, 14, 39, 0.95)',
-                        borderColor: 'rgba(0, 217, 165, 0.3)',
-                        borderWidth: 1,
-                        textStyle: {
-                            color: '#fff',
-                            fontSize: 12
+                backgroundColor: 'transparent',
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(10, 14, 39, 0.95)',
+                    borderColor: 'rgba(0, 217, 165, 0.3)',
+                    borderWidth: 1,
+                    textStyle: {
+                        color: '#fff',
+                        fontSize: 12
+                    },
+                    formatter: function(params) {
+                        if (params.data && params.data.value) {
+                            return params.name + '<br/>监测指数: ' + params.data.value;
+                        }
+                        return params.name;
+                    }
+                },
+                // 禁用缩放和拖拽
+                geo: {
+                    map: 'china',
+                    roam: false,
+                    zoom: 1.8,
+                    // 金堂县中心坐标 [104.45, 30.88]
+                    center: [104.45, 30.88],
+                    label: {
+                        normal: {
+                            show: false
                         },
-                        formatter: function(params) {
-                            if (params.data && params.data.value) {
-                                return params.name + '<br/>监测指数: ' + params.data.value;
-                            }
-                            return params.name;
+                        emphasis: {
+                            show: true,
+                            color: '#fff',
+                            fontSize: 11
                         }
                     },
-                    geo: {
-                        map: 'china',
-                        roam: true,
-                        scaleLimit: {
-                            min: 0.8,
-                            max: 3
+                    itemStyle: {
+                        normal: {
+                            areaColor: {
+                                type: 'linear',
+                                x: 0, y: 0, x2: 0, y2: 1,
+                                colorStops: [
+                                    { offset: 0, color: 'rgba(0, 217, 165, 0.2)' },
+                                    { offset: 1, color: 'rgba(0, 184, 148, 0.1)' }
+                                ]
+                            },
+                            borderColor: 'rgba(0, 217, 165, 0.4)',
+                            borderWidth: 1.5,
+                            shadowColor: 'rgba(0, 217, 165, 0.3)',
+                            shadowBlur: 25
                         },
-                        zoom: 1.2,
-                        center: [105, 36],
+                        emphasis: {
+                            areaColor: {
+                                type: 'linear',
+                                x: 0, y: 0, x2: 0, y2: 1,
+                                colorStops: [
+                                    { offset: 0, color: 'rgba(0, 217, 165, 0.35)' },
+                                    { offset: 1, color: 'rgba(0, 184, 148, 0.2)' }
+                                ]
+                            },
+                            borderColor: 'rgba(0, 217, 165, 0.8)',
+                            borderWidth: 2
+                        }
+                    },
+                    // 高亮四川省
+                    regions: [
+                        {
+                            name: '四川',
+                            itemStyle: {
+                                areaColor: {
+                                    type: 'linear',
+                                    x: 0, y: 0, x2: 0, y2: 1,
+                                    colorStops: [
+                                        { offset: 0, color: 'rgba(0, 217, 165, 0.25)' },
+                                        { offset: 1, color: 'rgba(0, 184, 148, 0.15)' }
+                                    ]
+                                },
+                                borderColor: 'rgba(0, 217, 165, 0.5)',
+                                borderWidth: 1.5
+                            }
+                        }
+                    ]
+                },
+                series: [
+                    // 金堂县特殊标记 - 多层波纹动画
+                    {
+                        type: 'effectScatter',
+                        coordinateSystem: 'geo',
+                        data: [{
+                            name: '金堂',
+                            value: [104.45, 30.88, 100]
+                        }],
+                        symbolSize: 18,
+                        showEffectOn: 'render',
+                        rippleEffect: {
+                            brushType: 'stroke',
+                            scale: 6,
+                            period: 2
+                        },
                         label: {
                             normal: {
-                                show: false
-                            },
-                            emphasis: {
                                 show: true,
-                                color: '#fff',
-                                fontSize: 11
+                                formatter: '金堂县',
+                                position: 'bottom',
+                                distance: 8,
+                                color: '#00D9A5',
+                                fontSize: 14,
+                                fontWeight: 'bold',
+                                textShadowColor: 'rgba(0, 0, 0, 0.8)',
+                                textShadowBlur: 5,
+                                backgroundColor: 'rgba(10, 14, 39, 0.85)',
+                                padding: [6, 12],
+                                borderRadius: 20,
+                                borderColor: '#00D9A5',
+                                borderWidth: 1.5
                             }
                         },
                         itemStyle: {
                             normal: {
-                                areaColor: {
-                                    type: 'linear',
-                                    x: 0, y: 0, x2: 0, y2: 1,
-                                    colorStops: [
-                                        { offset: 0, color: 'rgba(0, 217, 165, 0.15)' },
-                                        { offset: 1, color: 'rgba(0, 184, 148, 0.08)' }
-                                    ]
-                                },
-                                borderColor: 'rgba(0, 217, 165, 0.3)',
-                                borderWidth: 1,
-                                shadowColor: 'rgba(0, 217, 165, 0.2)',
-                                shadowBlur: 20
+                                color: new echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
+                                    { offset: 0, color: '#00D9A5' },
+                                    { offset: 0.5, color: '#4CAF50' },
+                                    { offset: 1, color: '#00D9A5' }
+                                ]),
+                                shadowColor: 'rgba(0, 217, 165, 1)',
+                                shadowBlur: 25
+                            }
+                        },
+                        zlevel: 3
+                    },
+                    // 金堂县外层呼吸光环
+                    {
+                        type: 'effectScatter',
+                        coordinateSystem: 'geo',
+                        data: [{
+                            name: '金堂光环',
+                            value: [104.45, 30.88, 100]
+                        }],
+                        symbolSize: 35,
+                        showEffectOn: 'render',
+                        rippleEffect: {
+                            brushType: 'fill',
+                            scale: 2.5,
+                            period: 3
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: new echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
+                                    { offset: 0, color: 'rgba(0, 217, 165, 0.3)' },
+                                    { offset: 0.5, color: 'rgba(0, 217, 165, 0.1)' },
+                                    { offset: 1, color: 'rgba(0, 217, 165, 0)' }
+                                ])
+                            }
+                        },
+                        zlevel: 1
+                    },
+                    // 主监测站点 - 闪烁动画
+                    {
+                        type: 'effectScatter',
+                        coordinateSystem: 'geo',
+                        data: convertData(chartData.filter(d => d.value > 75)),
+                        symbolSize: function (val) {
+                            return Math.max(val[2] / 6, 10);
+                        },
+                        showEffectOn: 'render',
+                        rippleEffect: {
+                            brushType: 'stroke',
+                            scale: 3.5,
+                            period: 2.5
+                        },
+                        label: {
+                            normal: {
+                                formatter: '{b}',
+                                position: 'right',
+                                show: true,
+                                color: '#00D9A5',
+                                fontSize: 10,
+                                fontWeight: 'bold',
+                                textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                                textShadowBlur: 3
                             },
                             emphasis: {
-                                areaColor: {
-                                    type: 'linear',
-                                    x: 0, y: 0, x2: 0, y2: 1,
-                                    colorStops: [
-                                        { offset: 0, color: 'rgba(0, 217, 165, 0.3)' },
-                                        { offset: 1, color: 'rgba(0, 184, 148, 0.15)' }
-                                    ]
-                                },
-                                borderColor: 'rgba(0, 217, 165, 0.6)',
-                                borderWidth: 2
+                                show: true,
+                                color: '#fff',
+                                fontSize: 11,
+                                backgroundColor: 'rgba(0, 217, 165, 0.9)',
+                                padding: [4, 8],
+                                borderRadius: 4
+                            }
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: new echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
+                                    { offset: 0, color: '#00D9A5' },
+                                    { offset: 0.8, color: '#4CAF50' },
+                                    { offset: 1, color: '#00D9A5' }
+                                ]),
+                                shadowColor: 'rgba(0, 217, 165, 0.6)',
+                                shadowBlur: 15
                             }
                         }
                     },
-                    series: [
-                        // 监测站点散点
-                        {
-                            type: 'effectScatter',
-                            coordinateSystem: 'geo',
-                            data: convertData(chartData.filter(d => d.value > 75)),
-                            symbolSize: function (val) {
-                                return Math.max(val[2] / 8, 8);
+                    // 次要站点 - 脉冲动画
+                    {
+                        type: 'effectScatter',
+                        coordinateSystem: 'geo',
+                        data: convertData(chartData.filter(d => d.value <= 75)),
+                        symbolSize: function (val) {
+                            return Math.max(val[2] / 8, 6);
+                        },
+                        showEffectOn: 'render',
+                        rippleEffect: {
+                            brushType: 'stroke',
+                            scale: 2.5,
+                            period: 3
+                        },
+                        label: {
+                            normal: {
+                                formatter: '{b}',
+                                position: 'right',
+                                show: true,
+                                color: '#FF9800',
+                                fontSize: 9,
+                                fontWeight: 'bold',
+                                textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                                textShadowBlur: 3
                             },
-                            showEffectOn: 'emphasis',
-                            rippleEffect: {
-                                brushType: 'stroke',
-                                scale: 3,
-                                period: 4
-                            },
-                            label: {
-                                normal: {
-                                    formatter: '{b}',
-                                    position: 'right',
-                                    show: false
-                                },
-                                emphasis: {
-                                    show: true,
-                                    color: '#fff',
-                                    fontSize: 12,
-                                    backgroundColor: 'rgba(0, 217, 165, 0.8)',
-                                    padding: [4, 8],
-                                    borderRadius: 4
-                                }
-                            },
-                            itemStyle: {
-                                normal: {
-                                    color: new echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
-                                        { offset: 0, color: '#00D9A5' },
-                                        { offset: 1, color: '#4CAF50' }
-                                    ]),
-                                    shadowColor: 'rgba(0, 217, 165, 0.5)',
-                                    shadowBlur: 15
-                                }
+                            emphasis: {
+                                show: true,
+                                color: '#fff',
+                                fontSize: 10,
+                                backgroundColor: 'rgba(255, 152, 0, 0.9)',
+                                padding: [4, 8],
+                                borderRadius: 4
                             }
                         },
-                        // 普通站点
-                        {
-                            type: 'scatter',
-                            coordinateSystem: 'geo',
-                            data: convertData(chartData.filter(d => d.value <= 75)),
-                            symbolSize: function (val) {
-                                return Math.max(val[2] / 10, 6);
-                            },
-                            label: {
-                                normal: {
-                                    formatter: '{b}',
-                                    position: 'right',
-                                    show: false
-                                },
-                                emphasis: {
-                                    show: true,
-                                    color: '#fff',
-                                    fontSize: 12,
-                                    backgroundColor: 'rgba(255, 152, 0, 0.8)',
-                                    padding: [4, 8],
-                                    borderRadius: 4
-                                }
-                            },
-                            itemStyle: {
-                                normal: {
-                                    color: new echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
-                                        { offset: 0, color: '#FF9800' },
-                                        { offset: 1, color: '#F57C00' }
-                                    ]),
-                                    shadowColor: 'rgba(255, 152, 0, 0.4)',
-                                    shadowBlur: 10
-                                }
+                        itemStyle: {
+                            normal: {
+                                color: new echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
+                                    { offset: 0, color: '#FF9800' },
+                                    { offset: 0.8, color: '#F57C00' },
+                                    { offset: 1, color: '#FF9800' }
+                                ]),
+                                shadowColor: 'rgba(255, 152, 0, 0.5)',
+                                shadowBlur: 12
                             }
                         }
-                    ]
-                };
+                    }
+                ]
+            };
 
                 this.mapChart.setOption(option);
                 

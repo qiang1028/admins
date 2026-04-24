@@ -45,16 +45,47 @@ module.exports = class extends think.Model {
         }
     }
     
-    // 获取环境监测数据
+    // 获取环境监测数据 - 从第三方天气API获取
     async getEnvData() {
-        // 模拟环境数据，实际应从IoT传感器接口获取
+        try {
+            const https = require('https');
+            const url = 'https://api.open-meteo.com/v1/forecast?latitude=30.88&longitude=104.45&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,soil_temperature_0cm,soil_moisture_0_to_1cm&timezone=Asia/Shanghai';
+            
+            const data = await new Promise((resolve, reject) => {
+                https.get(url, (res) => {
+                    let result = '';
+                    res.on('data', chunk => result += chunk);
+                    res.on('end', () => resolve(result));
+                }).on('error', reject);
+            });
+            
+            const json = JSON.parse(data);
+            if (json && json.current) {
+                const current = json.current;
+                return {
+                    temperature: current.temperature_2m,
+                    humidity: current.relative_humidity_2m,
+                    precipitation: current.precipitation,
+                    windSpeed: current.wind_speed_10m,
+                    soilTemperature: current.soil_temperature_0cm,
+                    soilMoisture: Math.round(current.soil_moisture_0_to_1cm * 100),
+                    weatherCode: current.weather_code,
+                    updateTime: think.datetime()
+                };
+            }
+        } catch (err) {
+            console.error('获取天气数据失败:', err);
+        }
+        
+        // 默认数据
         return {
-            temperature: +(22 + Math.random() * 8).toFixed(1),
-            humidity: Math.floor(65 + Math.random() * 20),
-            light: Math.floor(800 + Math.random() * 400),
-            soilMoisture: +(55 + Math.random() * 25).toFixed(1),
-            soilPH: +(5.8 + Math.random() * 1.5).toFixed(1),
-            co2: Math.floor(380 + Math.random() * 60),
+            temperature: 25,
+            humidity: 65,
+            precipitation: 0,
+            windSpeed: 10,
+            soilTemperature: 22,
+            soilMoisture: 50,
+            weatherCode: 0,
             updateTime: think.datetime()
         };
     }

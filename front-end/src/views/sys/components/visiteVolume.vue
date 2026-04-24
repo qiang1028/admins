@@ -36,6 +36,11 @@ export default {
             deep: true
         }
     },
+    beforeDestroy() {
+        if (this.animationTimer) {
+            clearInterval(this.animationTimer);
+        }
+    },
     methods: {
         formatTime(timeStr) {
             if (!timeStr) return '--';
@@ -86,6 +91,11 @@ export default {
                                        '生成: ' + item.value + ' 份';
                             }
                         },
+                        animation: true,
+                        animationDuration: 2000,
+                        animationEasing: 'cubicInOut',
+                        animationDurationUpdate: 1500,
+                        animationEasingUpdate: 'cubicInOut',
                         grid: {
                             top: '15px',
                             left: '3%',
@@ -146,6 +156,8 @@ export default {
                                 smooth: 0.4,
                                 symbol: 'circle',
                                 symbolSize: 10,
+                                showSymbol: true,
+                                z: 2,
                                 lineStyle: {
                                     width: 3,
                                     color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
@@ -196,6 +208,33 @@ export default {
                     };
                     
                     myChart.setOption(option);
+                    
+                    // 循环动画
+                    let currentIndex = 0;
+                    const animatePoints = () => {
+                        myChart.dispatchAction({
+                            type: 'showTip',
+                            seriesIndex: 0,
+                            dataIndex: currentIndex
+                        });
+                        myChart.dispatchAction({
+                            type: 'highlight',
+                            seriesIndex: 0,
+                            dataIndex: currentIndex
+                        });
+                        // 取消前一个高亮
+                        setTimeout(() => {
+                            myChart.dispatchAction({
+                                type: 'downplay',
+                                seriesIndex: 0,
+                                dataIndex: currentIndex > 0 ? currentIndex - 1 : counts.length - 1
+                            });
+                        }, 800);
+                        currentIndex = (currentIndex + 1) % counts.length;
+                    };
+                    
+                    this.animationTimer = setInterval(animatePoints, 1500);
+                    animatePoints();
                     
                     window.addEventListener('resize', function () {
                         myChart.resize();

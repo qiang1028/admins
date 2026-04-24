@@ -32,9 +32,14 @@
                 </div>
             </div>
             <div class="header-right">
-                <div class="weather-box">
+                <div class="weather-box" v-if="weatherData.city">
+                    <Icon :type="getWeatherIcon(weatherData.weather)" />
+                    <span>{{ weatherData.city }} {{ weatherData.weather }} {{ weatherData.temperature }}°C</span>
+                    <span class="weather-detail">{{ weatherData.humidity }}%湿度 {{ weatherData.windDirection }}</span>
+                </div>
+                <div class="weather-box" v-else>
                     <Icon type="ios-cloudy" />
-                    <span>多云 26°C</span>
+                    <span>天气加载中...</span>
                 </div>
             </div>
         </div>
@@ -44,12 +49,12 @@
             <!-- 第一行：统计卡片 -->
             <Row :gutter="16" class="stat-row">
                 <Col :xs="12" :sm="12" :md="6">
-                    <div class="stat-card stat-card-1">
+                    <div class="stat-card stat-card-1" :class="{ 'stat-highlight': highlightStatIndex === 0 }">
                         <div class="stat-icon">
                             <Icon type="leaf" />
                         </div>
                         <div class="stat-info">
-                            <div class="stat-value">{{ dashboardData.stats.riceCount || 0 }}</div>
+                            <div class="stat-value" :class="{ 'value-bounce': highlightStatIndex === 0 }">{{ dashboardData.stats.riceCount || 0 }}</div>
                             <div class="stat-label">水稻记录</div>
                         </div>
                         <div class="stat-trend up">
@@ -58,12 +63,12 @@
                     </div>
                 </Col>
                 <Col :xs="12" :sm="12" :md="6">
-                    <div class="stat-card stat-card-2">
+                    <div class="stat-card stat-card-2" :class="{ 'stat-highlight': highlightStatIndex === 1 }">
                         <div class="stat-icon">
                             <Icon type="ios-cloud-outline"></Icon>
                         </div>
                         <div class="stat-info">
-                            <div class="stat-value">{{ dashboardData.stats.modelCount || 0 }}</div>
+                            <div class="stat-value" :class="{ 'value-bounce': highlightStatIndex === 1 }">{{ dashboardData.stats.modelCount || 0 }}</div>
                             <div class="stat-label">水稻预测模型</div>
                         </div>
                         <div class="stat-trend up">
@@ -72,12 +77,12 @@
                     </div>
                 </Col>
                 <Col :xs="12" :sm="12" :md="6">
-                    <div class="stat-card stat-card-3">
+                    <div class="stat-card stat-card-3" :class="{ 'stat-highlight': highlightStatIndex === 2 }">
                         <div class="stat-icon">
                             <Icon type="ios-analytics" />
                         </div>
                         <div class="stat-info">
-                            <div class="stat-value">{{ dashboardData.stats.totalYield-1 || 0 }}</div>
+                            <div class="stat-value" :class="{ 'value-bounce': highlightStatIndex === 2 }">{{ dashboardData.stats.totalYield-1 || 0 }}</div>
                             <div class="stat-label">用户总数</div>
                         </div>
                         <div class="stat-trend up">
@@ -86,12 +91,12 @@
                     </div>
                 </Col>
                 <Col :xs="12" :sm="12" :md="6">
-                    <div class="stat-card stat-card-4">
+                    <div class="stat-card stat-card-4" :class="{ 'stat-highlight': highlightStatIndex === 3 }">
                         <div class="stat-icon">
                             <Icon type="document-text" />
                         </div>
                         <div class="stat-info">
-                            <div class="stat-value">{{ dashboardData.stats.reportCount || 0 }}</div>
+                            <div class="stat-value" :class="{ 'value-bounce': highlightStatIndex === 3 }">{{ dashboardData.stats.reportCount || 0 }}</div>
                             <div class="stat-label">分析报告</div>
                         </div>
                         <div class="stat-trend" :class="warnings.length > 0 ? 'down' : 'up'">
@@ -111,7 +116,7 @@
                             <div class="card-box map-section">
                                 <div class="card-header">
                                     <Icon type="md-map" class="header-icon" />
-                                    <span class="header-title">金堂县水稻种植区监测分布</span>
+                                    <span class="header-title">水稻种植区地图</span>
                                     <span class="header-tag">成都平原经济区</span>
                                 </div>
                                 <div class="card-body map-body">
@@ -165,12 +170,20 @@
                             </span>
                         </div>
                         <div class="card-body env-grid">
-                            <div class="env-item" v-for="(item, idx) in envItems" :key="idx">
+                            <div class="env-item" 
+                                 v-for="(item, idx) in envItems" 
+                                 :key="idx"
+                                 :class="{ 'env-highlight': highlightEnvIndex === idx }">
                                 <div class="env-icon" :style="{ background: item.bg }">
-                                    <Icon :type="item.icon" />
+                                    <Icon :type="item.icon" :class="{ 'icon-pulse': highlightEnvIndex === idx }" />
                                 </div>
                                 <div class="env-info">
-                                    <span class="env-value">{{ item.value }}</span>
+                                    <span class="env-value" :class="{ 'value-bounce': highlightEnvIndex === idx }">
+                                        <span v-if="idx==0">{{weatherData.temperature}}</span>
+                                        <span v-else-if="idx==1">{{weatherData.humidity}}</span>
+                                        <span v-else>{{ item.value }}</span>
+                                        
+                                    </span>
                                     <span class="env-unit">{{ item.unit }}</span>
                                 </div>
                                 <span class="env-label">{{ item.label }}</span>
@@ -189,16 +202,6 @@
                         </div>
                     </div>
 
-                    <!-- 综合指数 -->
-                    <!-- <div class="card-box">
-                        <div class="card-header">
-                            <Icon type="ios-stats" class="header-icon" />
-                            <span class="header-title">综合生长指数</span>
-                        </div>
-                        <div class="card-body">
-                            <user-flow :data="growthIndexData"></user-flow>
-                        </div>
-                    </div> -->
                 </Col>
             </Row>
 
@@ -211,26 +214,31 @@
                             <span class="header-title">系统日志</span>
                             <span class="todo-count">{{ todoList.length }} 条记录</span>
                         </div>
-                        <div class="card-body">
-                            <div class="log-list">
-                                <div v-for="item in todoList" :key="item.id" class="log-item" :class="'log-' + item.priority">
-                                    <div class="log-time">
-                                        <Icon type="ios-time-outline" />
-                                        <span>{{ formatLogTime(item.createTime) }}</span>
-                                    </div>
-                                    <div class="log-user">
-                                        <Icon type="md-person" />
-                                        <span>{{ item.userName }}</span>
-                                    </div>
-                                    <div class="log-content">
-                                        <span class="log-text">{{ item.title }}</span>
-                                    </div>
-                                    <div class="log-tag">
-                                        <Tag :color="getLogTagColor(item.tag)" size="small">{{ item.tag }}</Tag>
-                                    </div>
+                        <Row class="card-body" :gutter="10">
+                            
+                                <div class="log-list">
+                                    <Col :xs="24" :sm="24" :md="8" v-for="(item, idx) in todoList" :key="item.id">
+                                        <div  class="log-item" 
+                                              :class="['log-' + item.priority, { 'log-highlight': highlightLogIndex === idx }]">
+                                            <div class="log-time">
+                                                <Icon type="ios-time-outline" />
+                                                <span>{{ formatLogTime(item.createTime) }}</span>
+                                            </div>
+                                            <div class="log-user">
+                                                <Icon type="md-person" />
+                                                <span>{{ item.userName }}</span>
+                                            </div>
+                                            <div class="log-content">
+                                                <span class="log-text">{{ item.title }}</span>
+                                            </div>
+                                            <div class="log-tag">
+                                                <Tag :color="getLogTagColor(item.tag)" size="small">{{ item.tag }}</Tag>
+                                            </div>
+                                        </div>
+                                        </Col>
                                 </div>
-                            </div>
-                        </div>
+                           
+                        </Row>
                     </div>
                 </Col>
             </Row>
@@ -265,6 +273,14 @@ export default {
             loading: true,
             currentTime: '',
             currentDate: '',
+            highlightEnvIndex: -1,
+            envAnimTimer: null,
+            highlightLogIndex: -1,
+            logAnimTimer: null,
+            highlightStatIndex: -1,
+            statAnimTimer: null,
+            weatherData: {},
+            weatherTimer: null,
             dashboardData: {
                 stats: {
                     userCount: 0,
@@ -273,7 +289,9 @@ export default {
                     yieldPerMu: 0,
                     totalYield: 0
                 },
-                envData: {},
+                envData: {
+                    weatherL:''
+                },
                 growthData: {},
                 yieldData: {},
                 yieldFactors: [],
@@ -323,28 +341,42 @@ export default {
                 {
                     icon: 'thermometer',
                     label: '环境温度',
-                    value: env.temperature || '--',
+                    value: env.weather ,
                     unit: '°C',
                     bg: 'linear-gradient(135deg, #FF9800, #F57C00)'
                 },
                 {
                     icon: 'waterdrop',
                     label: '空气湿度',
-                    value: env.humidity || '--',
+                    value: env.humidity !== undefined ? env.humidity : '--',
                     unit: '%',
                     bg: 'linear-gradient(135deg, #2196F3, #03A9F4)'
                 },
                 {
-                    icon: 'ios-sunny',
-                    label: '光照强度',
-                    value: env.light || '--',
-                    unit: 'lux',
-                    bg: 'linear-gradient(135deg, #FFD93D, #FFC107)'
+                    icon: 'ios-thunderstorm',
+                    label: '风速',
+                    value: env.windSpeed !== undefined ? env.windSpeed : '--',
+                    unit: 'km/h',
+                    bg: 'linear-gradient(135deg, #9C27B0, #673AB7)'
+                },
+                {
+                    icon: 'umbrella',
+                    label: '降水量',
+                    value: env.precipitation !== undefined ? env.precipitation : '--',
+                    unit: 'mm',
+                    bg: 'linear-gradient(135deg, #00BCD4, #03A9F4)'
                 },
                 {
                     icon: 'leaf',
+                    label: '土壤温度',
+                    value: env.soilTemperature !== undefined ? env.soilTemperature : '--',
+                    unit: '°C',
+                    bg: 'linear-gradient(135deg, #8BC34A, #689F38)'
+                },
+                {
+                    icon: 'waterdrop',
                     label: '土壤湿度',
-                    value: env.soilMoisture || '--',
+                    value: env.soilMoisture !== undefined ? env.soilMoisture : '--',
                     unit: '%',
                     bg: 'linear-gradient(135deg, #4CAF50, #388E3C)'
                 }
@@ -355,17 +387,63 @@ export default {
         this.updateTime();
         this.loadDashboardData();
         this.loadEnvData();
-        // this.timer = setInterval(() => {
-        //     this.updateTime();
-        //     this.loadEnvData(); // 每3秒刷新环境数据
-        // }, 3000);
+        this.loadWeather();
+        this.timer = setInterval(() => {
+            this.updateTime();
+            this.loadEnvData();
+        }, 1000);
+        
+        // 每30分钟刷新天气
+        this.weatherTimer = setInterval(() => {
+            this.loadWeather();
+        }, 30 * 60 * 1000);
+        
+        // 启动环境监测高亮动画
+        this.startEnvHighlight();
+        // 启动系统日志高亮动画
+        this.startLogHighlight();
+        // 启动统计卡片高亮动画
+        this.startStatHighlight();
     },
     beforeDestroy () {
         if (this.timer) {
             clearInterval(this.timer);
         }
+        if (this.weatherTimer) {
+            clearInterval(this.weatherTimer);
+        }
+        if (this.envAnimTimer) {
+            clearInterval(this.envAnimTimer);
+        }
+        if (this.logAnimTimer) {
+            clearInterval(this.logAnimTimer);
+        }
+        if (this.statAnimTimer) {
+            clearInterval(this.statAnimTimer);
+        }
     },
     methods: {
+        startEnvHighlight() {
+            let idx = 0;
+            this.envAnimTimer = setInterval(() => {
+                this.highlightEnvIndex = idx;
+                idx = (idx + 1) % 6;
+            }, 2000);
+        },
+        startLogHighlight() {
+            let idx = 0;
+            this.logAnimTimer = setInterval(() => {
+                this.highlightLogIndex = idx;
+                idx = (idx + 1) % Math.max(this.todoList.length, 1);
+            }, 2500);
+        },
+        startStatHighlight() {
+            let idx = 0;
+            this.statAnimTimer = setInterval(() => {
+                this.highlightStatIndex = idx;
+                idx = (idx + 1) % 4;
+            }, 1800);
+        },
         getParticleStyle(index, type) {
             const seed = index * 137.508;
             let size, duration, opacity;
@@ -438,6 +516,29 @@ export default {
                 }
             })
         },
+        loadWeather () {
+            var that = this
+            util.post(this,'admin/sys_weather/getWeather',{},function(res){
+                if (res) {
+                    that.weatherData = res;
+                    console.log("天气数据:", res)
+                    that.dashboardData.envData.weather=res.temperature
+                    console.log("环境数据:", that.dashboardData.envData)
+                }
+            })
+        },
+        getWeatherIcon (weather) {
+            if (!weather) return 'ios-cloudy';
+            const weatherLower = weather.toLowerCase();
+            if (weatherLower.includes('晴')) return 'ios-sunny';
+            if (weatherLower.includes('多云')) return 'ios-cloudy';
+            if (weatherLower.includes('阴')) return 'ios-cloud';
+            if (weatherLower.includes('雨')) return 'ios-rainy';
+            if (weatherLower.includes('雪')) return 'ios-snow';
+            if (weatherLower.includes('雷')) return 'ios-thunderstorm';
+            if (weatherLower.includes('雾') || weatherLower.includes('霾')) return 'ios-cloudy';
+            return 'ios-cloudy';
+        },
         getTagColor (tag) {
             const colorMap = {
                 '紧急': 'red',
@@ -481,9 +582,17 @@ export default {
 /* 环境监测样式 */
 .env-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     padding: 8px;
+
+    @media screen and (max-width: 1200px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media screen and (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
 
     .env-item {
         background: rgba(0, 0, 0, 0.2);
@@ -502,6 +611,14 @@ export default {
             transform: translateY(-2px);
         }
 
+        &.env-highlight {
+            background: rgba(0, 217, 165, 0.15);
+            border-color: rgba(0, 217, 165, 0.5);
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 6px 20px rgba(0, 217, 165, 0.25);
+            animation: envGlow 1.5s ease-in-out;
+        }
+
         .env-icon {
             width: 44px;
             height: 44px;
@@ -511,6 +628,11 @@ export default {
             justify-content: center;
             font-size: 22px;
             color: #fff;
+            transition: transform 0.3s;
+
+            .icon-pulse {
+                animation: iconPulse 1s ease-in-out infinite;
+            }
         }
 
         .env-info {
@@ -520,6 +642,13 @@ export default {
                 font-size: 22px;
                 font-weight: 700;
                 color: #fff;
+                transition: all 0.3s;
+            }
+
+            .value-bounce {
+                animation: valueBounce 0.6s ease-out;
+                color: #00D9A5;
+                text-shadow: 0 0 10px rgba(0, 217, 165, 0.5);
             }
 
             .env-unit {
@@ -536,80 +665,160 @@ export default {
     }
 }
 
-/* 系统日志样式 */
-.log-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
 
-    .log-item {
+@keyframes valueBounce {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.3); }
+    50% { transform: scale(0.95); }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes envGlow {
+    0% { box-shadow: 0 0 0 rgba(0, 217, 165, 0); }
+    50% { box-shadow: 0 0 30px rgba(0, 217, 165, 0.5); }
+    100% { box-shadow: 0 6px 20px rgba(0, 217, 165, 0.25); }
+}
+
+/* 系统日志高亮动画 */
+.log-list .log-item.log-highlight {
+    background: rgba(0, 217, 165, 0.15) !important;
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 6px 20px rgba(0, 217, 165, 0.3) !important;
+    animation: logGlow 1.5s ease-in-out;
+    
+    .log-time i {
+        color: #00D9A5;
+        animation: iconPulse 1s ease-in-out infinite;
+    }
+    
+    .log-content .log-text {
+        color: #00D9A5;
+        animation: textGlow 1.5s ease-in-out;
+    }
+}
+
+@keyframes logGlow {
+    0% { box-shadow: 0 0 0 rgba(0, 217, 165, 0); }
+    50% { box-shadow: 0 0 25px rgba(0, 217, 165, 0.5); }
+    100% { box-shadow: 0 6px 20px rgba(0, 217, 165, 0.3); }
+}
+
+@keyframes textGlow {
+    0%, 100% { text-shadow: none; }
+    50% { text-shadow: 0 0 10px rgba(0, 217, 165, 0.8); }
+}
+
+/* 系统日志样式 - log-item 子项样式 */
+.log-list .log-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    border-left: 3px solid #00D9A5;
+    transition: all 0.3s;
+    margin-bottom:10px;
+    &:hover {
+        background: rgba(0, 217, 165, 0.08);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 217, 165, 0.15);
+    }
+
+    &.log-urgent {
+        border-left-color: #F44336;
+    }
+
+    &.log-urgent:hover {
+        box-shadow: 0 4px 12px rgba(244, 67, 54, 0.15);
+    }
+
+    &.log-high {
+        border-left-color: #FF9800;
+    }
+
+    &.log-high:hover {
+        box-shadow: 0 4px 12px rgba(255, 152, 0, 0.15);
+    }
+
+    .log-time {
         display: flex;
         align-items: center;
-        gap: 16px;
-        padding: 12px 16px;
-        background: rgba(0, 0, 0, 0.15);
-        border-radius: 8px;
-        border-left: 3px solid #00D9A5;
-        transition: all 0.3s;
+        gap: 4px;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 11px;
+        min-width: 90px;
+        flex-shrink: 0;
 
-        &:hover {
-            background: rgba(0, 217, 165, 0.08);
-            transform: translateX(4px);
-        }
-
-        &.log-urgent {
-            border-left-color: #F44336;
-        }
-
-        &.log-high {
-            border-left-color: #FF9800;
-        }
-
-        .log-time {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: rgba(255, 255, 255, 0.6);
+        i {
             font-size: 12px;
-            min-width: 100px;
-
-            i {
-                font-size: 14px;
-                color: #00D9A5;
-            }
+            color: #00D9A5;
         }
+    }
 
-        .log-user {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: rgba(255, 255, 255, 0.7);
+    .log-user {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 11px;
+        min-width: 70px;
+        flex-shrink: 0;
+
+        i {
             font-size: 12px;
-            min-width: 80px;
-
-            i {
-                font-size: 14px;
-                color: #667eea;
-            }
+            color: #667eea;
         }
+    }
 
-        .log-content {
-            flex: 1;
-            min-width: 0;
+    .log-content {
+        flex: 1;
+        min-width: 0;
 
-            .log-text {
-                color: #E8E8E8;
-                font-size: 13px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                display: block;
-            }
+        .log-text {
+            color: #E8E8E8;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
         }
+    }
 
-        .log-tag {
-            flex-shrink: 0;
-        }
+    .log-tag {
+        flex-shrink: 0;
+    }
+}
+
+/* 系统日志响应式网格布局 */
+.system-log-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+@media screen and (max-width: 1400px) {
+    .system-log-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .system-log-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .system-log-grid {
+        grid-template-columns: 1fr !important;
     }
 }
 

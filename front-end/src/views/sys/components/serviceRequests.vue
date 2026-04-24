@@ -45,6 +45,11 @@ export default {
             deep: true
         }
     },
+    beforeDestroy() {
+        if (this.animationTimer) {
+            clearInterval(this.animationTimer);
+        }
+    },
     methods: {
         handleImgError(e) {
             e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzk5OTkiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+5aSP5LqrPC90ZXh0Pjwvc3ZnPg==';
@@ -85,6 +90,11 @@ export default {
                                        '上传: ' + item.value + ' 张';
                             }
                         },
+                        animation: true,
+                        animationDuration: 2000,
+                        animationEasing: 'elasticOut',
+                        animationDurationUpdate: 1000,
+                        animationEasingUpdate: 'cubicOut',
                         grid: {
                             top: '20px',
                             left: '3%',
@@ -162,19 +172,57 @@ export default {
                                     formatter: '{c}张'
                                 },
                                 itemStyle: {
-                                    borderRadius: [6, 6, 0, 0]
+                                    borderRadius: [6, 6, 0, 0],
+                                    shadowColor: 'rgba(76, 175, 80, 0.3)',
+                                    shadowBlur: 8
                                 },
                                 emphasis: {
+                                    scale: true,
+                                    scaleSize: 1.1,
                                     itemStyle: {
-                                        shadowBlur: 10,
-                                        shadowColor: 'rgba(76, 175, 80, 0.5)'
+                                        shadowBlur: 20,
+                                        shadowColor: 'rgba(76, 175, 80, 0.8)'
                                     }
-                                }
+                                },
+                                showBackground: true,
+                                backgroundStyle: {
+                                    color: 'rgba(255, 255, 255, 0.05)',
+                                    borderRadius: [6, 6, 0, 0]
+                                },
+                                barCategoryGap: '30%'
                             }
                         ]
                     };
                     
                     myChart.setOption(option);
+                    
+                    // 柱形图循环高亮动画
+                    let currentIndex = 0;
+                    
+                    const animateChart = () => {
+                        // 高亮切换
+                        myChart.dispatchAction({
+                            type: 'downplay',
+                            seriesIndex: 0
+                        });
+                        myChart.dispatchAction({
+                            type: 'highlight',
+                            seriesIndex: 0,
+                            dataIndex: currentIndex
+                        });
+                        
+                        // 显示tooltip
+                        myChart.dispatchAction({
+                            type: 'showTip',
+                            seriesIndex: 0,
+                            dataIndex: currentIndex
+                        });
+                        
+                        currentIndex = (currentIndex + 1) % counts.length;
+                    };
+                    
+                    this.animationTimer = setInterval(animateChart, 1500);
+                    animateChart();
                     
                     window.addEventListener('resize', function () {
                         myChart.resize();
