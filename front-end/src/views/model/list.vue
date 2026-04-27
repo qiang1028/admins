@@ -207,6 +207,8 @@
                 padding: 16px;
                 max-height: 200px;
                 overflow-y: auto;
+                color:#fff;
+                font-size: 16px;
                 &::-webkit-scrollbar { width: 6px; }
                 &::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 3px; }
                 &::-webkit-scrollbar-thumb { background: rgba(0, 217, 165, 0.5); border-radius: 3px; }
@@ -299,7 +301,7 @@
                             <div class="upload-tip">支持 JPG、PNG 格式</div>
                         </template>
                         <template v-else>
-                            <img :src="'http://localhost:8000'+img1" class="preview-img" />
+                            <img :src="img1" class="preview-img" />
                             <span class="remove-btn" @click.stop="removeImage(1)"><Icon type="ios-close" /></span>
                         </template>
                     </div>
@@ -318,7 +320,7 @@
                             <div class="upload-tip">支持 JPG、PNG 格式</div>
                         </template>
                         <template v-else>
-                            <img :src="'http://localhost:8000'+img2" class="preview-img" />
+                            <img :src="img2" class="preview-img" />
                             <span class="remove-btn" @click.stop="removeImage(2)"><Icon type="ios-close" /></span>
                         </template>
                     </div>
@@ -549,11 +551,11 @@
                     <div class="image-gallery"> 
                         <div class="image-item">
                             <span class="image-label">帧1</span>
-                            <img src="http://localhost:8000${this.img1}" style="max-width:100%;border-radius:8px;" />
+                            <img src="${this.img1}" style="max-width:100%;border-radius:8px;" />
                         </div>
                          <div class="image-item">
                             <span class="image-label">帧2</span>
-                            <img src="http://localhost:8000${this.img2}" style="max-width:100%;border-radius:8px;" />
+                            <img src="${this.img2}" style="max-width:100%;border-radius:8px;" />
                         </div>
                         <div class="image-item">
                             <span class="image-label">预测的生长情况</span>
@@ -565,7 +567,7 @@
                     <div class="analysis-result">${this.predictInfo.analysis}</div>
                     <hr/>
                     <h4>三、备注</h4>
-                    <p>本报告由金堂水稻智慧监测平台自动生成，基于水稻生长图片序列预测分析。</p>
+                    <p>本报告由水稻生长可视化预测系统自动生成，基于水稻生长图片序列预测分析。</p>
                 `;
                 
                 util.post(this, 'admin/sys_analysis/addData', {

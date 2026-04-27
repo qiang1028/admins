@@ -21,7 +21,7 @@
             <div class="header-left">
                 <div class="logo">
                     <Icon type="md-leaf" />
-                    <span>金堂水稻智慧监测平台</span>
+                    <span>水稻生长可视化预测系统</span>
                 </div>
             </div>
             <div class="header-center">

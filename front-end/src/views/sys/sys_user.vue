@@ -3,7 +3,7 @@
         <!-- 页面标题区域 -->
         <div class="page-header">
             <div class="header-title">
-                <Icon type="md-person" class="header-icon" />
+                <Icon type="person" class="header-icon" />
                 用户管理
             </div>
             <div class="header-desc">管理系统用户账户和权限</div>
@@ -24,7 +24,7 @@
                 <Col span="8">
                     <div class="stat-card stat-active">
                         <div class="stat-icon" style="background: linear-gradient(135deg, #19be6b, #52cb80);">
-                            <Icon type="ios-checkmark-circle" />
+                            <Icon type="ios-person-outline"></Icon>
                         </div>
                         <div class="stat-value">{{ activeCount }}</div>
                         <div class="stat-label">活跃用户</div>
@@ -33,7 +33,7 @@
                 <Col span="8">
                     <div class="stat-card stat-warning">
                         <div class="stat-icon" style="background: linear-gradient(135deg, #ff9900, #ffb340);">
-                            <Icon type="ios-warning" />
+                            <Icon type="ios-person"></Icon>
                         </div>
                         <div class="stat-value">{{ frozenCount }}</div>
                         <div class="stat-label">冻结用户</div>

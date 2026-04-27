@@ -43,7 +43,7 @@
         <div class="grid-overlay"></div>
 
         <div class="register-con">
-            <Card :bordered="false" class="register-card">
+            <Card :bordered="false" class="login-card">
                 <!-- 卡片光效 -->
                 <div class="card-glow"></div>
                 <div class="card-shine"></div>
@@ -89,7 +89,8 @@
                         </FormItem>
                         <FormItem prop="password" class="form-item-animated">
                             <div class="input-wrapper">
-                                <Icon type="ios-lock-outline" class="input-icon"></Icon>
+                                
+                                <Icon type="locked" class="input-icon"></Icon>
                                 <Input 
                                     type="password" 
                                     v-model="form.password" 
@@ -103,7 +104,7 @@
                         </FormItem>
                         <FormItem prop="confirmPassword" class="form-item-animated">
                             <div class="input-wrapper">
-                                <Icon type="ios-lock-outline" class="input-icon"></Icon>
+                                <Icon type="locked" class="input-icon"></Icon>
                                 <Input 
                                     type="password" 
                                     v-model="form.confirmPassword" 
@@ -117,7 +118,7 @@
                         </FormItem>
                         <FormItem prop="email" class="form-item-animated">
                             <div class="input-wrapper">
-                                <Icon type="ios-mail-outline" class="input-icon"></Icon>
+                                <Icon type="email" class="input-icon"></Icon>
                                 <Input 
                                     v-model="form.email" 
                                     placeholder="请输入邮箱（选填）" 
@@ -130,7 +131,8 @@
                         </FormItem>
                         <FormItem prop="phone" class="form-item-animated">
                             <div class="input-wrapper">
-                                <Icon type="ios-call-outline" class="input-icon"></Icon>
+                                <Icon type="ios-telephone" class="input-icon"></Icon>
+                               
                                 <Input 
                                     v-model="form.phone" 
                                     placeholder="请输入电话号码（选填）" 
@@ -141,14 +143,6 @@
                                 <div class="input-glow"></div>
                             </div>
                         </FormItem>
-                        <!-- <FormItem prop="role_id" class="form-item-animated">
-                            <div class="input-wrapper select-wrapper">
-                                <Icon type="ios-briefcase-outline" class="input-icon"></Icon>
-                                <Select v-model="form.role_id" placeholder="请选择角色" class="animated-select">
-                                    <Option v-for="item in roleList" :value="item.id" :key="item.id">{{ item.name }}</Option>
-                                </Select>
-                            </div>
-                        </FormItem> -->
                         <FormItem class="button-wrapper">
                             <Button 
                                 @click="handleSubmit" 
@@ -226,20 +220,6 @@ export default {
                 phone: '',
                 name: ''
             },
-            roleList: [
-                {
-                    id: 'cd72eb50-1c2e-11f1-839a-090521bd9d6c',
-                    name: '专家用户'
-                },
-                {
-                    id: '37a460f0-c476-11f0-9b3a-13a6ec3a3b4e',
-                    name: '普通用户'
-                },
-                {
-                    id: '711911f0-f5df-11e7-8d24-11bfb4b0f3be',
-                    name: '管理员'
-                }
-            ],
             rules: {
                 login_name: [
                     { required: true, message: '用户名不能为空', trigger: 'blur' },
@@ -265,7 +245,6 @@ export default {
         };
     },
     mounted () {
-        this.loadRoleList();
         this.initParticles();
     },
     methods: {
@@ -352,15 +331,6 @@ export default {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
             });
-        },
-        // 加载角色列表
-        loadRoleList () {
-            // let _self = this;
-            // util.post(this, 'admin/sys_role/allData', {}, function(datas) {
-            //     if (datas && datas.length > 0) {
-            //         _self.roleList = datas;
-            //     }
-            // });
         },
 
         // 提交注册

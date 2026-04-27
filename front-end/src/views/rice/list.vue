@@ -3,7 +3,7 @@
         <!-- 页面标题区域 -->
         <div class="page-header">
             <div class="header-title">
-                <Icon type="ios-leaf" class="header-icon" />
+                <Icon type="leaf" class="header-icon" />
                 <span class="title-text">水稻图片管理</span>
             </div>
             <div class="header-desc">管理和查看水稻生长图片数据</div>
@@ -15,7 +15,7 @@
                 <Col span="8">
                     <div class="stat-card stat-total">
                         <div class="stat-icon">
-                            <Icon type="ios-images-outline" />
+                            <Icon type="ios-camera"></Icon>
                         </div>
                         <div class="stat-value">{{ count }}</div>
                         <div class="stat-label">图片总数</div>
@@ -24,7 +24,7 @@
                 <Col span="8">
                     <div class="stat-card stat-rice">
                         <div class="stat-icon">
-                            <Icon type="ios-checkmark-circle" />
+                            <Icon type="ios-reverse-camera"></Icon>
                         </div>
                         <div class="stat-value">{{ data.length }}</div>
                         <div class="stat-label">当前显示</div>
@@ -33,7 +33,7 @@
                 <Col span="8">
                     <div class="stat-card stat-success">
                         <div class="stat-icon">
-                            <Icon type="ios-cloud-done-outline" />
+                            <Icon type="checkmark-circled"></Icon>
                         </div>
                         <div class="stat-value">{{ uploadSuccess }}</div>
                         <div class="stat-label">上传成功</div>
@@ -79,6 +79,22 @@
                 </div>
             </div>
         </div>
+
+        <!-- 编辑模态框 -->
+        <!-- 图片预览模态框 -->
+        <Modal 
+            v-model="previewModal" 
+            :width="700"
+            :footer-hide="true"
+            class="preview-modal"
+        >
+            <div class="preview-container">
+                <img :src="previewImage" alt="Preview" class="preview-image" />
+                <div class="preview-actions">
+                    <Button type="primary" icon="ios-download" @click="downloadImage">下载图片</Button>
+                </div>
+            </div>
+        </Modal>
 
         <!-- 编辑模态框 -->
         <Modal 
@@ -133,6 +149,9 @@
                 modalLoading: false,
                 modalCanBut: true,
                 uploadSuccess: 0,
+                previewModal: false,
+                previewImage: '',
+                currentFilename: '',
                 data: [],
                 roleList: [],
                 formValidate: {},
@@ -146,7 +165,7 @@
                 columns: [
                     {
                         title: '图片大小',
-                        key: 'size_mb',
+                        key: 'file_size',
                         width: 120,
                         render: (h, params) => {
                             return h('div', {
@@ -156,7 +175,7 @@
                                     props: { type: 'ios-attach' },
                                     class: 'date-icon'
                                 }),
-                                h('span', params.row.size_mb + ' MB')
+                                h('span', (params.row.file_size/1024/1024).toFixed(2) + ' MB')
                             ]);
                         }
                     },
@@ -172,7 +191,7 @@
                         width: 120,
                         align: 'center',
                         render: (h, params) => {
-                            const imgSrc = params.row.file_path || '';
+                            const imgSrc =  params.row.file_url || '';
                             return h('div', {
                                 class: 'image-cell'
                             }, [
@@ -193,6 +212,13 @@
                                         borderRadius: '8px',
                                         cursor: 'pointer',
                                         border: '1px solid #e8e8e8'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.previewImage = imgSrc;
+                                            this.currentFilename = params.row.filename;
+                                            this.previewModal = true;
+                                        }
                                     }
                                 })
                             ]);
@@ -200,29 +226,42 @@
                     },
                     {
                         title: '更新时间',
-                        key: 'modified_time',
+                        key: 'file_modified_time',
                         width: 180,
                         render: (h, params) => {
                             return h('div', {
                                 class: 'date-cell'
                             }, [
-                                h('Icon', {
-                                    props: { type: 'ios-clock-outline' },
-                                    class: 'date-icon'
-                                }),
-                                h('span', params.row.modified_time)
+                                
+                                h('span', params.row.upload_time
+)
                             ]);
                         }
                     },
                     {
                         title: '操作',
                         key: 'action',
-                        width: 120,
+                        width: 200,
                         align: 'center',
                         render: (h, params) => {
                             return h('div', {
                                 class: 'action-btn'
                             }, [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small',
+                                        icon: 'ios-download'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.downloadFile(params);
+                                        }
+                                    }
+                                }, '下载'),
                                 h('Button', {
                                     props: {
                                         type: 'error',
@@ -296,12 +335,11 @@
                     cancelText: '取消',
                     onOk: () => {
                         this.loading = true;
-                        axios.delete1(_self,`/upload-images/delete-uploaded/${param.row.filename}`,{},function(response){
-                             _self.data.splice(param.index, 1);
-                                _self.loading = false;               
-                                _self.$Message.success('删除成功！'); 
-                                console.log('Resource deleted successfully:', response.data);
-                                _self.init();
+                        util.delete1(_self,`/delete-uploaded/${param.row.id}`,{},function(response){
+                            _self.loading = false;               
+                            _self.$Message.success('删除成功！'); 
+                            console.log('Resource deleted successfully:', response.data);
+                            _self.init();
                         })
                     }
                 });                          
@@ -337,6 +375,40 @@
                 this.modalAdd = false; 
                 util.changeModalLoading(this);         
                 this.$refs['formRef'].resetFields(); 
+            },
+            downloadFile(params) {
+                // 从操作栏直接下载图片
+                const fileUrl = params.row.file_url;
+                const filename = params.row.filename || 'rice-image';
+                
+                if (!fileUrl) {
+                    this.$Message.error('文件不存在');
+                    return;
+                }
+                
+                // 创建下载链接
+                const link = document.createElement('a');
+                link.href = fileUrl;
+                link.download = filename;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            },
+            downloadImage() {
+                if (!this.previewImage) {
+                    this.$Message.error('没有可下载的图片');
+                    return;
+                }
+                // 创建下载链接
+                const link = document.createElement('a');
+                link.href = this.previewImage;
+                link.download = this.currentFilename || 'rice-image';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                this.$Message.success('图片下载成功');
             }
         },
         mounted () {
@@ -819,6 +891,47 @@
                 &:hover {
                     transform: translateY(-1px);
                     box-shadow: 0 6px 16px rgba(25, 190, 107, 0.4) !important;
+                }
+            }
+        }
+    }
+
+    // 图片预览模态框样式
+    .preview-modal {
+        .ivu-modal {
+            .ivu-modal-content {
+                border-radius: 16px;
+                overflow: hidden;
+            }
+        }
+
+        .preview-container {
+            text-align: center;
+            padding: 20px;
+
+            .preview-image {
+                max-width: 100%;
+                max-height: 70vh;
+                border-radius: 12px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            }
+
+            .preview-actions {
+                margin-top: 20px;
+                display: flex;
+                justify-content: center;
+                gap: 12px;
+
+                .ivu-btn-primary {
+                    background: linear-gradient(135deg, @primary-color, @primary-light) !important;
+                    border: none !important;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(25, 190, 107, 0.3) !important;
+
+                    &:hover {
+                        transform: translateY(-1px);
+                        box-shadow: 0 6px 16px rgba(25, 190, 107, 0.4) !important;
+                    }
                 }
             }
         }

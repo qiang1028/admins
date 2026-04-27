@@ -11,7 +11,7 @@ module.exports = class LogService extends Base {
 	 * @returns {Promise<Object>} 入库结果
 	 */
 	get tableName() {
-		return 'rice';
+		return 'uploaded_files';
 	}
 	async pageData(param) {
 		let sql = this.alias('a').page(param.current || 1).order("upload_time desc");

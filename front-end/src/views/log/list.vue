@@ -615,7 +615,8 @@
         <!-- 页面标题区域 -->
         <div class="page-header">
             <div class="header-title">
-                <Icon type="ios-list-box-outline" class="header-icon" />
+               
+                <Icon type="document-text" class="header-icon"></Icon>
                 日志管理
             </div>
             <div class="header-desc">查看和管理系统操作日志记录</div>
@@ -627,7 +628,7 @@
                 <Col span="8">
                     <div class="stat-card stat-total">
                         <div class="stat-icon" style="background: linear-gradient(135deg, #722ed1, #b37feb);">
-                            <Icon type="ios-list-box-outline" />
+                            <Icon type="information"></Icon>
                         </div>
                         <div class="stat-value">{{ count }}</div>
                         <div class="stat-label">日志总数</div>
@@ -636,7 +637,7 @@
                 <Col span="8">
                     <div class="stat-card stat-info">
                         <div class="stat-icon" style="background: linear-gradient(135deg, #2d8cf0, #5aa5ff);">
-                            <Icon type="ios-information-circle-outline" />
+                            <Icon type="information-circled"></Icon>
                         </div>
                         <div class="stat-value">{{ infoCount }}</div>
                         <div class="stat-label">信息日志</div>
@@ -645,7 +646,7 @@
                 <Col span="8">
                     <div class="stat-card stat-warning">
                         <div class="stat-icon" style="background: linear-gradient(135deg, #ff9900, #ffb340);">
-                            <Icon type="ios-warning" />
+                            <Icon type="alert"></Icon>
                         </div>
                         <div class="stat-value">{{ warnCount }}</div>
                         <div class="stat-label">警告日志</div>

@@ -1,10 +1,23 @@
 <template>
-    <div class="login register-page" @keydown.enter="handleSubmit">
+    <div class="login" @keydown.enter="handleSubmit">
         <!-- 动态渐变背景 -->
         <div class="particles-bg">
             <div class="particle large" v-for="i in 15" :key="'large-'+i" :style="getParticleStyle(i, 'large')"></div>
             <div class="particle" v-for="i in 30" :key="'normal-'+i" :style="getParticleStyle(i, 'normal')"></div>
             <div class="particle small" v-for="i in 20" :key="'small-'+i" :style="getParticleStyle(i, 'small')"></div>
+        </div>
+        
+        <!-- 网格背景 -->
+        <div class="grid-bg"></div>
+        
+        <!-- 流星效果 -->
+        <div class="meteors">
+            <div class="meteor" v-for="i in 5" :key="'meteor-'+i" :style="getMeteorStyle(i)"></div>
+        </div>
+        
+        <!-- 萤火虫效果 -->
+        <div class="fireflies">
+            <div class="firefly" v-for="i in 12" :key="'firefly-'+i" :style="getFireflyStyle(i)"></div>
         </div>
         
         <!-- 水稻叶片装饰 -->
@@ -48,15 +61,26 @@
             <div class="glow-orb glow-2"></div>
             <div class="glow-orb glow-3"></div>
         </div>
+        
+        <!-- 呼吸光环 -->
+        <div class="breathing-rings">
+            <div class="breathing-ring ring-1"></div>
+            <div class="breathing-ring ring-2"></div>
+            <div class="breathing-ring ring-3"></div>
+        </div>
 
-        <div class="login-con">
+        <div class="login-con" :class="{ 'login-success': registerSuccess }">
             <Card :bordered="false" class="login-card">
                 <div class="card-border-glow"></div>
+                <div class="card-particles">
+                    <div class="sparkle" v-for="i in 8" :key="'sparkle-'+i" :style="getSparkleStyle(i)"></div>
+                </div>
                 
                 <p slot="title" class="p-title">
                     <span class="title-icon-wrapper">
                         <div class="title-bg"></div>
                         <Icon type="md-person-add" class="title-icon"></Icon>
+                        <div class="title-ring"></div>
                     </span>
                     <span class="title-text">
                         <span class="title-main">用户注册</span>
@@ -73,8 +97,11 @@
                                     v-model="form.login_name" 
                                     placeholder="请输入用户名" 
                                     class="animated-input"
+                                    @on-focus="inputFocus = 'login_name'"
+                                    @on-blur="inputFocus = ''"
                                 ></Input>
-                                <div class="input-underline"></div>
+                                <div class="input-underline" :class="{ active: inputFocus === 'login_name' }"></div>
+                                <div class="input-glow"></div>
                             </div>
                         </FormItem>
                         <FormItem prop="name" class="form-item-animated">
@@ -84,8 +111,11 @@
                                     v-model="form.name" 
                                     placeholder="请输入真实姓名" 
                                     class="animated-input"
+                                    @on-focus="inputFocus = 'name'"
+                                    @on-blur="inputFocus = ''"
                                 ></Input>
-                                <div class="input-underline"></div>
+                                <div class="input-underline" :class="{ active: inputFocus === 'name' }"></div>
+                                <div class="input-glow"></div>
                             </div>
                         </FormItem>
                         <FormItem prop="password" class="form-item-animated">
@@ -96,8 +126,11 @@
                                     v-model="form.password" 
                                     placeholder="请输入密码" 
                                     class="animated-input"
+                                    @on-focus="inputFocus = 'password'"
+                                    @on-blur="inputFocus = ''"
                                 ></Input>
-                                <div class="input-underline"></div>
+                                <div class="input-underline" :class="{ active: inputFocus === 'password' }"></div>
+                                <div class="input-glow"></div>
                             </div>
                         </FormItem>
                         <FormItem prop="confirmPassword" class="form-item-animated">
@@ -108,29 +141,37 @@
                                     v-model="form.confirmPassword" 
                                     placeholder="请确认密码" 
                                     class="animated-input"
+                                    @on-focus="inputFocus = 'confirmPassword'"
+                                    @on-blur="inputFocus = ''"
                                 ></Input>
-                                <div class="input-underline"></div>
+                                <div class="input-underline" :class="{ active: inputFocus === 'confirmPassword' }"></div>
+                                <div class="input-glow"></div>
                             </div>
                         </FormItem>
                         <FormItem class="button-wrapper">
-                            <Button 
-                                @click="handleSubmit" 
-                                :loading="loading" 
-                                type="primary" 
-                                long
-                                class="login-button"
-                            >
-                                <span class="button-content" v-if="!loading">
-                                    <Icon type="md-checkmark-circle" class="btn-icon"></Icon>
-                                    <span class="btn-text">注 册</span>
-                                </span>
-                                <span class="button-loading" v-else>
-                                    <span class="loading-dots">
-                                        <span></span><span></span><span></span>
+                            <div class="button-container">
+                                <Button 
+                                    @click="handleSubmit" 
+                                    :loading="loading" 
+                                    type="primary" 
+                                    long
+                                    class="login-button"
+                                >
+                                    <span class="button-content" v-if="!loading">
+                                        <Icon type="md-checkmark-circle" class="btn-icon"></Icon>
+                                        <span class="btn-text">注 册</span>
                                     </span>
-                                    <span class="loading-text">注册中...</span>
-                                </span>
-                            </Button>
+                                    <span class="button-loading" v-else>
+                                        <span class="loading-dots">
+                                            <span></span><span></span><span></span>
+                                        </span>
+                                        <span class="loading-text">注册中...</span>
+                                    </span>
+                                </Button>
+                                <div class="button-particles">
+                                    <span class="btn-particle" v-for="i in 6" :key="'bp-'+i"></span>
+                                </div>
+                            </div>
                         </FormItem>
                     </Form>
                     <div class="options">
@@ -152,12 +193,22 @@
         </div>
         
         <div class="login-footer">
-            <span class="footer-text">© 2024</span>
+            <span class="footer-text">© 2026</span>
             <span class="footer-divider">|</span>
             <span class="footer-text">水稻生长可视化预测系统</span>
             <span class="footer-divider">-</span>
             <span class="footer-text highlight">Rice Growth Visualization System</span>
         </div>
+        
+        <!-- 注册成功动画 -->
+        <transition name="success-fade">
+            <div class="success-overlay" v-if="registerSuccess">
+                <div class="success-checkmark">
+                    <div class="checkmark-circle"></div>
+                    <div class="checkmark-check"></div>
+                </div>
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -178,6 +229,8 @@ export default {
         
         return {
             loading: false,
+            registerSuccess: false,
+            inputFocus: '',
             form: {
                 login_name: '',
                 name: '',
@@ -221,6 +274,39 @@ export default {
                 animationDelay: `${delay}s`
             };
         },
+        getMeteorStyle(index) {
+            const left = [10, 30, 50, 70, 90][index - 1] + Math.random() * 10;
+            const top = Math.random() * 30;
+            const duration = 3 + Math.random() * 2;
+            const delay = index * 4;
+            return {
+                left: `${left}%`,
+                top: `${top}%`,
+                animationDuration: `${duration}s`,
+                animationDelay: `${delay}s`
+            };
+        },
+        getFireflyStyle(index) {
+            const seed = index * 73.137;
+            const left = (seed * 1.618) % 100;
+            const top = (seed * 0.618) % 100;
+            const duration = 4 + Math.random() * 4;
+            const delay = index * 0.8;
+            return {
+                left: `${left}%`,
+                top: `${top}%`,
+                animationDuration: `${duration}s`,
+                animationDelay: `${delay}s`
+            };
+        },
+        getSparkleStyle(index) {
+            const angle = (index / 8) * 360;
+            const radius = 80;
+            return {
+                '--angle': `${angle}deg`,
+                '--radius': `${radius}px`
+            };
+        },
         handleSubmit () {         
             let _self = this;
             this.$refs.registerForm.validate((valid) => {
@@ -228,15 +314,14 @@ export default {
                     this.loading = true;
                     util.post(this, 'admin/sys_user/register', this.form, function(datas){
                         _self.loading = false;
-                        _self.$Message.success({
-                            content: '注册成功！即将跳转到登录页面...',
-                            duration: 2
-                        });
+                        // 显示成功动画
+                        _self.registerSuccess = true;
+                        
                         setTimeout(() => {
                             _self.$router.push({
                                 path: '/login'
                             });
-                        }, 2000);
+                        }, 1500);
                     }, function(err){
                         _self.loading = false;
                     });

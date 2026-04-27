@@ -3,7 +3,7 @@
         <!-- 页面标题区域 -->
         <div class="page-header">
             <div class="header-title">
-                <Icon type="md-shield" class="header-icon" />
+                <Icon type="ios-people"></Icon>
                 角色管理
             </div>
             <div class="header-desc">管理系统角色和权限配置</div>
