@@ -7,7 +7,7 @@ export const loginRouter = {
     path: '/login',
     name: 'login',
     meta: {
-        title: '后台管理系统 - 登录'
+        title: '水稻生长预测可视化系统 - 登录'
     },
     component: resolve => { require(['@/views/login.vue'], resolve); }
 };
@@ -16,7 +16,7 @@ export const registerRouter = {
     path: '/register',
     name: 'register',
     meta: {
-        title: '后台管理系统 - 注册'
+        title: '水稻生长预测可视化系统 - 注册'
     },
     component: resolve => { require(['@/views/register/index.vue'], resolve); }
 };

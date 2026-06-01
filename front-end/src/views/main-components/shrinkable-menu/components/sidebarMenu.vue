@@ -54,7 +54,7 @@
                     <span class="version-number">2.0</span>
                     <span class="version-badge">PRO</span>
                 </div>
-                <div class="footer-copyright">© 2024 Smart Agri</div>
+                <div class="footer-copyright">© 2026 Smart Agri</div>
             </div>
         </div>
     </div>
